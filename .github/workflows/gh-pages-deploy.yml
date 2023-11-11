@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - run: yarn && quasar build
+      - run: yarn && npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
