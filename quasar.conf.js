@@ -13,6 +13,7 @@ const { nodePolyfills } = require('vite-plugin-node-polyfills');
 
 module.exports = configure(function (/* ctx */) {
   return {
+		publicPath: process.env.NODE_ENV === "production" ? "/dapp.skullnbones.xyz/" : "/",
     publicPath:
       process.env.NODE_ENV === 'production' ? '/dapp.skullnbones.xyz/' : '/',
     publicPath:

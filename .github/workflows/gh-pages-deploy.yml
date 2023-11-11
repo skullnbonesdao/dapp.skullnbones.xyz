@@ -1,24 +1,31 @@
-name: Deploy to github pages
+name: Node.js deploy
+
 on:
   push:
-    branches:
-      - master
+    branches: [ "master" ]
 jobs:
   gh-pages-deploy:
-    name: Deploying to gh-pages
+    name: Build
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
-      - name: Setup Node.js for use with actions
-        uses: actions/setup-node@v2
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          version:  16.x
-      - name: Checkout branch
-        uses: actions/checkout@v2
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
+      - run: yarn && quasar build
 
-      - name: Clean install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Run deploy script
-        run: |
-          git config user.name "Skullnbones" && git config user.email "skullandbonesdao@gmail.com"
-          npm run gh-pages-deploy
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/spa
