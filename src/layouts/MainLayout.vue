@@ -21,7 +21,7 @@
         </q-btn>
         <q-space />
         <div class="q-my-sm">
-          <WalletMultiButton class="items-center"></WalletMultiButton>
+          <WalletMultiButton dark class="items-center"></WalletMultiButton>
         </div>
       </q-toolbar>
       <q-separator class="bg-white"></q-separator>
