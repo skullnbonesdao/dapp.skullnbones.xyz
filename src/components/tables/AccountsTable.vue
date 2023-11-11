@@ -11,14 +11,14 @@ const columns = ref([
     label: 'Mint',
     align: 'left',
     field: 'mint',
-    field: (row) => format_address(row.mint?.toString() ?? ''),
+    field: (row: never) => format_address(row.mint?.toString() ?? ''),
     sortable: true,
   },
   {
     name: 'calories',
     align: 'right',
     label: 'Amount',
-    field: (row) => row.tokenAmount.uiAmount,
+    field: (row: never) => row.tokenAmount.uiAmount,
     sortable: true,
   },
 ]);

@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="bg-black text-white">
-    <q-header elevated class="bg-black q-py-xs" height-hint="58">
+  <q-layout view="lHh Lpr lff" class="bg-black text-white">
+    <q-header class="bg-black">
       <q-toolbar>
         <q-btn
           flat
@@ -19,14 +19,7 @@
           </q-toolbar-title>
           <q-toolbar-title shrink>for educational purposes</q-toolbar-title>
         </q-btn>
-
         <q-space />
-
-        <q-space />
-
-        <div class="q-gutter-sm row items-center no-wrap">
-          <wallet-connect-button></wallet-connect-button>
-        </div>
       </q-toolbar>
       <q-separator class="bg-white"></q-separator>
     </q-header>
@@ -35,10 +28,11 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      :width="240"
-      class="fit bg-black text-white"
+      :width="250"
+      :breakpoint="400"
+      class="bg-black"
     >
-      <q-scroll-area class="fit">
+      <q-scroll-area style="height: calc(100% - 150px); margin-top: 20px">
         <q-list padding>
           <q-item
             :to="link.to"
@@ -80,6 +74,11 @@
           </q-item>
         </q-list>
       </q-scroll-area>
+      <div class="row absolute-bottom q-ma-md">
+        <q-space />
+        <WalletMultiButton class=""></WalletMultiButton>
+        <q-space />
+      </div>
     </q-drawer>
 
     <q-page-container>
@@ -90,9 +89,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import WalletConnectButton from 'components/buttons/WalletButton.vue';
 import { RPC_NETWORKS, useGlobalStore } from 'stores/globalStore';
 import { Connection } from '@solana/web3.js';
+import { WalletMultiButton } from 'solana-wallets-vue';
 
 const leftDrawerOpen = ref(false);
 const search = ref('');

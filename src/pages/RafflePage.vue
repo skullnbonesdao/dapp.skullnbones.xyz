@@ -26,7 +26,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <q-page class="col items-center justify-evenly">
+  <q-page class="col">
     <div class="row shadow-2">
       <q-tabs
         v-model="tab_selected"
@@ -42,7 +42,7 @@ onMounted(async () => {
       <q-btn flat icon="refresh" @click="load_raffles().then(() => {})" />
     </div>
 
-    <div v-if="raffles">
+    <div v-if="raffles" class="q-mx-md">
       <RaffleGrid
         :raffles="raffles.filter((raffle) => raffle.account.isRunning === true)"
         :is_admin="false"
