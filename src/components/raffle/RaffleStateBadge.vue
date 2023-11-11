@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 const props = defineProps(['raffle', 'entrants']);
+
+const progress = computed(() => {
+  return props.entrants?.total / props.entrants?.max;
+});
 </script>
 
 <template>
@@ -23,13 +29,20 @@ const props = defineProps(['raffle', 'entrants']);
     >...waiting for draw</q-badge
   >
 
-  <q-badge
-    color="green"
+  <q-linear-progress
     v-else-if="raffle.account.isRunning"
-    class="text-caption text-md"
+    size="25px"
+    :value="progress"
+    color="primary"
   >
-    running {{ entrants?.total }} / {{ entrants?.max }}
-  </q-badge>
+    <div class="absolute-full flex flex-center">
+      <q-badge
+        color="black"
+        text-color="primary"
+        :label="`Tickets: ${entrants?.total}/${entrants?.max}`"
+      />
+    </div>
+  </q-linear-progress>
 </template>
 
 <style scoped lang="sass"></style>
