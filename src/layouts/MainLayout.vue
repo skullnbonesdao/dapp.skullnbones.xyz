@@ -12,7 +12,7 @@
         />
 
         <q-btn flat no-caps no-wrap class="q-ml-xs" v-if="$q.screen.gt.xs">
-          <q-img src="snb_icon.svg" width="50px"></q-img>
+          <q-img src="src/assets/snb_icon.svg" width="50px"></q-img>
 
           <q-toolbar-title shrink class="text-weight-bold">
             dAPP S&B
