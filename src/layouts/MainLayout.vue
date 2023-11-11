@@ -74,10 +74,17 @@
           </q-item>
         </q-list>
       </q-scroll-area>
-      <div class="row absolute-bottom q-ma-md">
-        <q-space />
-        <WalletMultiButton class=""></WalletMultiButton>
-        <q-space />
+      <div class="col absolute-bottom q-ma-md q-gutter-y-md">
+        <div class="row">
+          <q-space />
+          <WalletMultiButton class="items-center"></WalletMultiButton>
+          <q-space />
+        </div>
+        <div class="row">
+          <q-space />
+          <q-badge class="items-center">v{{ display_version }}</q-badge>
+          <q-space />
+        </div>
       </div>
     </q-drawer>
 
@@ -92,9 +99,12 @@ import { ref, watch } from 'vue';
 import { RPC_NETWORKS, useGlobalStore } from 'stores/globalStore';
 import { Connection } from '@solana/web3.js';
 import { WalletMultiButton } from 'solana-wallets-vue';
+import { version } from 'src/../package.json';
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
+
+const display_version = ref(version);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
