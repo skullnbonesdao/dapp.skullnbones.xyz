@@ -20,6 +20,9 @@
           <q-toolbar-title shrink>for educational purposes</q-toolbar-title>
         </q-btn>
         <q-space />
+        <div class="q-my-sm">
+          <WalletMultiButton class="items-center"></WalletMultiButton>
+        </div>
       </q-toolbar>
       <q-separator class="bg-white"></q-separator>
     </q-header>
@@ -77,11 +80,6 @@
       <div class="col absolute-bottom q-ma-md q-gutter-y-md">
         <div class="row">
           <q-space />
-          <WalletMultiButton class="items-center"></WalletMultiButton>
-          <q-space />
-        </div>
-        <div class="row">
-          <q-space />
           <q-badge class="items-center">v{{ display_version }}</q-badge>
           <q-space />
         </div>
@@ -98,8 +96,8 @@
 import { ref, watch } from 'vue';
 import { RPC_NETWORKS, useGlobalStore } from 'stores/globalStore';
 import { Connection } from '@solana/web3.js';
-import { WalletMultiButton } from 'solana-wallets-vue';
 import { version } from 'src/../package.json';
+import { WalletMultiButton } from 'solana-wallets-vue';
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
