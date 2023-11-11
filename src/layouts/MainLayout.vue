@@ -115,7 +115,7 @@ const links1 = ref([
   { icon: 'local_activity', text: 'Raffle', to: '/raffle' },
 ]);
 
-if (useGlobalStore().is_admin) {
+if (useGlobalStore().is_admin || import.meta.env.DEV) {
   links1.value.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
 }
 </script>
