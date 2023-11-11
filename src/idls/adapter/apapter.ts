@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { useAnchorWallet } from 'solana-wallets-vue';
-import { Connection, clusterApiUrl, PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
 import dapp_whitelist_idl from 'src/idls/dapp_whitelist.json';
 import dapp_raffle_idl from 'src/idls/dapp_raffle.json';
