@@ -22,7 +22,7 @@ export const useGlobalStore = defineStore('globalstore', {
     connection: new Connection('https://api.devnet.solana.com', {
       commitment: 'confirmed',
     }),
-    admins: import.meta.env.VITE_ADMINS.split(',') as Array<string>,
+    admins: import.meta.env.VITE_ADMINS?.split(',') as Array<string>,
     token_accounts: {},
   }),
 
