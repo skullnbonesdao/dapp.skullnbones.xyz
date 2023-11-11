@@ -88,12 +88,8 @@ async function buy_raffle_ticket() {
       })
       .rpc();
     console.log(signature);
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
 
-    handle_confirmation(signature);
+    await handle_confirmation(signature);
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -111,20 +107,19 @@ async function buy_raffle_ticket() {
       !raffle?.account.randomness &&
       !(entrants?.total == entrants?.max)
     "
-    class="col q-gutter-y-md q-pb-md"
+    class="col q-pa-sm q-gutter-y-md"
   >
-    <q-separator />
     <p class="text-h5">Buy Ticket(s)</p>
     <div class="row q-gutter-x-sm">
       <q-input
+        outlined
         type="number"
         class="col"
         label="Amount"
         v-model="input_raffle_ticket_amount"
       />
-      <q-btn color="primary" label="Buy Tickets" @click="buy_raffle_ticket()" />
+      <q-btn color="primary" icon="send" @click="buy_raffle_ticket()" />
     </div>
-    <q-separator />
   </div>
 </template>
 

@@ -12,6 +12,7 @@ import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { Connection, Transaction } from '@solana/web3.js';
+import { handle_confirmation } from 'components/messages/handle_confirmation';
 
 const input_prize_count = ref();
 const input_account_selected = ref();
@@ -78,10 +79,7 @@ async function collect_proceeds() {
 
     console.log(signature);
 
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
+    await handle_confirmation(signature);
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -95,8 +93,6 @@ async function collect_proceeds() {
 <template>
   <q-btn
     v-if="props.is_admin && raffle.account.isClaimed"
-    class="col"
-    size="md"
     color="primary"
     @click="collect_proceeds()"
     >Collect Proceeds</q-btn

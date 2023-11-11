@@ -4,8 +4,9 @@ import { useWallet } from 'solana-wallets-vue';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { handle_confirmation } from 'components/messages/handle_confirmation';
 
-const props = defineProps(['raffle']);
+const props = defineProps(['raffle', 'is_admin']);
 
 async function close_raffle() {
   const { pg_raffle } = useWorkspaceAdapter();
@@ -49,10 +50,7 @@ async function close_raffle() {
 
     console.log(signature);
 
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
+    await handle_confirmation(signature);
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -64,7 +62,10 @@ async function close_raffle() {
 </script>
 
 <template>
-  <q-btn class="col" size="md" color="primary" @click="close_raffle()"
+  <q-btn
+    v-if="is_admin && (!raffle.account.isRunning || raffle.account.isClaimed)"
+    color="primary"
+    @click="close_raffle()"
     >Close Raffle</q-btn
   >
 </template>

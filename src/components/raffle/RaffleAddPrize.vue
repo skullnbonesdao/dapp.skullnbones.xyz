@@ -9,6 +9,7 @@ import { SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { format_address } from 'src/functions/format_address';
 
 const input_prize_count = ref(1);
 const input_prize_url = ref('');
@@ -63,11 +64,8 @@ async function add_prize_to_raffle() {
       .rpc();
 
     console.log(signature);
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
-    handle_confirmation(signature);
+
+    await handle_confirmation(signature);
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -80,23 +78,24 @@ async function add_prize_to_raffle() {
 
 <template>
   <div
-    class="col q-gutter-y-md q-pb-md"
+    class="row shadow-2 q-pa-md"
     v-if="
       is_admin &&
       raffle.account.prizeTokenMint.toString() ===
         '11111111111111111111111111111111'
     "
   >
-    <q-separator />
-    <p class="text-h5">Add Prize</p>
+    <p>Prize</p>
     <div class="row q-gutter-x-sm">
       <q-btn-dropdown
         class="col"
         color="primary"
         :label="
           input_account_selected
-            ? input_account_selected.account.data.parsed.info.mint
-            : 'Select Ticket Token Mint'
+            ? format_address(
+                input_account_selected.account.data.parsed.info.mint,
+              )
+            : 'Select Prize'
         "
       >
         <q-list>
@@ -118,26 +117,13 @@ async function add_prize_to_raffle() {
         type="number"
         label="Count"
       />
-    </div>
-    <div class="row">
-      <q-input
-        class="col"
-        outlined
-        v-model="input_prize_url"
-        type="text"
-        label="Image-URL"
+      <q-btn
+        class="col-2"
+        color="primary"
+        icon="send"
+        @click="add_prize_to_raffle()"
       />
     </div>
-    <div class="row">
-      <q-btn
-        class="col"
-        size="md"
-        color="primary"
-        @click="add_prize_to_raffle()"
-        >Add Prize to Raffle</q-btn
-      >
-    </div>
-    <q-separator />
   </div>
 </template>
 

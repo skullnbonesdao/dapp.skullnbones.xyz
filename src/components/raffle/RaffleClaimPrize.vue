@@ -16,6 +16,7 @@ import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { Connection, Transaction } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
+import { handle_confirmation } from 'components/messages/handle_confirmation';
 
 const props = defineProps(['raffle', 'is_admin']);
 
@@ -85,10 +86,8 @@ async function claim_raffle() {
       .rpc();
 
     console.log(signature);
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
+
+    await handle_confirmation(signature);
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -101,7 +100,6 @@ async function claim_raffle() {
 
 <template>
   <q-btn
-    class="col"
     v-if="raffle.account.winner != NULL_WALLET && is_admin"
     color="primary"
     label="Claim Prize"

@@ -19,6 +19,7 @@ const props = defineProps(['raffle', 'is_admin']);
 const entrants = ref();
 
 const accounts = ref();
+const expanded = ref(false);
 
 onMounted(async () => {
   const { pg_raffle } = useWorkspaceAdapter();
@@ -59,19 +60,19 @@ onMounted(async () => {
             Math.pow(10, -raffle.account.ticketDecimals)
           }}
         </div>
-        <div class="col text-overline">Price per Ticket</div>
+        <div class="col text-h6">Price per Ticket</div>
       </div>
       <div class="row">
         <div class="col text-overline text-center text-orange-9">
           {{ format_address(raffle.account.ticketTokenMint.toString()) }}
         </div>
-        <div class="col text-overline">Ticket Mint</div>
+        <div class="col text-h6">Ticket</div>
       </div>
       <div class="row">
         <div class="col text-overline text-center text-orange-9">
           {{ format_address(raffle.account.prizeTokenMint.toString()) }}
         </div>
-        <div class="col text-overline">Prize Mint</div>
+        <div class="col text-h6">Prize</div>
       </div>
 
       <div class="row" v-if="raffle?.account?.randomness">
@@ -90,23 +91,30 @@ onMounted(async () => {
     </q-card-section>
 
     <q-card-actions>
-      <RaffleAddPrize class="col" :raffle="raffle" :is_admin="is_admin" />
+      <q-space />
+      <q-btn
+        color="grey"
+        round
+        flat
+        dense
+        :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+        @click="expanded = !expanded"
+      />
     </q-card-actions>
 
-    <q-card-actions>
-      <RaffleEditImageUrl class="col" :raffle="raffle" :is_admin="is_admin" />
-    </q-card-actions>
+    <q-slide-transition>
+      <AccountsTable :accounts="accounts" v-show="expanded"> </AccountsTable>
+    </q-slide-transition>
 
-    <q-card-actions>
+    <q-card-actions> </q-card-actions>
+
+    <q-card-actions class="q-gutter-y-sm justify-center">
+      <RaffleAddPrize :raffle="raffle" :is_admin="is_admin" />
+      <RaffleEditImageUrl :raffle="raffle" :is_admin="is_admin" />
       <RaffleRevealWinnert :raffle="raffle" :is_admin="is_admin" />
-    </q-card-actions>
-
-    <q-card-actions>
       <RaffleClaimPirze :raffle="raffle" :is_admin="is_admin" />
-    </q-card-actions>
-
-    <q-card-actions>
       <RaffleCollectProceeds :raffle="raffle" :is_admin="is_admin" />
+      <RaffleClose :raffle="raffle" :is_admin="is_admin" />
     </q-card-actions>
 
     <q-card-actions>
@@ -115,19 +123,6 @@ onMounted(async () => {
         :is_admin="is_admin"
         :entrants="entrants"
       />
-    </q-card-actions>
-
-    <q-card-actions>
-      <RaffleClose
-        v-if="
-          is_admin && (!raffle.account.isRunning || raffle.account.isClaimed)
-        "
-        :raffle="raffle"
-      />
-    </q-card-actions>
-
-    <q-card-actions>
-      <AccountsTable :accounts="accounts" />
     </q-card-actions>
   </q-card>
 </template>

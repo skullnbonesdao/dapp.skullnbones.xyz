@@ -26,7 +26,13 @@ export const useGlobalStore = defineStore('globalstore', {
     token_accounts: {},
   }),
 
-  getters: {},
+  getters: {
+    is_admin(self) {
+      return self.admins.some(
+        (entry) => entry === useWallet().publicKey.value?.toString(),
+      );
+    },
+  },
   actions: {
     async update_wallet_accounts() {
       if (useWallet().publicKey.value) {

@@ -31,11 +31,8 @@ async function reveal_raffle_winner() {
       .rpc();
 
     console.log(signature);
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
-    handle_confirmation(signature);
+
+    await handle_confirmation(signature);
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -47,7 +44,7 @@ async function reveal_raffle_winner() {
 </script>
 
 <template>
-  <div class="col">
+  <div class="row">
     <q-btn
       class="row"
       v-if="

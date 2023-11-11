@@ -8,6 +8,7 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useGlobalStore } from '../../stores/globalStore';
 import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { handle_confirmation } from 'components/messages/handle_confirmation';
 
 const input_raffle_name = ref();
 const input_raffle_description = ref();
@@ -65,10 +66,8 @@ async function create_new_raffle() {
       .rpc();
 
     console.log(signature);
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
+
+    await handle_confirmation(signature);
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -122,7 +121,7 @@ async function create_new_raffle() {
 
       <q-input
         outlined
-        v-model="input_raffle_ticket_price"
+        v-model="input_raffle_ticket_count"
         type="number"
         label="Tickets"
       />
@@ -130,7 +129,7 @@ async function create_new_raffle() {
       <q-input
         outlined
         type="number"
-        v-model="input_raffle_ticket_count"
+        v-model="input_raffle_ticket_price"
         label="Ticket Price"
       />
     </q-card-section>

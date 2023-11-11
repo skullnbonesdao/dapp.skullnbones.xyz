@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { format_address } from 'src/functions/format_address';
 
 const props = defineProps(['accounts']);
 
@@ -10,6 +11,7 @@ const columns = ref([
     label: 'Mint',
     align: 'left',
     field: 'mint',
+    field: (row) => format_address(row.mint?.toString() ?? ''),
     sortable: true,
   },
   {

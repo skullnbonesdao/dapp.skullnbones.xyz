@@ -27,11 +27,8 @@ async function edit_image_url() {
       .rpc();
 
     console.log(signature);
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
-    handle_confirmation(signature);
+
+    await handle_confirmation(signature);
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -44,30 +41,24 @@ async function edit_image_url() {
 
 <template>
   <div
-    class="col q-gutter-y-md q-pb-md"
+    class="shadow-2 q-pa-md"
     v-if="
       is_admin &&
       raffle.account.prizeTokenMint.toString() !=
         '11111111111111111111111111111111'
     "
   >
-    <q-separator />
-    <p class="text-h5">Image URL</p>
-
     <div class="row q-gutter-x-sm">
       <q-input
         class="col"
         outlined
+        maxlength="100"
         v-model="input_prize_url"
         type="text"
         label="Image-URL"
       />
-      <q-btn class="col-2" size="md" color="primary" @click="edit_image_url()"
-        >Apply</q-btn
-      >
+      <q-btn icon="send" color="primary" @click="edit_image_url()" />
     </div>
-
-    <q-separator />
   </div>
 </template>
 
