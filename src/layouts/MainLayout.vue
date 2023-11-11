@@ -112,15 +112,12 @@ watch(
 
 const links1 = ref([
   { icon: 'home', text: 'Home', to: '/' },
-  { icon: 'contrast', text: 'Whitelist', to: '/whitelist' },
   { icon: 'local_activity', text: 'Raffle', to: '/raffle' },
-  // { icon: 'switch_left', text: 'Wrapper', to: '/wrapper' },
-  // { icon: 'currency_exchange', text: 'Escrow', to: '/escrow-service' },
-  // { icon: 'flip_camera_android', text: 'Coinflip', to: '/coinflip' },
-  // { icon: 'draw', text: 'Token', to: '/token' },
-  // { icon: 'fireplace', text: 'Burn', to: '/burner' },
-  // { icon: 'account_balance_wallet', text: 'Accounts', to: '/accounts' },
 ]);
+
+if (useGlobalStore().is_admin) {
+  links1.value.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
+}
 </script>
 
 <style lang="sass">
