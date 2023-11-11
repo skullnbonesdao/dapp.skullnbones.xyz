@@ -10,7 +10,8 @@
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "quasar build"
+    "build": "quasar build",
+    "gh-pages-deploy": "node scripts/gh-pages-deploy.js"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.29.0",
@@ -18,6 +19,7 @@
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@metaplex-foundation/js": "^0.19.5",
     "@metaplex-foundation/mpl-token-metadata": "^3.1.0",
+    "@quasar/app": "^3.3.3",
     "@quasar/extras": "^1.16.4",
     "@solana-suite/core": "^0.6.8",
     "@solana/spl-token": "^0.3.8",
@@ -35,15 +37,19 @@
   },
   "devDependencies": {
     "@coral-xyz/anchor": "^0.29.0",
-    "@quasar/app-vite": "^1.3.0",
+    "@quasar/app-vite": "^1.6.2",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "autoprefixer": "^10.4.2",
+    "chalk": "^4.0.0",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
+    "execa": "^4.0.0",
+    "node-emoji": "^1.10.0",
     "prettier": "3.0.3",
+    "quasar-app-extension-gh-pages-auto-deploy": "^0.4.0",
     "typescript": "^4.5.4"
   },
   "engines": {
