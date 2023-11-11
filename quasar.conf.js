@@ -13,9 +13,12 @@ const { nodePolyfills } = require('vite-plugin-node-polyfills');
 
 module.exports = configure(function (/* ctx */) {
   return {
-		publicPath: process.env.NODE_ENV === "production" ? "/dapp.skullnbones.xyz/" : "/",
-		publicPath: process.env.NODE_ENV === "production" ? "/dapp.skullnbones.xyz/" : "/",
-		publicPath: process.env.NODE_ENV === "production" ? "/dapp.skullnbones.xyz/" : "/",
+    publicPath:
+      process.env.NODE_ENV === 'production' ? '/dapp.skullnbones.xyz/' : '/',
+    publicPath:
+      process.env.NODE_ENV === 'production' ? '/dapp.skullnbones.xyz/' : '/',
+    publicPath:
+      process.env.NODE_ENV === 'production' ? '/dapp.skullnbones.xyz/' : '/',
     eslint: {
       // fix: true,
       // include: [],
@@ -76,7 +79,7 @@ module.exports = configure(function (/* ctx */) {
       // ignorePublicFolder: true,
       // minify: false,
       polyfillModulePreload: true,
-      // distDir
+      distDir: '/dist',
       // extendViteConf(viteConf) {
       //   viteConf.plugins = [nodePolyfills()];
       // },
