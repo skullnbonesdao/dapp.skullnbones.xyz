@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import RaffleCreateCard from 'components/raffle/RaffleCreateRaffle.vue';
 import RaffleCard from 'components/raffle/RaffleCard.vue';
-import { PropType, ref } from 'vue';
+import { computed, PropType, ref } from 'vue';
+import { useQuasar } from 'quasar';
 
 const props = defineProps({
   is_admin: {
@@ -14,28 +14,55 @@ const props = defineProps({
   },
 });
 
-const raffle = ref();
+const cardContainerClass = computed(() => {
+  return useQuasar().screen.gt.xs
+    ? 'example-masonry-table-grid example-masonry-table-grid--' +
+        (useQuasar().screen.gt.sm ? '3' : '2')
+    : null;
+});
+
+const rowsPerPageOptions = computed(() => {
+  return useQuasar().screen.gt.xs
+    ? useQuasar().screen.gt.sm
+      ? [3, 6, 9]
+      : [3, 6]
+    : [3];
+});
+
+const pagination = ref();
 </script>
 
 <template>
-  <div class="q-pa-md example-row-equal-width">
-    <div class="row">
-      <div v-if="is_admin" class="col">
-        <RaffleCreateCard />
+  <q-table
+    grid
+    :card-container-class="cardContainerClass"
+    :rows="props.raffles"
+    row-key="name"
+    :filter="filter"
+    hide-header
+    v-model:pagination="pagination"
+    :rows-per-page-options="rowsPerPageOptions"
+  >
+    <template v-slot:top-right>
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        v-model="filter"
+        placeholder="Search"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+    </template>
+
+    <template v-slot:item="props">
+      <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
+        <RaffleCard :is_admin="is_admin" :raffle="props.row" />
       </div>
-      <div :key="raffle" v-for="raffle in props.raffles" class="col">
-        <RaffleCard :is_admin="is_admin" :raffle="raffle" />
-      </div>
-    </div>
-  </div>
+    </template>
+  </q-table>
 </template>
 
-<style scoped lang="sass">
-.example-row-equal-width
-  .row > div
-    padding: 10px 15px
-    background: rgba(#999,.15)
-    border: 1px solid rgba(#999,.2)
-  .row + .row
-    margin-top: 1rem
-</style>
+<style scoped lang="sass"></style>

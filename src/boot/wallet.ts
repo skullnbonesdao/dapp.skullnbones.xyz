@@ -3,8 +3,6 @@ import SolanaWallets from 'solana-wallets-vue';
 // You can either import the default styles or create your own.
 import 'src/css/wallet_connect.css';
 
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
@@ -19,4 +17,6 @@ export default boot(({ app }) => {
   };
 
   app.use(SolanaWallets, walletOptions);
+
+  console.log('[booted] Wallet');
 });

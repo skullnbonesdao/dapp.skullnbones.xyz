@@ -8616,6 +8616,11 @@ kolorist@^1.5.1:
   resolved "https://registry.yarnpkg.com/kolorist/-/kolorist-1.8.0.tgz#edddbbbc7894bc13302cdf740af6374d4a04743c"
   integrity sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==
 
+konva@^9.2.3:
+  version "9.2.3"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-9.2.3.tgz#84f0a828a040b4aeb9f90625e89fdfe0662075a2"
+  integrity sha512-oQ6VQ6kUL9IlhOGuEKKhxqnv6g/t8jZpVuWahQQ6hCqAsO8Ydi1zFGv7ef4EOq5GoPNq/d6Fyj/3i5Y/a5NooA==
+
 launch-editor-middleware@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/launch-editor-middleware/-/launch-editor-middleware-2.3.0.tgz#edd0ed45a46f5f1cf27540f93346b5de9e8c3be0"
@@ -9039,6 +9044,11 @@ mini-css-extract-plugin@1.6.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
     webpack-sources "^1.1.0"
+
+minidenticons@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/minidenticons/-/minidenticons-4.2.0.tgz#6c5e06e30127d160902f6ba600da3db4ac8e70dd"
+  integrity sha512-2T3VU1N30yI3kXMRbdLsJ5DgsBoGLi2+2hbm1xTOU2RQXWW5wwpmz9XQohVSsVlhymf4W69sMGj6s39t796PBA==
 
 minimalistic-assert@^1.0.0, minimalistic-assert@^1.0.1:
   version "1.0.1"
@@ -12024,6 +12034,11 @@ vue-eslint-parser@^9.3.1:
     esquery "^1.4.0"
     lodash "^4.17.21"
     semver "^7.3.6"
+
+vue-konva@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/vue-konva/-/vue-konva-3.0.2.tgz#72393d5cd3b9ac4f798e5d381de5ef451456d810"
+  integrity sha512-FNWKtPPVDihNuQcq7F4GzuVPkPaEfg8lnWezpRqgiC2VetdvONOiYOFD800jNL5kt/lEYnSOYvhqqdTPbv2c8w==
 
 vue-loader@17.0.0:
   version "17.0.0"
