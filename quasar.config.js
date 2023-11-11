@@ -54,6 +54,10 @@ module.exports = configure(function (/* ctx */) {
         chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin);
       },
 
+      env: {
+        FOO: 'hello',
+      },
+
       target: {
         browser: ['chrome87'],
         node: 'node16',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { useGlobalStore } from 'stores/globalStore';
 import RaffleGrid from 'components/raffle/RaffleGrid.vue';
@@ -7,6 +7,7 @@ import {
   initWorkspaceAdapter,
   useWorkspaceAdapter,
 } from 'src/idls/adapter/apapter';
+import { useWallet } from 'solana-wallets-vue';
 
 const raffles = ref();
 const tab_selected = ref('raffle');
@@ -21,31 +22,18 @@ onMounted(async () => {
   const { pg_raffle } = useWorkspaceAdapter();
   raffles.value = await pg_raffle.value.account.raffle.all();
 });
+
+const is_admin = computed(() => {
+  return useGlobalStore().admins.some(
+    (entry) => entry === useWallet().publicKey.value?.toString(),
+  );
+});
 </script>
 
 <template>
   <q-page class="col items-center justify-evenly">
-    <q-tabs
-      v-model="tab_selected"
-      no-caps
-      outside-arrows
-      mobile-arrows
-      class="shadow-2"
-    >
-      <q-tab name="raffle" label="Raffle" />
-      <q-tab name="admin" label="Admin" />
-    </q-tabs>
-
     <div v-if="raffles">
-      <RaffleGrid
-        :raffles="raffles.filter((raffle) => raffle.account.isRunning === true)"
-        v-if="tab_selected === 'raffle'"
-      />
-      <RaffleGrid
-        :raffles="raffles"
-        :is_admin="true"
-        v-if="tab_selected === 'admin'"
-      />
+      <RaffleGrid :raffles="raffles" :is_admin="is_admin" />
     </div>
     <h6
       v-if="tab_selected === 'raffle' && !raffles?.length"

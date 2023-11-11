@@ -12,6 +12,7 @@ import { useGlobalStore } from 'stores/globalStore';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import AccountsTable from 'components/tables/AccountsTable.vue';
 import IconFromSeed from 'components/icons/IconFromSeed.vue';
+import RaffleEditImageUrl from 'components/raffle/RaffleEditImageUrl.vue';
 import { format_address } from '../../functions/format_address';
 
 const props = defineProps(['raffle', 'is_admin']);
@@ -90,6 +91,10 @@ onMounted(async () => {
 
     <q-card-actions>
       <RaffleAddPrize class="col" :raffle="raffle" :is_admin="is_admin" />
+    </q-card-actions>
+
+    <q-card-actions>
+      <RaffleEditImageUrl class="col" :raffle="raffle" :is_admin="is_admin" />
     </q-card-actions>
 
     <q-card-actions>
