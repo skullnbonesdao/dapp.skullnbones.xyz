@@ -5,7 +5,11 @@ import { Notify } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { useGlobalStore } from '../../stores/globalStore';
+import {
+  DAPP_ADMIN_WALLET,
+  RAFLLE_WHITELIST_NAME,
+  useGlobalStore,
+} from '../../stores/globalStore';
 import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
@@ -17,7 +21,7 @@ const input_raffle_ticket_price = ref();
 const input_account_selected = ref();
 
 async function create_new_raffle() {
-  const { pg_raffle } = useWorkspaceAdapter();
+  const { pg_raffle, pg_whitelist } = useWorkspaceAdapter();
 
   let [raffle, raffle_bump] = anchor.web3.PublicKey.findProgramAddressSync(
     [
@@ -35,6 +39,14 @@ async function create_new_raffle() {
   let [proceeds, proceeds_bump] = anchor.web3.PublicKey.findProgramAddressSync(
     [anchor.utils.bytes.utf8.encode('proceeds'), raffle.toBytes()],
     pg_raffle.value.programId,
+  );
+
+  let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      DAPP_ADMIN_WALLET.toBuffer(),
+      anchor.utils.bytes.utf8.encode(RAFLLE_WHITELIST_NAME),
+    ],
+    pg_whitelist.value.programId,
   );
 
   const proceedsMint = new anchor.web3.PublicKey(
@@ -65,6 +77,7 @@ async function create_new_raffle() {
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
         rent: SYSVAR_RENT_PUBKEY,
+        whitelist: whitelist,
       })
       .rpc();
 
@@ -82,7 +95,7 @@ async function create_new_raffle() {
 </script>
 
 <template>
-  <q-card flat bordered class="col q-pa-md">
+  <q-card square flat class="col q-pa-sm">
     <q-card-section class="q-gutter-y-md">
       <p class="text-h5">Raffle</p>
       <q-input outlined v-model="input_raffle_name" type="text" label="Name" />
