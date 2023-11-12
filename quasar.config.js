@@ -86,7 +86,7 @@ module.exports = configure(function (/* ctx */) {
       // },
       // viteVuePluginOptions: {},
       //
-      // vitePlugins: [[nodePolyfills(), {}]],
+      vitePlugins: [[nodePolyfills(), {}]],
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
