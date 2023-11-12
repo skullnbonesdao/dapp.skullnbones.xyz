@@ -47,7 +47,10 @@ async function add_prize_to_raffle() {
   try {
     const signature = await pg_raffle.value.methods
       .addPrize(
-        new BN(input_prize_count.value),
+        new BN(
+          input_prize_count.value *
+            Math.pow(10, account_info.value?.data.parsed.info.decimals),
+        ),
         new BN(account_info.value?.data.parsed.info.decimals),
         input_prize_url.value,
       )
