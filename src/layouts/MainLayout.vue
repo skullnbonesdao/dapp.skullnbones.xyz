@@ -21,9 +21,9 @@
           <q-toolbar-title shrink>for educational purposes</q-toolbar-title>
         </q-btn>
         <q-space />
-        <div class="q-my-sm">
-          <WalletMultiButton dark class="items-center"></WalletMultiButton>
-        </div>
+        <!--        <div class="q-my-sm">-->
+        <!--          <WalletMultiButton dark class="items-center"></WalletMultiButton>-->
+        <!--        </div>-->
       </q-toolbar>
       <q-separator class="bg-white"></q-separator>
     </q-header>
@@ -34,6 +34,11 @@
       :width="230"
       :breakpoint="300"
     >
+      <div class="row q-mt-md">
+        <q-space />
+        <WalletMultiButton dark class="items-center"></WalletMultiButton>
+        <q-space />
+      </div>
       <q-scroll-area style="height: calc(100% - 150px); margin-top: 0px">
         <q-list padding class="">
           <q-item
@@ -51,6 +56,7 @@
               <q-item-label>{{ link.text }}</q-item-label>
             </q-item-section>
           </q-item>
+          <q-item> </q-item>
         </q-list>
       </q-scroll-area>
       <div class="col absolute-bottom q-ma-md q-gutter-y-md">

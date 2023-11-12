@@ -8,6 +8,7 @@ import {
   useWorkspaceAdapter,
 } from 'src/idls/adapter/apapter';
 import RaffleCreateRaffle from 'components/raffle/RaffleCreateRaffle.vue';
+import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 
 const raffles = ref();
 const tab_selected = ref('raffle');
@@ -32,7 +33,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <q-page class="col">
+  <q-page
+    v-if="!useWallet().publicKey.value"
+    class="row items-center justify-center"
+  >
+    <WalletMultiButton dark />
+  </q-page>
+  <q-page v-else class="col">
     <div class="row shadow-2">
       <q-tabs
         v-model="tab_selected"
