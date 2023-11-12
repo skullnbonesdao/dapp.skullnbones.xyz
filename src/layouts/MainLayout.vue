@@ -121,6 +121,7 @@ const links1 = computed(() => {
   let data = [
     { icon: 'home', text: 'Home', to: '/' },
     { icon: 'local_activity', text: 'Raffle', to: '/raffle' },
+    { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
   ];
   if (useGlobalStore().is_admin || import.meta.env.DEV) {
     data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });

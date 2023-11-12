@@ -12,6 +12,10 @@ const props = defineProps({
     type: [] as PropType<any>,
     default: [],
   },
+  count: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const cardContainerClass = computed(() => {
@@ -59,7 +63,7 @@ const pagination = ref();
 
     <template v-slot:item="props">
       <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
-        <RaffleCard :is_admin="is_admin" :raffle="props.row" />
+        <RaffleCard :is_admin="is_admin" :raffle="props.row" :count="count" />
       </div>
     </template>
   </q-table>

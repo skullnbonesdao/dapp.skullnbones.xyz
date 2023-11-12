@@ -11,6 +11,7 @@ import RaffleCreateRaffle from 'components/raffle/RaffleCreateRaffle.vue';
 
 const raffles = ref();
 const tab_selected = ref('raffle');
+const count = ref(0);
 
 initWorkspaceAdapter();
 
@@ -18,6 +19,7 @@ async function load_raffles() {
   await useGlobalStore().update_wallet_accounts();
   const { pg_raffle } = useWorkspaceAdapter();
   raffles.value = await pg_raffle.value.account.raffle.all();
+  count.value++;
 }
 
 onMounted(async () => {
@@ -42,8 +44,9 @@ onMounted(async () => {
       <q-btn flat icon="refresh" @click="load_raffles().then(() => {})" />
     </div>
 
-    <div v-if="raffles" class="q-mx-md">
+    <div v-if="raffles && !is_loading" class="q-mx-md">
       <RaffleGrid
+        :count="count"
         :raffles="raffles.filter((raffle) => raffle.account.isRunning === true)"
         :is_admin="false"
         v-if="tab_selected === 'raffle'"
@@ -51,6 +54,7 @@ onMounted(async () => {
 
       <RaffleCreateRaffle v-if="tab_selected === 'create'" />
       <RaffleGrid
+        :count="count"
         :raffles="raffles"
         :is_admin="useGlobalStore().is_admin"
         v-if="tab_selected === 'manage'"

@@ -49,7 +49,10 @@ async function create_new_raffle() {
       .createRaffle(
         input_raffle_name.value,
         input_raffle_description.value,
-        new BN(input_raffle_ticket_price.value),
+        new BN(
+          input_raffle_ticket_price.value *
+            Math.pow(10, accoun_info.value?.data.parsed.info.decimals),
+        ),
         new BN(accoun_info.value?.data.parsed.info.decimals),
         input_raffle_ticket_count.value,
       )

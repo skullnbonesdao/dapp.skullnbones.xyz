@@ -19,6 +19,11 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/RafflePage.vue') }],
   },
   {
+    path: '/accounts',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/AccountsPage.vue') }],
+  },
+  {
     path: '/wrapper',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/WrapperPage.vue') }],

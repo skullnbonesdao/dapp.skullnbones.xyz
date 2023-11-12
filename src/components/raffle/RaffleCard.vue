@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import RaffleAddPrize from 'components/raffle/RaffleAddPrize.vue';
 import RaffleBuyTicket from 'components/raffle/RaffleBuyTicket.vue';
 import RaffleRevealWinnert from 'components/raffle/RaffleRevealWinner.vue';
@@ -13,15 +13,15 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import AccountsTable from 'components/tables/AccountsTable.vue';
 import IconFromSeed from 'components/icons/IconFromSeed.vue';
 import RaffleEditImageUrl from 'components/raffle/RaffleEditImageUrl.vue';
-import { format_address } from '../../functions/format_address';
+import { format_address } from 'src/functions/format_address';
 
-const props = defineProps(['raffle', 'is_admin']);
+const props = defineProps(['raffle', 'is_admin', 'count']);
 const entrants = ref();
 
 const accounts = ref();
 const expanded = ref(false);
 
-onMounted(async () => {
+async function update_entrants() {
   const { pg_raffle } = useWorkspaceAdapter();
 
   entrants.value = await pg_raffle.value.account.entrants.fetch(
@@ -35,7 +35,18 @@ onMounted(async () => {
         programId: TOKEN_PROGRAM_ID,
       },
     );
+}
+
+onMounted(async () => {
+  await update_entrants();
 });
+
+watch(
+  () => props.count,
+  () => {
+    update_entrants();
+  },
+);
 </script>
 
 <template>
@@ -53,41 +64,60 @@ onMounted(async () => {
     </q-card-section>
 
     <q-card-section>
-      <div class="row">
-        <div class="col text-center text-h2 text-orange-9">
-          {{
-            raffle.account.ticketPrice *
-            Math.pow(10, -raffle.account.ticketDecimals)
-          }}
-        </div>
-        <div class="col text-h6">Price per Ticket</div>
-      </div>
-      <div class="row">
-        <div class="col text-overline text-center text-orange-9">
-          {{ format_address(raffle.account.ticketTokenMint.toString()) }}
-        </div>
-        <div class="col text-h6">Ticket</div>
-      </div>
-      <div class="row">
-        <div class="col text-overline text-center text-orange-9">
-          {{ format_address(raffle.account.prizeTokenMint.toString()) }}
-        </div>
-        <div class="col text-h6">Prize</div>
-      </div>
+      <q-list>
+        <q-item clickable>
+          <q-item-section avatar>
+            <q-icon color="primary" name="functions" />
+          </q-item-section>
 
-      <div class="row" v-if="raffle?.account?.randomness">
-        <IconFromSeed
-          class="col"
-          :seed="raffle.account.randomness.toString()"
-        />
-        <div class="col text-overline" style="width: 100px">Randomness</div>
-      </div>
-      <div class="row" v-if="raffle?.account?.randomness">
-        <div class="col text-h6 text-center text-orange-9">
-          {{ format_address(raffle.account.winner.toString()) }}
-        </div>
-        <div class="col text-overline">Winner</div>
-      </div>
+          <q-item-section>
+            <q-item-label>{{ entrants?.max }}</q-item-label>
+            <q-item-label class="text-orange-9" caption
+              >Total tickets</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+
+        <q-item clickable>
+          <q-item-section avatar>
+            <q-icon color="red" name="paid" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>{{
+              (
+                raffle.account.ticketPrice.toNumber() *
+                Math.pow(10, -raffle.account.ticketDecimals)
+              ).toFixed(2)
+            }}</q-item-label>
+            <q-item-label class="text-orange-9" caption
+              >Price per ticket</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+
+        <q-item clickable>
+          <q-item-section avatar>
+            <q-icon color="amber" name="local_movies" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>
+              {{ format_address(raffle.account.ticketTokenMint.toString()) }}
+            </q-item-label>
+            <q-item-label class="text-orange-9" caption
+              >Ticket-Mint</q-item-label
+            >
+
+            <q-item-label>
+              {{ format_address(raffle.account.prizeTokenMint.toString()) }}
+            </q-item-label>
+            <q-item-label class="text-orange-9" caption
+              >Prize-Mint</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+      </q-list>
     </q-card-section>
 
     <q-card-actions>
@@ -106,11 +136,10 @@ onMounted(async () => {
       <AccountsTable :accounts="accounts" v-show="expanded"> </AccountsTable>
     </q-slide-transition>
 
-    <q-card-actions> </q-card-actions>
+    <RaffleAddPrize :raffle="raffle" :is_admin="is_admin" />
+    <RaffleEditImageUrl :raffle="raffle" :is_admin="is_admin" />
 
-    <q-card-actions class="q-gutter-y-sm justify-center">
-      <RaffleAddPrize :raffle="raffle" :is_admin="is_admin" />
-      <RaffleEditImageUrl :raffle="raffle" :is_admin="is_admin" />
+    <q-card-actions class="row q-gutter-y-sm justify-center">
       <RaffleRevealWinnert :raffle="raffle" :is_admin="is_admin" />
       <RaffleClaimPirze :raffle="raffle" :is_admin="is_admin" />
       <RaffleCollectProceeds :raffle="raffle" :is_admin="is_admin" />
