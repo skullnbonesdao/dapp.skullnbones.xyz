@@ -125,7 +125,10 @@ const links1 = computed(() => {
     // { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
   ];
   if (useGlobalStore().is_admin || import.meta.env.DEV) {
-    data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
+    data.push(
+      { icon: 'contrast', text: 'Whitelist', to: '/whitelist' },
+      { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
+    );
   }
   return data;
 });
