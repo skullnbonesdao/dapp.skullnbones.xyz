@@ -114,7 +114,12 @@ watch(
           <q-btn color="primary" icon="send" class="q-ml-xl" @click="send" />
         </div>
 
-        <q-tree dark :nodes="tree_elemenets_staratlas" node-key="label">
+        <q-tree
+          dark
+          :nodes="tree_elemenets_staratlas"
+          node-key="label"
+          class="q-pt-md"
+        >
           <template v-slot:header-root="prop">
             <div class="row items-center text-h6">
               <div class="text-blue-4">
