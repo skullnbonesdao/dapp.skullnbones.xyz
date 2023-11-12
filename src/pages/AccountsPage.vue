@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as factory from '@staratlas/factory';
 import { useWallet } from 'solana-wallets-vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import AccountTemplate from 'components/Accounts/AccountTemplate.vue';
 import AccountStatic from 'components/Accounts/AccountStatic.vue';
 import { matInbox } from '@quasar/extras/material-icons';
@@ -13,10 +13,59 @@ import AddAddressToWhitelist from 'components/whitelist/AddAddressToWhitelist.vu
 
 const count = ref(0);
 const data = ref();
-const selected_tab = ref();
+const selected_tab = ref('lookup');
 
 const public_key = ref('none');
 const token_mint = ref('ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx');
+const tree_elemenets_staratlas = ref([
+  {
+    label: 'Solana',
+    header: 'root',
+    children: [
+      {
+        label: 'Tokens',
+        header: 'generic',
+        children: [
+          {
+            label: 'getAssociatedTokenAddress() by mint',
+            function_name: 'getAssociatedTokenAddress(mint)',
+            header: 'generic',
+            body: 'story',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: 'StarAtlas-Factory',
+    header: 'root',
+    children: [
+      {
+        label: 'Staking (Atlas/Polis)',
+        icon: 'restaurant_menu',
+        header: 'generic',
+        children: [
+          {
+            label: 'getRegisteredStake()',
+            function_name: 'getRegisteredStake',
+            header: 'generic',
+            body: 'story',
+          },
+          {
+            label: 'getStakingAccount()',
+            function_name: 'getStakingAccount',
+            body: 'story',
+          },
+          {
+            label: 'getTokenEscrow()',
+            function_name: 'getTokenEscrow',
+            body: 'story',
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 onMounted(() => {
   public_key.value = useWallet().publicKey.value?.toString() ?? 'none';
@@ -25,6 +74,13 @@ onMounted(() => {
 const send = () => {
   count.value++;
 };
+
+watch(
+  () => useWallet().publicKey.value,
+  () => {
+    public_key.value = useWallet().publicKey.value?.toString() ?? 'none';
+  },
+);
 </script>
 
 <template>
@@ -37,8 +93,7 @@ const send = () => {
       class="shadow-2"
       align="justify"
     >
-      <q-tab name="solana" label="Solana" />
-      <q-tab name="staratlas" label="StarAtlas" />
+      <q-tab name="lookup" label="Lookup" />
     </q-tabs>
 
     <q-card class="q-ma-md">
@@ -59,33 +114,44 @@ const send = () => {
       </div>
 
       <q-tab-panels dark v-model="selected_tab" animated>
-        <q-tab-panel name="solana">
-          <AccountTemplate
-            :count="count"
-            function_name="getAssociatedTokenAddress(mint)"
-            :public-key="public_key"
-            :mint="token_mint"
-          />
+        <q-tab-panel name="lookup">
+          <q-tree dark :nodes="tree_elemenets_staratlas" node-key="label">
+            <template v-slot:header-root="prop">
+              <div class="row items-center text-h6">
+                <div class="text-blue-4">
+                  {{ prop.node.label }}
+                </div>
+              </div>
+            </template>
+
+            <template v-slot:header-generic="prop">
+              <div class="row items-center">
+                <div class="text-weight-bold">
+                  {{ prop.node.label }}
+                </div>
+              </div>
+            </template>
+
+            <template v-slot:body-story="prop">
+              <AccountTemplate
+                :count="count"
+                :function_name="prop.node.function_name"
+                :public-key="public_key"
+                :mint="token_mint"
+              />
+            </template>
+
+            <template v-slot:body-toggle="prop">
+              <p class="text-caption">{{ prop.node.caption }}</p>
+              <q-toggle
+                v-model="prop.node.enabled"
+                label="I agree to the terms and conditions"
+              />
+            </template>
+          </q-tree>
         </q-tab-panel>
 
-        <q-tab-panel name="staratlas" class="q-gutter-md">
-          <AccountTemplate
-            :count="count"
-            function_name="getRegisteredStake"
-            :public-key="public_key"
-            :mint="token_mint" />
-          <AccountTemplate
-            :count="count"
-            function_name="getStakingAccount"
-            :public-key="public_key"
-            :mint="token_mint" />
-
-          <AccountTemplate
-            :count="count"
-            function_name="getTokenEscrow"
-            :public-key="public_key"
-            :mint="token_mint"
-        /></q-tab-panel>
+        <q-tab-panel name="staratlas" class="q-gutter-md"> </q-tab-panel>
       </q-tab-panels>
     </q-card>
   </q-page>

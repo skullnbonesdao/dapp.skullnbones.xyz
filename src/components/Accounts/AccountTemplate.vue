@@ -114,7 +114,7 @@ watch(
 
 <template>
   <div class="row q-pa-md">
-    <div class="col text-h6">{{ function_name }}</div>
+    <!--    <div class="col text-h6">{{ function_name }}</div>-->
     <div class="text-overline">{{ data }}</div>
   </div>
 </template>
