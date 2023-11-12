@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { RPC_NETWORKS, useGlobalStore } from 'stores/globalStore';
 import { Connection } from '@solana/web3.js';
 import { version } from 'src/../package.json';
@@ -117,14 +117,16 @@ watch(
   },
 );
 
-const links1 = ref([
-  { icon: 'home', text: 'Home', to: '/' },
-  { icon: 'local_activity', text: 'Raffle', to: '/raffle' },
-]);
-
-if (useGlobalStore().is_admin || import.meta.env.DEV) {
-  links1.value.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
-}
+const links1 = computed(() => {
+  let data = [
+    { icon: 'home', text: 'Home', to: '/' },
+    { icon: 'local_activity', text: 'Raffle', to: '/raffle' },
+  ];
+  if (useGlobalStore().is_admin || import.meta.env.DEV) {
+    data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
+  }
+  return data;
+});
 </script>
 
 <style lang="sass">
