@@ -17,7 +17,7 @@ const props = defineProps([
   'program',
 ]);
 
-const data = ref();
+const data = ref('[empty]');
 
 const SYSTEM_PROGRAM = '11111111111111111111111111111111';
 
@@ -113,10 +113,10 @@ watch(
 </script>
 
 <template>
-  <q-card class="row q-pa-md">
-    <div class="col text-h6">{{ function_name }}:</div>
+  <div class="row q-pa-md">
+    <div class="col text-h6">{{ function_name }}</div>
     <div class="text-overline">{{ data }}</div>
-  </q-card>
+  </div>
 </template>
 
 <style scoped lang="sass"></style>

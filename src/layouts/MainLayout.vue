@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff" class="bg-black text-white">
-    <q-header class="bg-black">
+    <q-header class="bg-dark">
       <q-toolbar>
         <q-btn
           flat
@@ -31,20 +31,18 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      bordered
-      :width="250"
-      :breakpoint="400"
-      class="bg-black"
+      :width="230"
+      :breakpoint="300"
     >
-      <q-scroll-area style="height: calc(100% - 150px); margin-top: 20px">
-        <q-list padding>
+      <q-scroll-area style="height: calc(100% - 150px); margin-top: 0px">
+        <q-list padding class="">
           <q-item
             :to="link.to"
             v-for="link in links1"
             :key="link.text"
             v-ripple
             clickable
-            class="flex"
+            class="col shadow-2 q-ma-md"
           >
             <q-item-section avatar>
               <q-icon color="grey" :name="link.icon" />
@@ -53,32 +51,29 @@
               <q-item-label>{{ link.text }}</q-item-label>
             </q-item-section>
           </q-item>
-
-          <q-item v-ripple clickable class="flex">
-            <q-item-section avatar>
-              <q-icon color="grey" name="sensors" />
-            </q-item-section>
-            <q-item-section>
-              <q-btn-dropdown :label="useGlobalStore().rpc_selected.name">
-                <q-list>
-                  <q-item
-                    clickable
-                    v-close-popup
-                    :key="rpc"
-                    v-for="rpc in RPC_NETWORKS"
-                    @click="useGlobalStore().rpc_selected = rpc"
-                  >
-                    <q-item-section>
-                      <q-item-label>{{ rpc.name }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-            </q-item-section>
-          </q-item>
         </q-list>
       </q-scroll-area>
       <div class="col absolute-bottom q-ma-md q-gutter-y-md">
+        <div class="row">
+          <q-space />
+          <q-btn-dropdown :label="useGlobalStore().rpc_selected.name">
+            <q-list>
+              <q-item
+                clickable
+                v-close-popup
+                :key="rpc"
+                v-for="rpc in RPC_NETWORKS"
+                @click="useGlobalStore().rpc_selected = rpc"
+              >
+                <q-item-section>
+                  <q-item-label>{{ rpc.name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <q-space />
+        </div>
+
         <div class="row">
           <q-space />
           <q-badge class="items-center">v{{ display_version }}</q-badge>
@@ -122,13 +117,10 @@ const links1 = computed(() => {
   let data = [
     { icon: 'home', text: 'Home', to: '/' },
     { icon: 'local_activity', text: 'Raffle', to: '/raffle' },
-    // { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
+    { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
   ];
   if (useGlobalStore().is_admin || import.meta.env.DEV) {
-    data.push(
-      { icon: 'contrast', text: 'Whitelist', to: '/whitelist' },
-      { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
-    );
+    data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
   }
   return data;
 });
