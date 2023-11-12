@@ -6,6 +6,7 @@
           flat
           dense
           round
+          v-close-popup
           @click="toggleLeftDrawer"
           aria-label="Menu"
           icon="menu"
