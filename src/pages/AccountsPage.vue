@@ -84,7 +84,7 @@ watch(
 </script>
 
 <template>
-  <q-page class="col items-center justify-evenly q-pt-sm q-gutter-y-md">
+  <q-page class="col items-center justify-evenly">
     <q-tabs
       no-caps
       outside-arrows
@@ -96,64 +96,64 @@ watch(
       <q-tab name="lookup" label="Lookup" />
     </q-tabs>
 
-    <q-card class="q-ma-md">
-      <div class="row q-gutter-sm q-pa-sm">
-        <div class="col">
-          <q-input
-            class="col"
-            v-model="public_key"
-            label="Wallet Address"
-          ></q-input>
-          <q-input
-            class="col"
-            v-model="token_mint"
-            label="Token Mint"
-          ></q-input>
+    <q-tab-panels dark v-model="selected_tab" animated class="q-mx-xl">
+      <q-tab-panel name="lookup">
+        <div class="row">
+          <div class="col">
+            <q-input
+              class="col"
+              v-model="public_key"
+              label="Wallet Address"
+            ></q-input>
+            <q-input
+              class="col"
+              v-model="token_mint"
+              label="Token Mint"
+            ></q-input>
+          </div>
+          <q-btn color="primary" icon="send" @click="send" />
         </div>
-        <q-btn color="primary" icon="send" @click="send" />
-      </div>
 
-      <q-tab-panels dark v-model="selected_tab" animated>
-        <q-tab-panel name="lookup">
-          <q-tree dark :nodes="tree_elemenets_staratlas" node-key="label">
-            <template v-slot:header-root="prop">
-              <div class="row items-center text-h6">
-                <div class="text-blue-4">
-                  {{ prop.node.label }}
-                </div>
+        <q-separator class="q-my-xl" />
+
+        <q-tree dark :nodes="tree_elemenets_staratlas" node-key="label">
+          <template v-slot:header-root="prop">
+            <div class="row items-center text-h6">
+              <div class="text-blue-4">
+                {{ prop.node.label }}
               </div>
-            </template>
+            </div>
+          </template>
 
-            <template v-slot:header-generic="prop">
-              <div class="row items-center">
-                <div class="text-weight-bold">
-                  {{ prop.node.label }}
-                </div>
+          <template v-slot:header-generic="prop">
+            <div class="row items-center">
+              <div class="text-weight-bold">
+                {{ prop.node.label }}
               </div>
-            </template>
+            </div>
+          </template>
 
-            <template v-slot:body-story="prop">
-              <AccountTemplate
-                :count="count"
-                :function_name="prop.node.function_name"
-                :public-key="public_key"
-                :mint="token_mint"
-              />
-            </template>
+          <template v-slot:body-story="prop">
+            <AccountTemplate
+              :count="count"
+              :function_name="prop.node.function_name"
+              :public-key="public_key"
+              :mint="token_mint"
+            />
+          </template>
 
-            <template v-slot:body-toggle="prop">
-              <p class="text-caption">{{ prop.node.caption }}</p>
-              <q-toggle
-                v-model="prop.node.enabled"
-                label="I agree to the terms and conditions"
-              />
-            </template>
-          </q-tree>
-        </q-tab-panel>
+          <template v-slot:body-toggle="prop">
+            <p class="text-caption">{{ prop.node.caption }}</p>
+            <q-toggle
+              v-model="prop.node.enabled"
+              label="I agree to the terms and conditions"
+            />
+          </template>
+        </q-tree>
+      </q-tab-panel>
 
-        <q-tab-panel name="staratlas" class="q-gutter-md"> </q-tab-panel>
-      </q-tab-panels>
-    </q-card>
+      <q-tab-panel name="staratlas" class="q-gutter-md"> </q-tab-panel>
+    </q-tab-panels>
   </q-page>
 </template>
 

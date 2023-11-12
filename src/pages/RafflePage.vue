@@ -13,13 +13,17 @@ const raffles = ref();
 const tab_selected = ref('raffle');
 const count = ref(0);
 
+const is_loading = ref(true);
+
 initWorkspaceAdapter();
 
 async function load_raffles() {
+  is_loading.value = true;
   await useGlobalStore().update_wallet_accounts();
   const { pg_raffle } = useWorkspaceAdapter();
   raffles.value = await pg_raffle.value.account.raffle.all();
   count.value++;
+  is_loading.value = false;
 }
 
 onMounted(async () => {
@@ -44,6 +48,11 @@ onMounted(async () => {
       <q-btn flat icon="refresh" @click="load_raffles().then(() => {})" />
     </div>
 
+    <div v-if="is_loading" class="row">
+      <q-space />
+      <q-spinner-cube class="row" color="primary" size="10rem" />
+      <q-space />
+    </div>
     <div v-if="raffles && !is_loading" class="q-mx-md">
       <RaffleGrid
         :count="count"
