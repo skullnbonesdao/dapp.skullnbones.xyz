@@ -98,7 +98,7 @@ watch(
 
     <q-tab-panels dark v-model="selected_tab" animated class="q-mx-xl">
       <q-tab-panel name="lookup">
-        <div class="row">
+        <div class="row shadow-3 q-pa-md">
           <div class="col">
             <q-input
               class="col"
@@ -111,10 +111,8 @@ watch(
               label="Token Mint"
             ></q-input>
           </div>
-          <q-btn color="primary" icon="send" @click="send" />
+          <q-btn color="primary" icon="send" class="q-ml-xl" @click="send" />
         </div>
-
-        <q-separator class="q-my-xl" />
 
         <q-tree dark :nodes="tree_elemenets_staratlas" node-key="label">
           <template v-slot:header-root="prop">
@@ -139,14 +137,6 @@ watch(
               :function_name="prop.node.function_name"
               :public-key="public_key"
               :mint="token_mint"
-            />
-          </template>
-
-          <template v-slot:body-toggle="prop">
-            <p class="text-caption">{{ prop.node.caption }}</p>
-            <q-toggle
-              v-model="prop.node.enabled"
-              label="I agree to the terms and conditions"
             />
           </template>
         </q-tree>
