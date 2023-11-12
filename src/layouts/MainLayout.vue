@@ -42,7 +42,7 @@
             :key="link.text"
             v-ripple
             clickable
-            class="col shadow-2 q-ma-md"
+            class="col bg-black q-ma-md"
           >
             <q-item-section avatar>
               <q-icon color="grey" :name="link.icon" />

@@ -48,6 +48,7 @@ const pagination = ref();
     :rows-per-page-options="rowsPerPageOptions"
   >
     <template v-slot:top-right>
+      {{}}
       <q-input
         borderless
         dense

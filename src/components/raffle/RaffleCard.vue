@@ -50,7 +50,7 @@ watch(
 </script>
 
 <template>
-  <q-card flat bordered>
+  <q-card square flat>
     <q-img height="200px" v-if="raffle.account.url" :src="raffle.account.url" />
     <q-img height="200px" v-else src="snb_icon.svg" />
 
@@ -137,9 +137,9 @@ watch(
     </q-slide-transition>
 
     <RaffleAddPrize :raffle="raffle" :is_admin="is_admin" />
-    <RaffleEditImageUrl :raffle="raffle" :is_admin="is_admin" />
+    <RaffleEditImageUrl class="q-mx-sm" :raffle="raffle" :is_admin="is_admin" />
 
-    <q-card-actions class="row q-gutter-y-sm justify-center">
+    <q-card-actions class="row q-gutter-y-sm justify-center q-mx-sm">
       <RaffleRevealWinnert :raffle="raffle" :is_admin="is_admin" />
       <RaffleClaimPirze :raffle="raffle" :is_admin="is_admin" />
       <RaffleCollectProceeds :raffle="raffle" :is_admin="is_admin" />
