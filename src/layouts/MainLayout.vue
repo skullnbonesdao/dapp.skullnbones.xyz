@@ -95,11 +95,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { RPC_NETWORKS, useGlobalStore } from 'stores/globalStore';
 import { Connection } from '@solana/web3.js';
 import { version } from 'src/../package.json';
 import { WalletMultiButton } from 'solana-wallets-vue';
+import { useWhitelist } from '../stores/globalWhitelist';
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
@@ -119,15 +120,23 @@ watch(
   },
 );
 
+onMounted(async () => {
+  await useWhitelist().update_whitelist();
+});
+
 const links1 = computed(() => {
   let data = [
     { icon: 'home', text: 'Home', to: '/' },
-    { icon: 'local_activity', text: 'Raffle', to: '/raffle' },
     { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
   ];
   if (useGlobalStore().is_admin || import.meta.env.DEV) {
     data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
   }
+
+  if (useWhitelist().check_wallet_whitelisted) {
+    data.push({ icon: 'local_activity', text: 'Raffle', to: '/raffle' });
+  }
+
   return data;
 });
 </script>

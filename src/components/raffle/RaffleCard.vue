@@ -14,8 +14,10 @@ import AccountsTable from 'components/tables/AccountsTable.vue';
 import IconFromSeed from 'components/icons/IconFromSeed.vue';
 import RaffleEditImageUrl from 'components/raffle/RaffleEditImageUrl.vue';
 import { format_address } from 'src/functions/format_address';
+import { useRaffleStore } from 'stores/globalRaffle';
+import { storeToRefs } from 'pinia';
 
-const props = defineProps(['raffle', 'is_admin', 'count']);
+const props = defineProps(['raffle', 'is_admin']);
 const entrants = ref();
 
 const accounts = ref();
@@ -41,12 +43,11 @@ onMounted(async () => {
   await update_entrants();
 });
 
-watch(
-  () => props.count,
-  () => {
-    update_entrants();
-  },
-);
+const { _updateCount } = storeToRefs(useRaffleStore());
+
+watch(_updateCount, async () => {
+  await update_entrants();
+});
 </script>
 
 <template>

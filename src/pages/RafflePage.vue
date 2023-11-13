@@ -9,26 +9,14 @@ import {
 } from 'src/idls/adapter/apapter';
 import RaffleCreateRaffle from 'components/raffle/RaffleCreateRaffle.vue';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
+import { useRaffleStore } from 'stores/globalRaffle';
 
-const raffles = ref();
 const tab_selected = ref('raffle');
-const count = ref(0);
-
-const is_loading = ref(true);
 
 initWorkspaceAdapter();
 
-async function load_raffles() {
-  is_loading.value = true;
-  await useGlobalStore().update_wallet_accounts();
-  const { pg_raffle } = useWorkspaceAdapter();
-  raffles.value = await pg_raffle.value.account.raffle.all();
-  count.value++;
-  is_loading.value = false;
-}
-
 onMounted(async () => {
-  await load_raffles();
+  await useRaffleStore().update_raffles();
 });
 </script>
 
@@ -52,26 +40,35 @@ onMounted(async () => {
         <q-tab name="create" label="Create" v-if="useGlobalStore().is_admin" />
         <q-tab name="manage" label="Manage" v-if="useGlobalStore().is_admin" />
       </q-tabs>
-      <q-btn flat icon="refresh" @click="load_raffles().then(() => {})" />
+      <q-btn
+        flat
+        icon="refresh"
+        @click="
+          useRaffleStore()
+            .update_raffles()
+            .then(() => {})
+        "
+      />
     </div>
 
-    <div v-if="is_loading" class="row">
+    <div v-if="useRaffleStore().is_loading" class="row">
       <q-space />
       <q-spinner-cube class="row" color="primary" size="10rem" />
       <q-space />
     </div>
-    <div v-if="raffles && !is_loading" class="q-mx-md">
+    <div
+      v-if="useRaffleStore().raffles && !useRaffleStore().is_loading"
+      class="q-mx-md"
+    >
       <RaffleGrid
-        :count="count"
-        :raffles="raffles.filter((raffle) => raffle.account.isRunning === true)"
+        :raffles="useRaffleStore().get_running_raffles"
         :is_admin="false"
         v-if="tab_selected === 'raffle'"
       />
 
       <RaffleCreateRaffle v-if="tab_selected === 'create'" />
       <RaffleGrid
-        :count="count"
-        :raffles="raffles"
+        :raffles="useRaffleStore().raffles"
         :is_admin="useGlobalStore().is_admin"
         v-if="tab_selected === 'manage'"
       />

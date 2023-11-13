@@ -5,8 +5,12 @@
 <script setup lang="ts">
 import { useGlobalStore } from 'stores/globalStore';
 import { useQuasar } from 'quasar';
+import { useRaffleStore } from 'stores/globalRaffle';
+import { useWhitelist } from 'stores/globalWhitelist';
 
 useGlobalStore();
+useWhitelist();
+useRaffleStore();
 
 useQuasar().dark.set(true);
 </script>
