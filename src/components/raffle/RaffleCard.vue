@@ -118,20 +118,24 @@ watch(_updateCount, async () => {
             >
           </q-item-section>
         </q-item>
+
+        <q-item clickable v-if="raffle.account.randomness != null">
+          <q-item-section avatar>
+            <IconFromSeed
+              style="width: 100px"
+              :seed="raffle.account?.randomness?.toString()"
+            />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label class="text-h6" l>Winner</q-item-label>
+            <q-item-label class="text-orange-9" caption>{{
+              format_address(raffle.account.winner.toString())
+            }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-card-section>
-
-    <q-card-actions>
-      <q-space />
-      <q-btn
-        color="grey"
-        round
-        flat
-        dense
-        :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-        @click="expanded = !expanded"
-      />
-    </q-card-actions>
 
     <q-slide-transition>
       <AccountsTable :accounts="accounts" v-show="expanded"> </AccountsTable>
