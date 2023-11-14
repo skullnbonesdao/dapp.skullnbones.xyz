@@ -6,6 +6,10 @@ import { useLocalStorage } from '@vueuse/core';
 
 export const RPC_NETWORKS = [
   { name: 'api.devnet.solana', url: 'https://rpc.ankr.com/solana_devnet' },
+  {
+    name: 'rpc1',
+    url: 'https://solana-mainnet.g.alchemy.com/v2/hhh3czrJbOnssV11HBINkPZSe-HzR3Jy',
+  },
   { name: 'mainnet.extrnode', url: 'https://solana-mainnet.rpc.extrnode.com' },
 ];
 

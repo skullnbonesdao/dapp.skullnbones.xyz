@@ -25,6 +25,7 @@ jobs:
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
           VITE_ADMINS: ${{ secrets.VITE_ADMINS }}
+          VITE_FEE_WALLET: ${{ secrets.VITE_FEE_WALLET }}
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

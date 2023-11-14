@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia';
 import { Connection, ParsedAccountData, PublicKey } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { useGlobalStore } from 'stores/globalStore';
 
