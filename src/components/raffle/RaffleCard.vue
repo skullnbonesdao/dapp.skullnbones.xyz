@@ -21,7 +21,7 @@ const props = defineProps(['raffle', 'is_admin']);
 const entrants = ref();
 
 const accounts = ref();
-const expanded = ref(false);
+const expanded = ref(true);
 
 async function update_entrants() {
   const { pg_raffle } = useWorkspaceAdapter();
@@ -118,6 +118,23 @@ watch(_updateCount, async () => {
             >
           </q-item-section>
         </q-item>
+        <q-item clickable>
+          <q-item-section avatar>
+            <q-icon color="red" name="paid" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>{{
+              (
+                raffle.account.ticketPrice.toNumber() *
+                Math.pow(10, -raffle.account.ticketDecimals)
+              ).toFixed(2)
+            }}</q-item-label>
+            <q-item-label class="text-orange-9" caption
+              >Price per ticket</q-item-label
+            >
+          </q-item-section>
+        </q-item>
 
         <q-item clickable v-if="raffle.account.randomness != null">
           <q-item-section avatar>
@@ -133,6 +150,14 @@ watch(_updateCount, async () => {
               format_address(raffle.account.winner.toString())
             }}</q-item-label>
           </q-item-section>
+        </q-item>
+
+        <q-item clickable v-if="raffle.account.randomness != null">
+          <q-btn
+            class="full-width"
+            :icon="expanded ? 'expand_less' : ' expand_more'"
+            @click="expanded = !expanded"
+          ></q-btn>
         </q-item>
       </q-list>
     </q-card-section>
