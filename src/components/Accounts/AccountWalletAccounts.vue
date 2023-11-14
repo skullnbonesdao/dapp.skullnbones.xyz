@@ -99,6 +99,11 @@ watch(
 <template>
   <div>
     <q-table
+      color="primary"
+      dark
+      flat
+      bordered
+      square
       dense
       hide-pagination
       title="Accounts"

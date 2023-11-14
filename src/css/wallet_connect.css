@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+p {
+  margin: 0;
+}
 
 :root {
   /* Buttons. */
@@ -31,7 +34,7 @@
   --swm-dropdown-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
 
   /* Radius. */
-  --swv-button-radius: 6px;
+  --swv-button-radius: 0px;
   --swv-modal-radius: 10px;
   --swv-dropdown-radius: 10px;
   --swv-dropdown-item-radius: 6px;

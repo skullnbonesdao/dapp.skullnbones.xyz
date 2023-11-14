@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="bg-black text-white">
-    <q-header class="bg-dark">
+  <q-layout view="hHh Lpr lff">
+    <q-header class="bg-black">
       <q-toolbar>
         <q-btn
           flat
@@ -29,6 +29,7 @@
     </q-header>
 
     <q-drawer
+      bordered
       v-model="leftDrawerOpen"
       show-if-above
       :width="230"
@@ -53,7 +54,7 @@
               <q-icon color="grey" :name="link.icon" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{ link.text }}</q-item-label>
+              <q-item-label class="text-bold">{{ link.text }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item> </q-item>
@@ -62,7 +63,10 @@
       <div class="col absolute-bottom q-ma-md q-gutter-y-md">
         <div class="row">
           <q-space />
-          <q-btn-dropdown :label="useGlobalStore().rpc_selected.name">
+          <q-btn-dropdown
+            color="primary"
+            :label="useGlobalStore().rpc_selected.name"
+          >
             <q-list>
               <q-item
                 clickable

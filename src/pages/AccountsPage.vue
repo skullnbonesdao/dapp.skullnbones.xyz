@@ -31,7 +31,7 @@ const selected_tab = ref('wallet');
       <q-tab name="solana" label="Solana" />
     </q-tabs>
 
-    <q-tab-panels dark v-model="selected_tab" animated class="q-mx-xs">
+    <q-tab-panels dark v-model="selected_tab" animated class="">
       <q-tab-panel name="wallet">
         <AccountWalletAccounts />
       </q-tab-panel>

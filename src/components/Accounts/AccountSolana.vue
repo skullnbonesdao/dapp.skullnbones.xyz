@@ -6,7 +6,7 @@ import { onMounted, ref, watch } from 'vue';
 const count = ref(0);
 const public_key = ref('none');
 const token_mint = ref('ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx');
-const tree_elemenets_staratlas = ref([
+const tree_elemenets = ref([
   {
     label: 'Solana',
     header: 'root',
@@ -86,20 +86,21 @@ watch(
   </div>
 
   <q-tree
+    color="primary"
     dark
-    :nodes="tree_elemenets_staratlas"
+    :nodes="tree_elemenets"
     node-key="label"
     class="q-pt-md"
   >
     <template v-slot:header-root="prop">
       <div class="row items-center text-h6">
-        <div class="text-blue-4">
+        <div class="text-primary">
           {{ prop.node.label }}
         </div>
       </div>
     </template>
 
-    <template v-slot:header-generic="prop">
+    <template v-slot:default-header="prop">
       <div class="row items-center">
         <div class="text-weight-bold">
           {{ prop.node.label }}

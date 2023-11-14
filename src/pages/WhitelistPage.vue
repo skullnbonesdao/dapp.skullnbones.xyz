@@ -30,7 +30,7 @@ initWorkspace();
       <q-tab name="view" label="View " />
     </q-tabs>
 
-    <q-tab-panels dark v-model="selected_tab" animated class="q-mx-xl">
+    <q-tab-panels dark v-model="selected_tab" animated>
       <q-tab-panel name="create">
         <CreateWhitelist />
       </q-tab-panel>
