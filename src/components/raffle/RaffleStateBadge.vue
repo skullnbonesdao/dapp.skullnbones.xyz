@@ -25,8 +25,9 @@ const progress = computed(() => {
   </q-badge>
   <q-badge
     color="orange"
+    class="text-caption text-md text-black"
     v-else-if="raffle.account.isRunning && entrants?.total == entrants?.max"
-    >...waiting for draw</q-badge
+    >waiting for draw</q-badge
   >
 
   <q-linear-progress
