@@ -138,9 +138,14 @@ async function close_account() {
       </q-toolbar>
 
       <q-card-section class="q-gutter-y-md col justify-around">
+        <div class="row">
+          <div class="col">Amount left:</div>
+          <div class="col">{{ amount }}</div>
+        </div>
+
         <q-btn
+          :disabled="amount == 0"
           class="full-width"
-          icon="fireplace"
           color="red"
           @click="burn_token()"
         >
@@ -149,7 +154,6 @@ async function close_account() {
         <q-btn
           :disabled="amount > 0"
           class="full-width"
-          icon="fireplace"
           color="orange"
           @click="close_account()"
         >
