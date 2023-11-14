@@ -26,6 +26,7 @@
     "@solana/wallet-adapter-wallets": "^0.19.23",
     "@solana/web3.js": "^1.87.3",
     "@staratlas/factory": "^0.6.0",
+    "@vueuse/core": "^10.6.1",
     "axios": "^1.2.1",
     "konva": "^9.2.3",
     "minidenticons": "^4.2.0",

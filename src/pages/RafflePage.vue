@@ -13,8 +13,6 @@ import { useRaffleStore } from 'stores/globalRaffle';
 
 const tab_selected = ref('raffle');
 
-initWorkspaceAdapter();
-
 onMounted(async () => {
   await useRaffleStore().update_raffles();
 });
