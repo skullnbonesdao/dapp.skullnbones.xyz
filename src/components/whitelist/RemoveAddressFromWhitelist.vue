@@ -90,7 +90,7 @@ async function remove_address_from_whitelist() {
       class="col"
       outlined
       v-model="input_address"
-      label="Address to be added"
+      label="Address to be removed"
     />
     <q-btn color="primary" @click="remove_address_from_whitelist()"
       >Remove</q-btn

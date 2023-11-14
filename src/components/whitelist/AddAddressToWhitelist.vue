@@ -77,7 +77,7 @@ async function add_address_to_whitelist() {
       class="col"
       outlined
       v-model="input_address"
-      label="Address to be removed"
+      label="Address to be added"
     />
     <q-btn color="primary" @click="add_address_to_whitelist()">Add</q-btn>
   </div>
