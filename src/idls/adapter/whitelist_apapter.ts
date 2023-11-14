@@ -7,7 +7,7 @@ import { useGlobalStore } from 'stores/globalStore';
 
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
-const programID = new PublicKey(idl.metadata.address);
+const programID = new PublicKey('6CY4PELBNPvqLymWWpWSEMR84kwmTZERFj6VoRLvL5Vn');
 
 let workspace = null;
 export const useWorkspaceWhitelist = () => workspace;

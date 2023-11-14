@@ -8,7 +8,7 @@ import * as anchor from '@coral-xyz/anchor';
 
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
-const programID = new PublicKey(idl.metadata.address);
+const programID = new PublicKey('6hr9kL5zieg3WW6NJmTYfMVU4cTUTCxAHdDY2bUood3j');
 
 let workspace = null;
 export const useWorkspaceRaffle = () => workspace;

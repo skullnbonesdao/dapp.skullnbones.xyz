@@ -8,8 +8,12 @@ import { useGlobalStore } from 'stores/globalStore';
 
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
-const programID_Whitelist = new PublicKey(dapp_whitelist_idl.metadata.address);
-const programID_Raffle = new PublicKey(dapp_raffle_idl.metadata.address);
+const programID_Whitelist = new PublicKey(
+  '6CY4PELBNPvqLymWWpWSEMR84kwmTZERFj6VoRLvL5Vn',
+);
+const programID_Raffle = new PublicKey(
+  '6hr9kL5zieg3WW6NJmTYfMVU4cTUTCxAHdDY2bUood3j',
+);
 
 let workspace = null;
 export const useWorkspaceAdapter = () => workspace;
