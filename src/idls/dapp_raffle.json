@@ -588,8 +588,5 @@
       "name": "InvalidTreasuryTokenAccountOwner",
       "msg": "Invalid treasury token account owner"
     }
-  ],
-  "metadata": {
-    "address": "6hr9kL5zieg3WW6NJmTYfMVU4cTUTCxAHdDY2bUood3j"
-  }
+  ]
 }

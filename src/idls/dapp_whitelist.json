@@ -201,8 +201,5 @@
       "name": "AccountsNoRemovable",
       "msg": "Can not remove the specified account"
     }
-  ],
-  "metadata": {
-    "address": "6CY4PELBNPvqLymWWpWSEMR84kwmTZERFj6VoRLvL5Vn"
-  }
+  ]
 }
