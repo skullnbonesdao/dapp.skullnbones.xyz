@@ -21,7 +21,7 @@ const props = defineProps(['raffle', 'is_admin']);
 const entrants = ref();
 
 const accounts = ref();
-const expanded = ref(true);
+const expanded = ref(false);
 
 async function update_entrants() {
   const { pg_raffle } = useWorkspaceAdapter();
@@ -151,17 +151,13 @@ watch(_updateCount, async () => {
             }}</q-item-label>
           </q-item-section>
         </q-item>
-
-        <q-item clickable v-if="raffle.account.randomness != null">
-          <q-btn
-            class="full-width"
-            :icon="expanded ? 'expand_less' : ' expand_more'"
-            @click="expanded = !expanded"
-          ></q-btn>
-        </q-item>
       </q-list>
     </q-card-section>
-
+    <q-btn
+      class="full-width"
+      :icon="expanded ? 'expand_less' : ' expand_more'"
+      @click="expanded = !expanded"
+    ></q-btn>
     <q-slide-transition>
       <AccountsTable :accounts="accounts" v-show="expanded"> </AccountsTable>
     </q-slide-transition>
