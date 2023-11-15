@@ -57,6 +57,8 @@ async function create_new_raffle() {
   const accoun_info =
     await useGlobalStore().connection.getParsedAccountInfo(proceedsMint);
 
+  console.log(accoun_info);
+
   try {
     const signature = await pg_raffle.value.methods
       .createRaffle(

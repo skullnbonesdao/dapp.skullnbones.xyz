@@ -15,7 +15,7 @@ export const RPC_NETWORKS = [
 export const NULL_WALLET = '11111111111111111111111111111111';
 
 export const RAFFLE_CREATOR_WALLET = new PublicKey(
-  'adm1rpWxyo8u9y2Q2wxxfqaVDLE2gD1N9PbZbbhokTP',
+  '756pfnvP3HHRx1BPwBPQwe1xBMfMWef5N9oN61Ews7np',
 );
 
 export const RAFLLE_WHITELIST_NAME = 'Crew';
@@ -25,7 +25,7 @@ export const useGlobalStore = defineStore('globalstore', {
     rpc_selected: useLocalStorage('rpc_selected', RPC_NETWORKS[0]),
     connection: {} as Connection,
     admins: import.meta.env.VITE_ADMINS?.split(',') as Array<string>,
-    fee_wallet: import.meta.env.VITE_FEE_WALLET,
+    fee_wallet: new PublicKey(import.meta.env.VITE_FEE_WALLET),
   }),
 
   getters: {
