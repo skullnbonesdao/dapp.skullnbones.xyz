@@ -9,7 +9,7 @@ import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 
 const { pg_whitelist } = useWorkspaceAdapter();
 
-const input_address = ref('3x5vrFFTspsicxrYHMA8SNVW71RMhVkALemXrJFfeQo1');
+const input_address = ref('');
 const whilelists = ref();
 const whitelist_selected = ref();
 
