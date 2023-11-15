@@ -11,7 +11,9 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
-    "gh-pages-deploy": "node scripts/gh-pages-deploy.js"
+    "gh-pages-deploy": "node scripts/gh-pages-deploy.js",
+    "copy_idl_raffle": "cp ../anchor/raffle/target/idl/* src/idls/",
+    "copy_idl_whitelist": "cp ../anchor/whitelist/target/idl/* src/idls/"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.29.0",

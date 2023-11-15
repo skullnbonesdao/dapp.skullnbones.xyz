@@ -6,7 +6,7 @@ import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import {
-  DAPP_ADMIN_WALLET,
+  RAFFLE_CREATOR_WALLET,
   RAFLLE_WHITELIST_NAME,
   useGlobalStore,
 } from '../../stores/globalStore';
@@ -43,7 +43,7 @@ async function create_new_raffle() {
 
   let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
     [
-      DAPP_ADMIN_WALLET.toBuffer(),
+      RAFFLE_CREATOR_WALLET.toBuffer(),
       anchor.utils.bytes.utf8.encode(RAFLLE_WHITELIST_NAME),
     ],
     pg_whitelist.value.programId,

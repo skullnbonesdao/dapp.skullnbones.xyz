@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "name": "dapp_whitelist",
+  "name": "whitelist",
   "instructions": [
     {
       "name": "initialize",
@@ -18,7 +18,10 @@
         {
           "name": "systemProgram",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "the account sending (and signing) this transaction"
+          ]
         }
       ],
       "args": [
@@ -201,5 +204,8 @@
       "name": "AccountsNoRemovable",
       "msg": "Can not remove the specified account"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "whi5uDPWK4rAE9Sus6hdxdHwsG1hjDBn6kXM6pyqwTn"
+  }
 }

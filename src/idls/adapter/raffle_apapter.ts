@@ -2,7 +2,7 @@ import { computed } from 'vue';
 import { useAnchorWallet } from 'solana-wallets-vue';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
-import idl from 'src/idls/dapp_raffle.json';
+import idl from 'src/idls/raffle.json';
 import { useGlobalStore } from 'stores/globalStore';
 import * as anchor from '@coral-xyz/anchor';
 

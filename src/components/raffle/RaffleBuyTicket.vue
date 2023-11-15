@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  DAPP_ADMIN_WALLET,
+  RAFFLE_CREATOR_WALLET,
   RAFLLE_WHITELIST_NAME,
   useGlobalStore,
 } from 'stores/globalStore';
@@ -45,7 +45,7 @@ async function buy_raffle_ticket() {
 
   let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
     [
-      DAPP_ADMIN_WALLET.toBuffer(),
+      RAFFLE_CREATOR_WALLET.toBuffer(),
       anchor.utils.bytes.utf8.encode(RAFLLE_WHITELIST_NAME),
     ],
     pg_whitelist.value.programId,
@@ -72,7 +72,7 @@ async function buy_raffle_ticket() {
       .buyTickets(
         new BN(input_raffle_ticket_amount.value),
         RAFLLE_WHITELIST_NAME,
-        DAPP_ADMIN_WALLET,
+        RAFFLE_CREATOR_WALLET,
       )
       .accounts({
         raffle: raffle,

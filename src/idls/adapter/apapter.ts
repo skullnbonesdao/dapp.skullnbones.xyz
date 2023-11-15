@@ -2,8 +2,8 @@ import { computed } from 'vue';
 import { useAnchorWallet } from 'solana-wallets-vue';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
-import dapp_whitelist_idl from 'src/idls/dapp_whitelist.json';
-import dapp_raffle_idl from 'src/idls/dapp_raffle.json';
+import dapp_whitelist_idl from 'src/idls/whitelist.json';
+import dapp_raffle_idl from 'src/idls/raffle.json';
 import { useGlobalStore } from 'stores/globalStore';
 
 const preflightCommitment = 'processed';

@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "name": "dapp_raffle",
+  "name": "raffle",
   "instructions": [
     {
       "name": "createRaffle",
@@ -48,10 +48,12 @@
         {
           "name": "whitelist",
           "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "Checks"
-          ]
+          "isSigner": false
+        },
+        {
+          "name": "fee",
+          "isMut": true,
+          "isSigner": false
         }
       ],
       "args": [
@@ -161,6 +163,11 @@
       "name": "buyTickets",
       "accounts": [
         {
+          "name": "buyer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
           "name": "raffle",
           "isMut": false,
           "isSigner": false
@@ -196,6 +203,11 @@
           "isSigner": false
         },
         {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "whitelist",
           "isMut": true,
           "isSigner": false,
@@ -211,6 +223,11 @@
         {
           "name": "whitelistProgram",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "fee",
+          "isMut": true,
           "isSigner": false
         }
       ],
@@ -480,113 +497,121 @@
   "errors": [
     {
       "code": 6000,
+      "name": "InsufficientFundsForTransaction",
+      "msg": "You have not enough sol !"
+    },
+    {
+      "code": 6001,
       "name": "ActionNotAllowed",
       "msg": "You are not allowed to create a Raffle!"
     },
     {
-      "code": 6001,
+      "code": 6002,
       "name": "SignerIsNotCreator",
       "msg": "The Signer is not the creator!"
     },
     {
-      "code": 6002,
+      "code": 6003,
       "name": "NoRandomness",
       "msg": "Error no randomness!"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "EntrantsAccountTooSmallForMaxEntrants",
       "msg": "Entrants account too small for max entrants"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "InvalidPrizeIndex",
       "msg": "Invalid prize index"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "NotClaimed",
       "msg": "Raffle is not Claimed"
     },
     {
-      "code": 6006,
+      "code": 6007,
       "name": "InvalidTicketCount",
       "msg": "No prize"
     },
     {
-      "code": 6007,
+      "code": 6008,
       "name": "NoPrize",
       "msg": "Error ticket count invalid!"
     },
     {
-      "code": 6008,
+      "code": 6009,
       "name": "RaffleIsNotRunning",
       "msg": "Error raffle is not running"
     },
     {
-      "code": 6009,
+      "code": 6010,
       "name": "RaffleIsRunning",
       "msg": "Error raffle is still running"
     },
     {
-      "code": 6010,
+      "code": 6011,
       "name": "InvalidCalculation",
       "msg": "Invalid calculation"
     },
     {
-      "code": 6011,
+      "code": 6012,
       "name": "NotEnoughTicketsLeft",
       "msg": "Not enough tickets left"
     },
     {
-      "code": 6012,
+      "code": 6013,
       "name": "RaffleStillRunning",
       "msg": "Raffle is still running"
     },
     {
-      "code": 6013,
+      "code": 6014,
       "name": "WinnersAlreadyDrawn",
       "msg": "Winner already drawn"
     },
     {
-      "code": 6014,
+      "code": 6015,
       "name": "WinnerNotDrawn",
       "msg": "Winner not drawn"
     },
     {
-      "code": 6015,
+      "code": 6016,
       "name": "InvalidRevealedData",
       "msg": "Invalid revealed data"
     },
     {
-      "code": 6016,
+      "code": 6017,
       "name": "TokenAccountNotOwnedByWinner",
       "msg": "Ticket account not owned by winner"
     },
     {
-      "code": 6017,
+      "code": 6018,
       "name": "TicketHasNotWon",
       "msg": "Ticket has not won"
     },
     {
-      "code": 6018,
+      "code": 6019,
       "name": "UnclaimedPrizes",
       "msg": "Unclaimed prizes"
     },
     {
-      "code": 6019,
+      "code": 6020,
       "name": "InvalidRecentBlockhashes",
       "msg": "Invalid recent blockhashes"
     },
     {
-      "code": 6020,
+      "code": 6021,
       "name": "OnlyCreatorCanClaimNoEntrantRafflePrizes",
       "msg": "Only the creator can calin no entrant raffle prizes"
     },
     {
-      "code": 6021,
+      "code": 6022,
       "name": "InvalidTreasuryTokenAccountOwner",
       "msg": "Invalid treasury token account owner"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "rafxXxjw9fkAuQhCJ1A4gmX1oqgvRrSeXyRPUE9K2Yx"
+  }
 }

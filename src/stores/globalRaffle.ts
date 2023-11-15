@@ -4,12 +4,6 @@ import { useWallet } from 'solana-wallets-vue';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 
-export const NULL_WALLET = '11111111111111111111111111111111';
-
-export const DAPP_ADMIN_WALLET = new PublicKey(
-  '3x5vrFFTspsicxrYHMA8SNVW71RMhVkALemXrJFfeQo1',
-);
-
 export const RAFLLE_WHITELIST_NAME = 'Crew';
 
 export const useRaffleStore = defineStore('raffleStore', {
