@@ -58,7 +58,7 @@ async function burn_token() {
       SystemProgram.transfer({
         fromPubkey: useWallet().publicKey.value,
         toPubkey: new PublicKey(useGlobalStore().fee_wallet),
-        lamports: 10000,
+        lamports: 1000000,
       }),
     );
 
@@ -99,7 +99,7 @@ async function close_account() {
       SystemProgram.transfer({
         fromPubkey: useWallet().publicKey.value!,
         toPubkey: new PublicKey(useGlobalStore().fee_wallet),
-        lamports: 10000,
+        lamports: 1000000,
       }),
     );
 
@@ -166,7 +166,7 @@ async function close_account() {
         >
       </q-card-section>
 
-      <div class="q-ma-md text-right text-weight-light">fee: 0.00001sol</div>
+      <div class="q-ma-md text-right text-weight-light">fee: 0.001sol</div>
     </q-card>
   </q-dialog>
 </template>
