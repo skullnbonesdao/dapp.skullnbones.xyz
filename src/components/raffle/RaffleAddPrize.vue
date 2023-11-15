@@ -14,16 +14,37 @@ import { useGlobalWalletStore } from 'stores/globalWallet';
 
 const input_prize_count = ref(1);
 const input_prize_url = ref('');
-const input_account_selected = ref();
+const input_account_selected = ref('');
 
 const props = defineProps(['raffle', 'is_admin']);
+
+const options = ref();
+const stringOptions = ref(
+  useGlobalWalletStore().token_accounts.flatMap(
+    (account) => account.account.data.parsed.info.mint,
+  ),
+);
+options.value = stringOptions.value;
+function filterFn(val: any, update: any) {
+  if (val === '') {
+    update(() => {
+      options.value = stringOptions.value;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    options.value = stringOptions.value.filter(
+      (v) => v.toLowerCase().indexOf(needle) > -1,
+    );
+  });
+}
 
 async function add_prize_to_raffle() {
   const { pg_raffle } = useWorkspaceAdapter();
 
-  const prize_mint = new anchor.web3.PublicKey(
-    input_account_selected.value.account.data.parsed.info.mint.toString(),
-  );
+  const prize_mint = new anchor.web3.PublicKey(input_account_selected.value);
 
   const ata = (
     await useGlobalStore().connection.getParsedTokenAccountsByOwner(
@@ -82,51 +103,56 @@ async function add_prize_to_raffle() {
 
 <template>
   <div
-    class="row shadow-2 q-pa-md"
+    class="col q-pa-sm"
     v-if="
       is_admin &&
       raffle.account.prizeTokenMint.toString() ===
         '11111111111111111111111111111111'
     "
   >
-    <p>Prize</p>
-    <div class="row q-gutter-x-sm">
-      <q-btn-dropdown
-        class="col"
-        color="primary"
-        :label="
-          input_account_selected
-            ? format_address(
-                input_account_selected.account.data.parsed.info.mint,
-              )
-            : 'Select Prize'
-        "
+    <p class="text-overline">Add a prize:</p>
+    <div class="col q-gutter-y-sm">
+      <q-select
+        class="full-width"
+        filled
+        square
+        v-model="input_account_selected"
+        clearable
+        use-input
+        hide-selected
+        fill-input
+        input-debounce="0"
+        behavior="menu"
+        label="Select Ticket by mint"
+        :options="options"
+        @filter="filterFn"
+        style="width: 250px"
       >
-        <q-list>
-          <q-item
-            clickable
-            v-close-popup
-            @click="input_account_selected = account"
-            :key="account"
-            v-for="account in useGlobalWalletStore().token_accounts"
-          >
-            {{ account.account.data.parsed.info.mint }}
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
           </q-item>
-        </q-list>
-      </q-btn-dropdown>
-      <q-input
-        class="col-2"
-        outlined
-        v-model="input_prize_count"
-        type="number"
-        label="Count"
-      />
-      <q-btn
-        class="col-2"
-        color="primary"
-        icon="send"
-        @click="add_prize_to_raffle()"
-      />
+        </template>
+      </q-select>
+
+      <div class="row">
+        <q-input
+          class="col"
+          filled
+          square
+          v-model="input_prize_count"
+          type="number"
+          label="Count"
+        />
+        <q-btn
+          filled
+          square
+          class="col-2"
+          color="primary"
+          icon="send"
+          @click="add_prize_to_raffle()"
+        />
+      </div>
     </div>
   </div>
 </template>

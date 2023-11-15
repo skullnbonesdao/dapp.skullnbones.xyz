@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import {
+  initWorkspaceAdapter,
+  useWorkspaceAdapter,
+} from 'src/idls/adapter/apapter';
 
-const { pg_whitelist } = useWorkspaceAdapter();
 const whilelists = ref();
 const whilelist_entries = ref();
 
 onMounted(async () => {
+  const { pg_whitelist } = useWorkspaceAdapter();
+
   whilelists.value = await pg_whitelist.value.account.whitelist.all();
 
   whilelist_entries.value =

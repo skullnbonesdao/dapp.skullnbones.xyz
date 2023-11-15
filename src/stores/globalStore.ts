@@ -4,12 +4,12 @@ import { useWallet } from 'solana-wallets-vue';
 import { useLocalStorage } from '@vueuse/core';
 
 export const RPC_NETWORKS = [
-  { name: 'mainnet.extrnode', url: 'https://solana-mainnet.rpc.extrnode.com' },
-  { name: 'api.devnet.solana', url: 'https://rpc.ankr.com/solana_devnet' },
   {
-    name: 'rpc1',
+    name: 'mainnet.alchemy',
     url: 'https://solana-mainnet.g.alchemy.com/v2/hhh3czrJbOnssV11HBINkPZSe-HzR3Jy',
   },
+  { name: 'mainnet.extrnode', url: 'https://solana-mainnet.rpc.extrnode.com' },
+  { name: 'devnet.ankr', url: 'https://rpc.ankr.com/solana_devnet' },
 ];
 
 export const NULL_WALLET = '11111111111111111111111111111111';
@@ -18,6 +18,8 @@ export const WHITELIST_CREATOR_WALLET = new PublicKey(
   'adm1rpWxyo8u9y2Q2wxxfqaVDLE2gD1N9PbZbbhokTP',
 );
 
+export const FEE_WALLET = new PublicKey(import.meta.env.VITE_FEE_WALLET);
+
 export const RAFLLE_WHITELIST_NAME = 'Crew';
 
 export const useGlobalStore = defineStore('globalstore', {
@@ -25,7 +27,6 @@ export const useGlobalStore = defineStore('globalstore', {
     rpc_selected: useLocalStorage('rpc_selected', RPC_NETWORKS[0]),
     connection: {} as Connection,
     admins: import.meta.env.VITE_ADMINS?.split(',') as Array<string>,
-    fee_wallet: new PublicKey(import.meta.env.VITE_FEE_WALLET),
   }),
 
   getters: {
@@ -37,29 +38,11 @@ export const useGlobalStore = defineStore('globalstore', {
   },
   actions: {
     update_connection() {
+      console.log('RPC is set to: ' + this.rpc_selected.url);
+
       this.connection = new Connection(this.rpc_selected.url, {
         commitment: 'confirmed',
       });
     },
-
-    // async update_wallet_accounts() {
-    //   if (useWallet().publicKey.value) {
-    //     const response = await this.connection.getParsedTokenAccountsByOwner(
-    //       useWallet().publicKey.value!,
-    //       {
-    //         programId: TOKEN_PROGRAM_ID,
-    //       },
-    //     );
-    //     this.token_accounts = response.value;
-    //   }
-    // },
-    // async get_wallet_accounts() {
-    //   return await this.connection.getTokenAccountsByOwner(
-    //     useWallet().publicKey.value!,
-    //     {
-    //       programId: TOKEN_PROGRAM_ID,
-    //     },
-    //   );
-    // },
   },
 });

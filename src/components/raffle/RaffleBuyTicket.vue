@@ -3,6 +3,7 @@ import {
   WHITELIST_CREATOR_WALLET,
   RAFLLE_WHITELIST_NAME,
   useGlobalStore,
+  FEE_WALLET,
 } from 'stores/globalStore';
 import { ref } from 'vue';
 import * as anchor from '@coral-xyz/anchor';
@@ -91,21 +92,20 @@ async function buy_raffle_ticket() {
         whitelist: whitelist,
         entry: whitelistEntry,
         whitelistProgram: pg_whitelist.value.programId,
-        fee: useGlobalStore().fee_wallet,
+        feeAccount: FEE_WALLET,
         systemProgram: SystemProgram.programId,
       })
       .rpc();
     console.log(signature);
 
-    // if (await handle_confirmation(signature)) {
-    //   await handle_discord_webhook(
-    //     DiscordMessageType.RAFFLE_CREATE,
-    //     input_raffle_name.value,
-    //     input_raffle_description.value,
-    //     input_raffle_ticket_count.value,
-    //     input_raffle_ticket_price.value,
-    //   );
-    // }
+    if (await handle_confirmation(signature)) {
+      await handle_discord_webhook(
+        DiscordMessageType.TICKET_BUY,
+        props.raffle.account.name.value,
+        props.raffle.account.description.value,
+        input_raffle_ticket_amount.value,
+      );
+    }
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -123,18 +123,20 @@ async function buy_raffle_ticket() {
       !raffle?.account.randomness &&
       !(entrants?.total == entrants?.max)
     "
-    class="col q-pa-sm q-gutter-y-md"
+    class="col q-pa-sm q-gutter-y-sm"
   >
-    <p class="text-h5">Buy Ticket(s)</p>
-    <div class="row q-gutter-x-sm">
+    <p class="text-overline">Buy Ticket(s)</p>
+    <div class="row">
       <q-input
+        square
+        filled
         outlined
         type="number"
         class="col"
         label="Amount"
         v-model="input_raffle_ticket_amount"
       />
-      <q-btn color="primary" icon="send" @click="buy_raffle_ticket()" />
+      <q-btn square color="primary" icon="send" @click="buy_raffle_ticket()" />
     </div>
   </div>
 </template>

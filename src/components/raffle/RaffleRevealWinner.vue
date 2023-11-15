@@ -46,6 +46,7 @@ async function reveal_raffle_winner() {
 <template>
   <div class="row">
     <q-btn
+      square
       class="row"
       v-if="
         is_admin &&

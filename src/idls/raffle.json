@@ -51,7 +51,7 @@
           "isSigner": false
         },
         {
-          "name": "fee",
+          "name": "feeAccount",
           "isMut": true,
           "isSigner": false
         }
@@ -226,7 +226,7 @@
           "isSigner": false
         },
         {
-          "name": "fee",
+          "name": "feeAccount",
           "isMut": true,
           "isSigner": false
         }

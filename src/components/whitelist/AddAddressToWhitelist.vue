@@ -21,7 +21,9 @@ onMounted(async () => {
 async function add_address_to_whitelist() {
   handle_wallet_connected();
 
-  const whitelist = new PublicKey(whitelist_selected.value.publicKey);
+  const whitelist = new PublicKey(
+    whitelist_selected.value.publicKey.toString(),
+  );
   const [whitelistEntry, entryBump] =
     anchor.web3.PublicKey.findProgramAddressSync(
       [new PublicKey(input_address.value).toBytes(), whitelist.toBytes()],

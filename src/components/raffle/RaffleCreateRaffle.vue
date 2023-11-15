@@ -9,6 +9,7 @@ import {
   WHITELIST_CREATOR_WALLET,
   RAFLLE_WHITELIST_NAME,
   useGlobalStore,
+  FEE_WALLET,
 } from '../../stores/globalStore';
 import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
@@ -54,12 +55,9 @@ async function create_new_raffle() {
     pg_whitelist.value.programId,
   );
 
-  const accoun_info = await useGlobalStore().connection.getParsedAccountInfo(
+  const account_info = await useGlobalStore().connection.getParsedAccountInfo(
     new anchor.web3.PublicKey(input_account_selected.value),
   );
-
-  console.log(accoun_info);
-  console.log(whitelist.toString());
 
   try {
     const signature = await pg_raffle.value.methods
@@ -68,9 +66,9 @@ async function create_new_raffle() {
         input_raffle_description.value,
         new BN(
           input_raffle_ticket_price.value *
-            Math.pow(10, accoun_info.value?.data.parsed.info.decimals),
+            Math.pow(10, account_info.value?.data.parsed.info.decimals),
         ),
-        new BN(accoun_info.value?.data.parsed.info.decimals),
+        new BN(account_info.value?.data.parsed.info.decimals),
         input_raffle_ticket_count.value,
       )
       .accounts({
@@ -82,7 +80,7 @@ async function create_new_raffle() {
         tokenProgram: TOKEN_PROGRAM_ID,
         rent: SYSVAR_RENT_PUBKEY,
         whitelist: whitelist,
-        fee: useGlobalStore().fee_wallet,
+        feeAccount: FEE_WALLET,
         systemProgram: SystemProgram.programId,
       })
       .rpc();

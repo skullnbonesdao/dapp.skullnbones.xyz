@@ -41,15 +41,17 @@ async function edit_image_url() {
 
 <template>
   <div
-    class="shadow-2 q-pa-md"
+    class="q-pa-sm"
     v-if="
       is_admin &&
       raffle.account.prizeTokenMint.toString() !=
         '11111111111111111111111111111111'
     "
   >
-    <div class="row q-gutter-x-sm">
+    <div class="row">
       <q-input
+        square
+        filled
         class="col"
         outlined
         maxlength="100"
@@ -57,7 +59,7 @@ async function edit_image_url() {
         type="text"
         label="Image-URL"
       />
-      <q-btn icon="send" color="primary" @click="edit_image_url()" />
+      <q-btn square icon="send" color="primary" @click="edit_image_url()" />
     </div>
   </div>
 </template>

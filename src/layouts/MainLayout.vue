@@ -64,6 +64,7 @@
         <div class="row">
           <q-space />
           <q-btn-dropdown
+            square
             color="primary"
             :label="useGlobalStore().rpc_selected.name"
           >
@@ -103,7 +104,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { RPC_NETWORKS, useGlobalStore } from 'stores/globalStore';
 import { Connection } from '@solana/web3.js';
 import { version } from 'src/../package.json';
-import { WalletMultiButton } from 'solana-wallets-vue';
+import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useWhitelist } from '../stores/globalWhitelist';
 
 const leftDrawerOpen = ref(false);
@@ -118,15 +119,16 @@ function toggleLeftDrawer() {
 watch(
   () => useGlobalStore().rpc_selected,
   () => {
-    useGlobalStore().connection = new Connection(
-      useGlobalStore().rpc_selected.url,
-    );
+    useGlobalStore().update_connection();
   },
 );
 
-onMounted(async () => {
-  await useWhitelist().update_whitelist();
-});
+watch(
+  () => useWallet().publicKey.value,
+  async () => {
+    if (useWallet().publicKey.value) await useWhitelist().update_whitelist();
+  },
+);
 
 const links1 = computed(() => {
   let data = [

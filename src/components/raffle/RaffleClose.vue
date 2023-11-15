@@ -63,6 +63,7 @@ async function close_raffle() {
 
 <template>
   <q-btn
+    square
     v-if="is_admin && (!raffle.account.isRunning || raffle.account.isClaimed)"
     color="primary"
     @click="close_raffle()"

@@ -13,7 +13,7 @@ export async function handle_discord_webhook(
   title: string,
   description: string,
   ticket_count: number,
-  ticket_price: number,
+  ticket_price?: number,
 ) {
   const hook = new discord.Webhook(import.meta.env.VITE_DISCORD_WEBHOOK);
   hook.setUsername('Raffle');
@@ -28,7 +28,7 @@ export async function handle_discord_webhook(
         .setAuthor('Raffle - Create', IMAGE_URL)
         .setColor('#ff9f2a')
         .addField('Tickets', ticket_count.toString(), true)
-        .addField('Price', ticket_price.toString(), true)
+        .addField('Price', ticket_price?.toString() ?? 'none', true)
         .setTimestamp();
       break;
     case DiscordMessageType.TICKET_BUY:
@@ -38,7 +38,7 @@ export async function handle_discord_webhook(
         .setAuthor('Ticket - Buy', IMAGE_URL)
         .setColor('#ff9f2a')
         .addField('Tickets', ticket_count.toString(), true)
-        .addField('Price', ticket_price.toString(), true)
+
         .setTimestamp();
       break;
   }
