@@ -7,7 +7,7 @@ import ViewWhitelist from 'components/whitelist/ViewWhitelist.vue';
 import RemoveAddressFromWhitelist from 'components/whitelist/RemoveAddressFromWhitelist.vue';
 import DeleteWhitelist from 'components/whitelist/DeleteWhitelist.vue';
 
-const selected_tab = ref('create');
+const selected_tab = ref('view');
 
 initWorkspace();
 </script>
