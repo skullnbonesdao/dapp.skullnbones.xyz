@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { Notify } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import {
-  RAFFLE_CREATOR_WALLET,
+  WHITELIST_CREATOR_WALLET,
   RAFLLE_WHITELIST_NAME,
   useGlobalStore,
 } from '../../stores/globalStore';
@@ -14,6 +14,10 @@ import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { useGlobalWalletStore } from '../../stores/globalWallet';
+import {
+  DiscordMessageType,
+  handle_discord_webhook,
+} from 'components/messages/handle_discord_webhook';
 
 const input_raffle_name = ref();
 const input_raffle_description = ref();
@@ -44,20 +48,18 @@ async function create_new_raffle() {
 
   let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
     [
-      RAFFLE_CREATOR_WALLET.toBuffer(),
+      WHITELIST_CREATOR_WALLET.toBuffer(),
       anchor.utils.bytes.utf8.encode(RAFLLE_WHITELIST_NAME),
     ],
     pg_whitelist.value.programId,
   );
 
-  const proceedsMint = new anchor.web3.PublicKey(
-    input_account_selected.value.account.data.parsed.info.mint.toString(),
+  const accoun_info = await useGlobalStore().connection.getParsedAccountInfo(
+    new anchor.web3.PublicKey(input_account_selected.value),
   );
 
-  const accoun_info =
-    await useGlobalStore().connection.getParsedAccountInfo(proceedsMint);
-
   console.log(accoun_info);
+  console.log(whitelist.toString());
 
   try {
     const signature = await pg_raffle.value.methods
@@ -76,7 +78,7 @@ async function create_new_raffle() {
         entrants: entrants,
         creator: useWallet().publicKey.value,
         proceeds: proceeds,
-        proceedsMint: proceedsMint,
+        proceedsMint: new anchor.web3.PublicKey(input_account_selected.value),
         tokenProgram: TOKEN_PROGRAM_ID,
         rent: SYSVAR_RENT_PUBKEY,
         whitelist: whitelist,
@@ -87,7 +89,15 @@ async function create_new_raffle() {
 
     console.log(signature);
 
-    await handle_confirmation(signature);
+    if (await handle_confirmation(signature)) {
+      await handle_discord_webhook(
+        DiscordMessageType.RAFFLE_CREATE,
+        input_raffle_name.value,
+        input_raffle_description.value,
+        input_raffle_ticket_count.value,
+        input_raffle_ticket_price.value,
+      );
+    }
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -96,15 +106,48 @@ async function create_new_raffle() {
     });
   }
 }
+
+const options = ref();
+
+const stringOptions = ref(
+  useGlobalWalletStore().token_accounts.flatMap(
+    (account) => account.account.data.parsed.info.mint,
+  ),
+);
+
+options.value = stringOptions.value;
+
+function filterFn(val: any, update: any) {
+  if (val === '') {
+    update(() => {
+      options.value = stringOptions.value;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    options.value = stringOptions.value.filter(
+      (v) => v.toLowerCase().indexOf(needle) > -1,
+    );
+  });
+}
 </script>
 
 <template>
   <q-card square flat class="col q-pa-sm">
     <q-card-section class="q-gutter-y-md">
       <p class="text-h5">Raffle</p>
-      <q-input outlined v-model="input_raffle_name" type="text" label="Name" />
       <q-input
-        outlined
+        filled
+        square
+        v-model="input_raffle_name"
+        type="text"
+        label="Name"
+      />
+      <q-input
+        filled
+        square
         v-model="input_raffle_description"
         type="text"
         label="Description"
@@ -116,38 +159,41 @@ async function create_new_raffle() {
       <p class="text-h5">Tickets</p>
 
       <div class="row justify-center">
-        <q-btn-dropdown
+        <q-select
           class="col"
-          color="primary"
-          :label="
-            input_account_selected
-              ? input_account_selected.account.data.parsed.info.mint
-              : 'Select Ticket Token Mint'
-          "
+          filled
+          square
+          v-model="input_account_selected"
+          clearable
+          use-input
+          hide-selected
+          fill-input
+          input-debounce="0"
+          behavior="menu"
+          label="Select Ticket by mint"
+          :options="options"
+          @filter="filterFn"
+          style="width: 250px"
         >
-          <q-list>
-            <q-item
-              clickable
-              v-close-popup
-              @click="input_account_selected = account"
-              :key="account"
-              v-for="account in useGlobalWalletStore().token_accounts"
-            >
-              {{ account.account.data.parsed.info.mint }}
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"> No results </q-item-section>
             </q-item>
-          </q-list>
-        </q-btn-dropdown>
+          </template>
+        </q-select>
       </div>
 
       <q-input
-        outlined
+        filled
+        square
         v-model="input_raffle_ticket_count"
         type="number"
         label="Tickets"
       />
 
       <q-input
-        outlined
+        filled
+        square
         type="number"
         v-model="input_raffle_ticket_price"
         label="Ticket Price"

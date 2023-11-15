@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  RAFFLE_CREATOR_WALLET,
+  WHITELIST_CREATOR_WALLET,
   NULL_WALLET,
   useGlobalStore,
 } from 'stores/globalStore';
@@ -75,7 +75,7 @@ async function claim_raffle() {
     const signature = await pg_raffle.value.methods
       .claimPrize(props.raffle.account.name)
       .accounts({
-        creator: RAFFLE_CREATOR_WALLET,
+        creator: WHITELIST_CREATOR_WALLET,
         raffle: raffle,
         entrants: entrants,
         prizeVault: prize_vault,

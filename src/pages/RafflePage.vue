@@ -11,6 +11,10 @@ import RaffleCreateRaffle from 'components/raffle/RaffleCreateRaffle.vue';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useRaffleStore } from 'stores/globalRaffle';
 import { useGlobalWalletStore } from 'stores/globalWallet';
+import {
+  DiscordMessageType,
+  handle_discord_webhook,
+} from 'components/messages/handle_discord_webhook';
 
 const tab_selected = ref('raffle');
 
@@ -21,6 +25,19 @@ onMounted(async () => {
 </script>
 
 <template>
+  <q-btn
+    @click="
+      handle_discord_webhook(
+        DiscordMessageType.RAFFLE_CREATE,
+        'PX4',
+        'sometextskjksdjl',
+        2,
+        2.2,
+      ).then(() => {})
+    "
+    >SEND</q-btn
+  >
+
   <q-page
     v-if="!useWallet().publicKey.value"
     class="row items-center justify-center"

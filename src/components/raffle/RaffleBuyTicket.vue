@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  RAFFLE_CREATOR_WALLET,
+  WHITELIST_CREATOR_WALLET,
   RAFLLE_WHITELIST_NAME,
   useGlobalStore,
 } from 'stores/globalStore';
@@ -13,6 +13,11 @@ import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { SystemProgram } from '@solana/web3.js';
+import {
+  DiscordMessageType,
+  handle_discord_webhook,
+} from 'components/messages/handle_discord_webhook';
+import { useRaffleStore } from 'stores/globalRaffle';
 
 const input_raffle_ticket_amount = ref();
 
@@ -46,7 +51,7 @@ async function buy_raffle_ticket() {
 
   let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
     [
-      RAFFLE_CREATOR_WALLET.toBuffer(),
+      WHITELIST_CREATOR_WALLET.toBuffer(),
       anchor.utils.bytes.utf8.encode(RAFLLE_WHITELIST_NAME),
     ],
     pg_whitelist.value.programId,
@@ -73,7 +78,7 @@ async function buy_raffle_ticket() {
       .buyTickets(
         new BN(input_raffle_ticket_amount.value),
         RAFLLE_WHITELIST_NAME,
-        RAFFLE_CREATOR_WALLET,
+        WHITELIST_CREATOR_WALLET,
       )
       .accounts({
         raffle: raffle,
@@ -92,7 +97,15 @@ async function buy_raffle_ticket() {
       .rpc();
     console.log(signature);
 
-    await handle_confirmation(signature);
+    // if (await handle_confirmation(signature)) {
+    //   await handle_discord_webhook(
+    //     DiscordMessageType.RAFFLE_CREATE,
+    //     input_raffle_name.value,
+    //     input_raffle_description.value,
+    //     input_raffle_ticket_count.value,
+    //     input_raffle_ticket_price.value,
+    //   );
+    // }
   } catch (err) {
     Notify.create({
       color: 'red',

@@ -9,6 +9,7 @@ import * as anchor from '@coral-xyz/anchor';
 import { Notify } from 'quasar';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { handle_wallet_connected } from 'components/messages/handle_wallet_connected';
 
 const { pg_whitelist } = useWorkspaceAdapter();
 
@@ -21,6 +22,8 @@ onMounted(async () => {
 });
 
 async function remove_address_from_whitelist() {
+  handle_wallet_connected();
+
   const whitelist = new anchor.web3.PublicKey(
     whitelist_selected.value.publicKey,
   );

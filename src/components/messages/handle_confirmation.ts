@@ -29,4 +29,5 @@ export async function handle_confirmation(signature: any) {
     message: 'Signature confirmed!',
     timeout: 2500, // we will timeout it in 2.5s
   });
+  return true;
 }

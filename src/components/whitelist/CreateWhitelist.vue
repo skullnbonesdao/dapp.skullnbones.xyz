@@ -6,10 +6,13 @@ import * as anchor from '@coral-xyz/anchor';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { handle_wallet_connected } from 'components/messages/handle_wallet_connected';
 
 const whitelist_name = ref('My new whitelist');
 
 async function create_whitelist() {
+  handle_wallet_connected();
+
   const { pg_whitelist } = useWorkspaceAdapter();
 
   let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -30,7 +33,6 @@ async function create_whitelist() {
       .rpc();
 
     console.log(signature);
-
     await handle_confirmation(signature);
   } catch (err) {
     Notify.create({

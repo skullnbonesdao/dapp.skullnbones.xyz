@@ -14,8 +14,8 @@ export const RPC_NETWORKS = [
 
 export const NULL_WALLET = '11111111111111111111111111111111';
 
-export const RAFFLE_CREATOR_WALLET = new PublicKey(
-  '756pfnvP3HHRx1BPwBPQwe1xBMfMWef5N9oN61Ews7np',
+export const WHITELIST_CREATOR_WALLET = new PublicKey(
+  'adm1rpWxyo8u9y2Q2wxxfqaVDLE2gD1N9PbZbbhokTP',
 );
 
 export const RAFLLE_WHITELIST_NAME = 'Crew';

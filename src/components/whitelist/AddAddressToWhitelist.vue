@@ -6,6 +6,7 @@ import { Notify } from 'quasar';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { handle_wallet_connected } from 'components/messages/handle_wallet_connected';
 
 const { pg_whitelist } = useWorkspaceAdapter();
 
@@ -18,6 +19,8 @@ onMounted(async () => {
 });
 
 async function add_address_to_whitelist() {
+  handle_wallet_connected();
+
   const whitelist = new PublicKey(whitelist_selected.value.publicKey);
   const [whitelistEntry, entryBump] =
     anchor.web3.PublicKey.findProgramAddressSync(
