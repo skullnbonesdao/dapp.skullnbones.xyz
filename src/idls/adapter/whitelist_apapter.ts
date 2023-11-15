@@ -7,7 +7,7 @@ import { useGlobalStore } from 'stores/globalStore';
 
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
-const programID = new PublicKey('6CY4PELBNPvqLymWWpWSEMR84kwmTZERFj6VoRLvL5Vn');
+const programID = new PublicKey(import.meta.env.VITE_PROGRAM_WHITELIST);
 
 let workspace = null;
 export const useWorkspaceWhitelist = () => workspace;
