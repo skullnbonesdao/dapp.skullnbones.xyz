@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 
-import { useWorkspaceWhitelist } from 'src/idls/adapter/whitelist_apapter';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 
 const { pg_whitelist } = useWorkspaceAdapter();

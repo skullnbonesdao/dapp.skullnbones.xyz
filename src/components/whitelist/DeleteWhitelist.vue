@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
-import { RPC_NETWORKS, useGlobalStore } from 'stores/globalStore';
+
 import { Connection, PublicKey, SystemProgram } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
-import { DappWhitelist } from 'src/idls/dapp_whitelist';
-import * as idl from 'src/idls/dapp_whitelist.json';
+
 import * as anchor from '@coral-xyz/anchor';
-import wallet from 'boot/wallet';
-import {
-  initWorkspace,
-  useWorkspaceWhitelist,
-} from 'src/idls/adapter/whitelist_apapter';
+
 import { Notify } from 'quasar';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
