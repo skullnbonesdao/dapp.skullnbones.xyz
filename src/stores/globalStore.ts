@@ -5,12 +5,12 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useLocalStorage } from '@vueuse/core';
 
 export const RPC_NETWORKS = [
+  { name: 'mainnet.extrnode', url: 'https://solana-mainnet.rpc.extrnode.com' },
   { name: 'api.devnet.solana', url: 'https://rpc.ankr.com/solana_devnet' },
   {
     name: 'rpc1',
     url: 'https://solana-mainnet.g.alchemy.com/v2/hhh3czrJbOnssV11HBINkPZSe-HzR3Jy',
   },
-  { name: 'mainnet.extrnode', url: 'https://solana-mainnet.rpc.extrnode.com' },
 ];
 
 export const NULL_WALLET = '11111111111111111111111111111111';

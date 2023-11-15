@@ -137,7 +137,7 @@ const links1 = computed(() => {
     data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
   }
 
-  if (useWhitelist().check_wallet_whitelisted) {
+  if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
     data.push({ icon: 'local_activity', text: 'Raffle', to: '/raffle' });
   }
 

@@ -13,14 +13,17 @@ import {
   useWorkspaceWhitelist,
 } from 'src/idls/adapter/whitelist_apapter';
 import { Notify } from 'quasar';
+import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 
-const { program } = useWorkspaceWhitelist();
+const { pg_whitelist } = useWorkspaceAdapter();
+
 const input_address = ref('3x5vrFFTspsicxrYHMA8SNVW71RMhVkALemXrJFfeQo1');
 const whilelists = ref();
 const whitelist_selected = ref();
 
 onMounted(async () => {
-  whilelists.value = await program.value.account.whitelist.all();
+  whilelists.value = await pg_whitelist.value.account.whitelist.all();
 });
 
 async function remove_address_from_whitelist() {
@@ -33,11 +36,11 @@ async function remove_address_from_whitelist() {
         new anchor.web3.PublicKey(input_address.value).toBytes(),
         whitelist.toBytes(),
       ],
-      program.value.programId,
+      pg_whitelist.value.programId,
     );
 
   try {
-    const signature = await program.value.methods
+    const signature = await pg_whitelist.value.methods
       .deleteWhitelist(whitelist_selected.value.account.name)
       .accounts({
         whitelist,
@@ -47,12 +50,8 @@ async function remove_address_from_whitelist() {
 
     console.log(signature);
 
-    Notify.create({
-      message: 'TX-Signature: ' + signature,
-      timeout: 5000,
-    });
+    await handle_confirmation(signature);
   } catch (err) {
-    console.log(err);
     Notify.create({
       color: 'red',
       message: `${err}`,

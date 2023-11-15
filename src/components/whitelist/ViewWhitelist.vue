@@ -2,15 +2,17 @@
 import { computed, onMounted, ref } from 'vue';
 
 import { useWorkspaceWhitelist } from 'src/idls/adapter/whitelist_apapter';
+import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 
-const { program } = useWorkspaceWhitelist();
+const { pg_whitelist } = useWorkspaceAdapter();
 const whilelists = ref();
 const whilelist_entries = ref();
 
 onMounted(async () => {
-  whilelists.value = await program.value.account.whitelist.all();
+  whilelists.value = await pg_whitelist.value.account.whitelist.all();
 
-  whilelist_entries.value = await program.value.account.whitelistEntry.all();
+  whilelist_entries.value =
+    await pg_whitelist.value.account.whitelistEntry.all();
 });
 
 const tree_nodes = computed(() => {
