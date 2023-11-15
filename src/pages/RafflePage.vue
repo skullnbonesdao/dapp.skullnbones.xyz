@@ -10,11 +10,13 @@ import {
 import RaffleCreateRaffle from 'components/raffle/RaffleCreateRaffle.vue';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useRaffleStore } from 'stores/globalRaffle';
+import { useGlobalWalletStore } from 'stores/globalWallet';
 
 const tab_selected = ref('raffle');
 
 onMounted(async () => {
   await useRaffleStore().update_raffles();
+  await useGlobalWalletStore().update_accounts();
 });
 </script>
 

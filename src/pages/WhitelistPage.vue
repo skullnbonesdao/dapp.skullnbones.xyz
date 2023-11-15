@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import CreateWhitelist from 'components/whitelist/CreateWhitelist.vue';
-import { initWorkspace } from 'src/idls/adapter/whitelist_apapter';
 import AddAddressToWhitelist from 'components/whitelist/AddAddressToWhitelist.vue';
 import ViewWhitelist from 'components/whitelist/ViewWhitelist.vue';
 import RemoveAddressFromWhitelist from 'components/whitelist/RemoveAddressFromWhitelist.vue';
 import DeleteWhitelist from 'components/whitelist/DeleteWhitelist.vue';
 
 const selected_tab = ref('view');
-
-initWorkspace();
 </script>
 
 <template>

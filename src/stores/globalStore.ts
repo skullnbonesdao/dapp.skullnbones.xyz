@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useLocalStorage } from '@vueuse/core';
 
 export const RPC_NETWORKS = [
@@ -27,7 +26,6 @@ export const useGlobalStore = defineStore('globalstore', {
     connection: {} as Connection,
     admins: import.meta.env.VITE_ADMINS?.split(',') as Array<string>,
     fee_wallet: import.meta.env.VITE_FEE_WALLET,
-    token_accounts: {},
   }),
 
   getters: {
@@ -44,24 +42,24 @@ export const useGlobalStore = defineStore('globalstore', {
       });
     },
 
-    async update_wallet_accounts() {
-      if (useWallet().publicKey.value) {
-        const response = await this.connection.getParsedTokenAccountsByOwner(
-          useWallet().publicKey.value!,
-          {
-            programId: TOKEN_PROGRAM_ID,
-          },
-        );
-        this.token_accounts = response.value;
-      }
-    },
-    async get_wallet_accounts() {
-      return await this.connection.getTokenAccountsByOwner(
-        useWallet().publicKey.value!,
-        {
-          programId: TOKEN_PROGRAM_ID,
-        },
-      );
-    },
+    // async update_wallet_accounts() {
+    //   if (useWallet().publicKey.value) {
+    //     const response = await this.connection.getParsedTokenAccountsByOwner(
+    //       useWallet().publicKey.value!,
+    //       {
+    //         programId: TOKEN_PROGRAM_ID,
+    //       },
+    //     );
+    //     this.token_accounts = response.value;
+    //   }
+    // },
+    // async get_wallet_accounts() {
+    //   return await this.connection.getTokenAccountsByOwner(
+    //     useWallet().publicKey.value!,
+    //     {
+    //       programId: TOKEN_PROGRAM_ID,
+    //     },
+    //   );
+    // },
   },
 });

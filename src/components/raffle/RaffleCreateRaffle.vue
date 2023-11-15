@@ -13,6 +13,7 @@ import {
 import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { useGlobalWalletStore } from '../../stores/globalWallet';
 
 const input_raffle_name = ref();
 const input_raffle_description = ref();
@@ -128,7 +129,7 @@ async function create_new_raffle() {
               v-close-popup
               @click="input_account_selected = account"
               :key="account"
-              v-for="account in useGlobalStore().token_accounts"
+              v-for="account in useGlobalWalletStore().token_accounts"
             >
               {{ account.account.data.parsed.info.mint }}
             </q-item>

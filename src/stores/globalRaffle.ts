@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia';
-import { Connection, PublicKey } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 
 export const RAFLLE_WHITELIST_NAME = 'Crew';
