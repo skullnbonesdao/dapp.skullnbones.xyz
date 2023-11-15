@@ -74,7 +74,12 @@ async function send_token() {
 </script>
 
 <template>
-  <q-btn size="sm" icon="send" @click="show_modal = true"></q-btn>
+  <q-btn
+    color="primary"
+    size="sm"
+    icon="send"
+    @click="show_modal = true"
+  ></q-btn>
 
   <q-dialog v-model="show_modal">
     <q-card>

@@ -11,6 +11,19 @@ import EditTokenButton from 'components/buttons/EditTokenButton.vue';
 
 const accounts = ref();
 
+const visibleColumns = ref([
+  'account',
+  'account_link',
+  'mint',
+  'mint_link',
+  'owner',
+  'owner_link',
+  'decimals',
+  'amount',
+  'edit',
+  'send',
+]);
+
 const columns = [
   {
     name: 'account',
@@ -73,7 +86,6 @@ const columns = [
   },
   {
     label: 'Edit',
-
     align: 'center',
     name: 'edit',
   },
@@ -94,6 +106,7 @@ watch(
     await useGlobalWalletStore().update_accounts();
   },
 );
+const pagination = ref({ rowsPerPage: 0 });
 </script>
 
 <template>
@@ -105,12 +118,71 @@ watch(
       bordered
       square
       dense
-      hide-pagination
+      virtual-scroll
+      v-model:pagination="pagination"
+      :rows-per-page-options="[0]"
+      :visible-columns="visibleColumns"
       title="Accounts"
       :rows="useGlobalWalletStore().token_accounts"
       :columns="columns"
       row-key="name"
     >
+      <template v-slot:top="props">
+        <div class="col-2 q-table__title">Accounts</div>
+
+        <q-space />
+
+        <div v-if="$q.screen.gt.xs" class="col">
+          <q-toggle
+            size="sm"
+            v-model="visibleColumns"
+            val="space"
+            label="Space"
+          />
+          <q-toggle
+            size="sm"
+            v-model="visibleColumns"
+            val="lamports"
+            label="Lamports"
+          />
+          <q-toggle
+            size="sm"
+            v-model="visibleColumns"
+            val="state"
+            label="State"
+          />
+          <q-toggle
+            size="sm"
+            v-model="visibleColumns"
+            val="decimals"
+            label="State"
+          />
+        </div>
+        <q-select
+          v-else
+          v-model="visibleColumns"
+          multiple
+          borderless
+          dense
+          options-dense
+          :display-value="$q.lang.table.columns"
+          emit-value
+          map-options
+          :options="columns"
+          option-value="name"
+          style="min-width: 150px"
+        />
+
+        <q-btn
+          flat
+          round
+          dense
+          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+          @click="props.toggleFullscreen"
+          class="q-ml-md"
+        />
+      </template>
+
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="account" :props="props">
@@ -144,7 +216,13 @@ watch(
             {{ props.row.account.data.parsed.info.tokenAmount.decimals }}
           </q-td>
           <q-td key="amount" :props="props">
-            <q-badge color="teal">
+            <q-badge
+              :color="
+                props.row.account.data.parsed.info.tokenAmount.uiAmount > 0
+                  ? ''
+                  : 'yellow'
+              "
+            >
               {{
                 props.row.account.data.parsed.info.tokenAmount.uiAmount.toFixed(
                   2,

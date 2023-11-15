@@ -120,7 +120,12 @@ async function close_account() {
 </script>
 
 <template>
-  <q-btn size="sm" icon="edit" @click="show_modal = true"></q-btn>
+  <q-btn
+    color="primary"
+    size="sm"
+    icon="edit"
+    @click="show_modal = true"
+  ></q-btn>
 
   <q-dialog v-model="show_modal">
     <q-card>
