@@ -25,19 +25,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <q-btn
-    @click="
-      handle_discord_webhook(
-        DiscordMessageType.RAFFLE_CREATE,
-        'PX4',
-        'sometextskjksdjl',
-        2,
-        2.2,
-      ).then(() => {})
-    "
-    >SEND</q-btn
-  >
-
   <q-page
     v-if="!useWallet().publicKey.value"
     class="row items-center justify-center"
