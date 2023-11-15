@@ -74,10 +74,11 @@ async function create_new_raffle() {
         creator: useWallet().publicKey.value,
         proceeds: proceeds,
         proceedsMint: proceedsMint,
-        systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
         rent: SYSVAR_RENT_PUBKEY,
         whitelist: whitelist,
+        fee: useGlobalStore().fee_wallet,
+        systemProgram: SystemProgram.programId,
       })
       .rpc();
 

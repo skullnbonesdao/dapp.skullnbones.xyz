@@ -12,6 +12,7 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { SystemProgram } from '@solana/web3.js';
 
 const input_raffle_ticket_amount = ref();
 
@@ -85,6 +86,8 @@ async function buy_raffle_ticket() {
         whitelist: whitelist,
         entry: whitelistEntry,
         whitelistProgram: pg_whitelist.value.programId,
+        fee: useGlobalStore().fee_wallet,
+        systemProgram: SystemProgram.programId,
       })
       .rpc();
     console.log(signature);
