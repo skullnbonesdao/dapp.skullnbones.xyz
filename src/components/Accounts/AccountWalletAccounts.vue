@@ -155,7 +155,7 @@ const pagination = ref({ rowsPerPage: 0 });
             size="sm"
             v-model="visibleColumns"
             val="decimals"
-            label="State"
+            label="Decimals"
           />
         </div>
         <q-select
