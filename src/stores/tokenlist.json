@@ -1,0 +1,12 @@
+{
+  "isNative": false,
+  "mint": "267DbhCypYzvTqv72ZG5UKHeFu56qXFsuoz3rw832eC5",
+  "owner": "3G3VSsmYxvaerVcqb6fLqmttTk2hDn8gTXDv3ysCjjdX",
+  "state": "initialized",
+  "tokenAmount": {
+    "amount": "0",
+    "decimals": 0,
+    "uiAmount": 0,
+    "uiAmountString": "0"
+  }
+}

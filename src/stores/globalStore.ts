@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
 import { useLocalStorage } from '@vueuse/core';
+import axios from 'axios';
+import { I_Token, I_TokenList } from 'stores/I_TokenList';
 
 export const RPC_NETWORKS = [
   {
@@ -27,6 +29,7 @@ export const useGlobalStore = defineStore('globalstore', {
     rpc_selected: useLocalStorage('rpc_selected', RPC_NETWORKS[0]),
     connection: {} as Connection,
     admins: import.meta.env.VITE_ADMINS?.split(',') as Array<string>,
+    token_list: [] as I_Token[],
   }),
 
   getters: {
@@ -43,6 +46,16 @@ export const useGlobalStore = defineStore('globalstore', {
       this.connection = new Connection(this.rpc_selected.url, {
         commitment: 'confirmed',
       });
+    },
+    async load_token_list() {
+      axios
+        .get(
+          'https://cdn.jsdelivr.net/gh/solflare-wallet/token-list@latest/solana-tokenlist.json',
+        )
+        .then((response) => {
+          const data: I_TokenList = response.data;
+          this.token_list = data.tokens;
+        });
     },
   },
 });

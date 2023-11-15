@@ -18,4 +18,8 @@ useWhitelist();
 useRaffleStore();
 
 useQuasar().dark.set(true);
+
+onMounted(async () => {
+  await useGlobalStore().load_token_list();
+});
 </script>

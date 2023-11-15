@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import IconFromSeed from 'components/icons/IconFromSeed.vue';
 import { WalletMultiButton } from 'solana-wallets-vue';
+import { useGlobalStore } from '../stores/globalStore';
 </script>
 
 <template>

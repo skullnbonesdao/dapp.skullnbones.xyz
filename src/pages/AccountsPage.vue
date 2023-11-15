@@ -12,6 +12,8 @@ import DeleteWhitelist from 'components/whitelist/DeleteWhitelist.vue';
 import AddAddressToWhitelist from 'components/whitelist/AddAddressToWhitelist.vue';
 import AccountWalletAccounts from 'components/Accounts/AccountWalletAccounts.vue';
 import AccountSolana from 'components/Accounts/AccountSolana.vue';
+import { useGlobalStore } from '../stores/globalStore';
+import { useGlobalWalletStore } from '../stores/globalWallet';
 
 const data = ref();
 const selected_tab = ref('wallet');
