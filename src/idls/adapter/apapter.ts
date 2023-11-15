@@ -9,11 +9,9 @@ import { useGlobalStore } from 'stores/globalStore';
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
 const programID_Whitelist = new PublicKey(
-  '6CY4PELBNPvqLymWWpWSEMR84kwmTZERFj6VoRLvL5Vn',
+  import.meta.env.VITE_PROGRAM_WHITELIST,
 );
-const programID_Raffle = new PublicKey(
-  '6hr9kL5zieg3WW6NJmTYfMVU4cTUTCxAHdDY2bUood3j',
-);
+const programID_Raffle = new PublicKey(import.meta.env.VITE_PROGRAM_RAFFLE);
 
 let workspace = null;
 export const useWorkspaceAdapter = () => workspace;
