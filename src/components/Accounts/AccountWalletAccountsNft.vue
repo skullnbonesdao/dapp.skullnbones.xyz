@@ -11,7 +11,7 @@ import EditTokenButton from 'components/buttons/EditTokenButton.vue';
 
 const accounts = ref();
 
-const visibleColumns = ref(['account', 'amount', 'edit', 'send']);
+const visibleColumns = ref(['account', 'amount', 'mint', 'action']);
 
 //const visibleColumns = ref(['account', 'decimals', 'amount', 'edit', 'send']);
 
@@ -80,7 +80,7 @@ const columns = [
   {
     label: '',
     align: 'right',
-    name: 'send',
+    name: 'action',
   },
 ];
 
@@ -195,7 +195,7 @@ const pagination = ref({ rowsPerPage: 0 });
             </div>
           </q-td>
 
-          <q-td key="send" :props="props" class="q-gutter-x-sm">
+          <q-td key="action" :props="props" class="q-gutter-x-sm">
             <EditTokenButton
               :amount="props.row.info.tokenAmount.uiAmount"
               :mint="props.row.info.mint"
