@@ -75,6 +75,7 @@ async function send_token() {
 
 <template>
   <q-btn
+    square
     color="primary"
     size="sm"
     icon="send"
@@ -96,13 +97,19 @@ async function send_token() {
         <q-btn flat round dense icon="close" v-close-popup />
       </q-toolbar>
 
-      <q-card-section class="q-gutter-y-md">
+      <q-card-section class="q-gutter-y-sm">
         <div>
-          <q-input label="Receiver" v-model="input_receiver" />
+          <q-input filled square label="Receiver" v-model="input_receiver" />
         </div>
-        <div class="row q-gutter-x-md">
-          <q-input class="col" label="Amount" v-model="input_amount" />
-          <q-btn color="primary" icon="send" @click="send_token()" />
+        <div class="row">
+          <q-input
+            filled
+            square
+            class="col"
+            label="Amount"
+            v-model="input_amount"
+          />
+          <q-btn square color="primary" icon="send" @click="send_token()" />
         </div>
       </q-card-section>
     </q-card>

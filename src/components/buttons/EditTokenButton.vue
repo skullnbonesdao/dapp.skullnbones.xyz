@@ -121,6 +121,7 @@ async function close_account() {
 
 <template>
   <q-btn
+    square
     color="primary"
     size="sm"
     icon="edit"
@@ -143,12 +144,16 @@ async function close_account() {
       </q-toolbar>
 
       <q-card-section class="q-gutter-y-md col justify-around">
-        <div class="row">
-          <div class="col">Amount left:</div>
-          <div class="col">{{ amount }}</div>
+        <div class="row q-gutter-x-sm">
+          <div class="">Closing Token-Accounts will recover the fee!</div>
+        </div>
+        <div class="row q-gutter-x-sm">
+          <div class="">Amount left:</div>
+          <div class="">{{ amount }}</div>
         </div>
 
         <q-btn
+          square
           :disabled="amount == 0"
           class="full-width"
           color="red"
@@ -157,6 +162,7 @@ async function close_account() {
           Burn and close Account
         </q-btn>
         <q-btn
+          square
           :disabled="amount > 0"
           class="full-width"
           color="orange"
@@ -166,7 +172,9 @@ async function close_account() {
         >
       </q-card-section>
 
-      <div class="q-ma-md text-right text-weight-light">fee: 0.001sol</div>
+      <div class="q-ma-md text-right text-weight-light">
+        service-fee: 0.001sol
+      </div>
     </q-card>
   </q-dialog>
 </template>

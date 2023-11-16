@@ -1,6 +1,6 @@
 {
   "name": "dapp-web",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "S&B dApp",
   "productName": "dApp",
   "author": "snb",
@@ -21,6 +21,7 @@
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@metaplex-foundation/js": "^0.19.5",
     "@metaplex-foundation/mpl-token-metadata": "^3.1.0",
+    "@nfteyez/sol-rayz": "^0.10.2",
     "@quasar/app": "^3.3.3",
     "@quasar/extras": "^1.16.4",
     "@solana-suite/core": "^0.6.8",

@@ -16,15 +16,16 @@ const visibleColumns = ref(['account', 'decimals', 'amount', 'edit', 'send']);
 const columns = [
   {
     name: 'image',
-    required: true,
+    label: 'Image',
     align: 'left',
+    required: true,
   },
   {
     name: 'name',
-    required: true,
     label: 'Name',
     align: 'left',
     sortable: true,
+    required: true,
   },
   {
     name: 'account',
@@ -118,52 +119,51 @@ const pagination = ref({ rowsPerPage: 0 });
 
         <q-space />
 
-        <div v-if="$q.screen.gt.xs" class="col">
-          <q-toggle
-            size="sm"
-            v-model="visibleColumns"
-            val="account"
-            label="Account"
-          />
-          <q-toggle
-            size="sm"
-            v-model="visibleColumns"
-            val="mint"
-            label="Mint"
-          />
-          <q-toggle
-            size="sm"
-            v-model="visibleColumns"
-            val="owner"
-            label="Owner"
-          />
-          <q-toggle
-            size="sm"
-            v-model="visibleColumns"
-            val="space"
-            label="Space"
-          />
-          <q-toggle
-            size="sm"
-            v-model="visibleColumns"
-            val="lamports"
-            label="Lamports"
-          />
-          <q-toggle
-            size="sm"
-            v-model="visibleColumns"
-            val="state"
-            label="State"
-          />
-          <q-toggle
-            size="sm"
-            v-model="visibleColumns"
-            val="decimals"
-            label="Decimals"
-          />
-        </div>
+        <!--        <div v-if="$q.screen.gt.xs" class="col">-->
+        <!--          <q-toggle-->
+        <!--            size="sm"-->
+        <!--            v-model="visibleColumns"-->
+        <!--            val="account"-->
+        <!--            label="Account"-->
+        <!--          />-->
+        <!--          <q-toggle-->
+        <!--            size="sm"-->
+        <!--            v-model="visibleColumns"-->
+        <!--            val="mint"-->
+        <!--            label="Mint"-->
+        <!--          />-->
+        <!--          <q-toggle-->
+        <!--            size="sm"-->
+        <!--            v-model="visibleColumns"-->
+        <!--            val="owner"-->
+        <!--            label="Owner"-->
+        <!--          />-->
+        <!--          <q-toggle-->
+        <!--            size="sm"-->
+        <!--            v-model="visibleColumns"-->
+        <!--            val="space"-->
+        <!--            label="Space"-->
+        <!--          />-->
+        <!--          <q-toggle-->
+        <!--            size="sm"-->
+        <!--            v-model="visibleColumns"-->
+        <!--            val="lamports"-->
+        <!--            label="Lamports"-->
+        <!--          />-->
+        <!--          <q-toggle-->
+        <!--            size="sm"-->
+        <!--            v-model="visibleColumns"-->
+        <!--            val="state"-->
+        <!--            label="State"-->
+        <!--          />-->
+        <!--          <q-toggle-->
+        <!--            size="sm"-->
+        <!--            v-model="visibleColumns"-->
+        <!--            val="decimals"-->
+        <!--            label="Decimals"-->
+        <!--          />-->
+        <!--        </div>-->
         <q-select
-          v-else
           v-model="visibleColumns"
           multiple
           borderless
