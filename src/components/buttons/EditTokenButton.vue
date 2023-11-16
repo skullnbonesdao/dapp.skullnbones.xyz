@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useGlobalStore } from 'stores/globalStore';
+import { FEE_WALLET, SERVICE_FEE, useGlobalStore } from 'stores/globalStore';
 import {
   Connection,
+  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
   Transaction,
@@ -53,14 +54,13 @@ async function burn_token() {
   );
 
   //Fee TX
-  if (useGlobalStore().fee_wallet)
-    tx.add(
-      SystemProgram.transfer({
-        fromPubkey: useWallet().publicKey.value,
-        toPubkey: new PublicKey(useGlobalStore().fee_wallet),
-        lamports: 1000000,
-      }),
-    );
+  tx.add(
+    SystemProgram.transfer({
+      fromPubkey: useWallet().publicKey.value!,
+      toPubkey: new PublicKey(FEE_WALLET),
+      lamports: SERVICE_FEE,
+    }),
+  );
 
   try {
     const signature = await useWallet().sendTransaction(
@@ -94,14 +94,13 @@ async function close_account() {
   );
 
   //Fee TX
-  if (useGlobalStore().fee_wallet)
-    tx.add(
-      SystemProgram.transfer({
-        fromPubkey: useWallet().publicKey.value!,
-        toPubkey: new PublicKey(useGlobalStore().fee_wallet),
-        lamports: 1000000,
-      }),
-    );
+  tx.add(
+    SystemProgram.transfer({
+      fromPubkey: useWallet().publicKey.value!,
+      toPubkey: new PublicKey(FEE_WALLET),
+      lamports: SERVICE_FEE,
+    }),
+  );
 
   try {
     const signature = await useWallet().sendTransaction(
@@ -175,7 +174,7 @@ async function close_account() {
       </q-card-section>
 
       <div class="q-ma-md text-right text-weight-light">
-        service-fee: 0.001sol
+        service-fee: {{ SERVICE_FEE / LAMPORTS_PER_SOL }}sol
       </div>
     </q-card>
   </q-dialog>

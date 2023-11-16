@@ -53,6 +53,11 @@ const selected_tab_1 = ref('token');
 
     <q-tab-panels dark v-model="selected_tab_0" animated class="q-ma-md">
       <q-tab-panel name="wallet">
+        <div v-if="useGlobalWalletStore().is_loading" class="row">
+          <q-space />
+          <q-spinner-cube class="row" color="primary" size="3rem" />
+          <q-space />
+        </div>
         <AccountWalletAccountsToken v-if="selected_tab_1 == 'token'" />
         <AccountWalletAccountsNft v-if="selected_tab_1 == 'nft'" />
       </q-tab-panel>

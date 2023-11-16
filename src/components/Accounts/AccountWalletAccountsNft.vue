@@ -8,6 +8,7 @@ import { format_address } from 'src/functions/format_address';
 import SolscanLink from 'components/buttons/SolscanLink.vue';
 import SendTokenButton from 'components/buttons/SendTokenButton.vue';
 import EditTokenButton from 'components/buttons/EditTokenButton.vue';
+import { useRaffleStore } from 'stores/globalRaffle';
 
 const accounts = ref();
 
@@ -149,9 +150,9 @@ const pagination = ref({ rowsPerPage: 0 });
               color=""
               size="sm"
               class="q-mr-sm"
-              v-if="props.row.meta.data.uri"
+              v-if="props.row.meta.data.uri && props.row.data"
             >
-              <img :src="props.row.data.image" />
+              <img :src="props.row.data.image ?? 'none'" />
             </q-avatar>
             <div>{{ props.row.meta.data?.name || props.row.data.name }}</div>
           </q-td>

@@ -21,6 +21,7 @@ export const WHITELIST_CREATOR_WALLET = new PublicKey(
 );
 
 export const FEE_WALLET = new PublicKey(import.meta.env.VITE_FEE_WALLET);
+export const SERVICE_FEE = 100000;
 
 export const RAFLLE_WHITELIST_NAME = 'Crew';
 

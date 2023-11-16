@@ -87,56 +87,51 @@ export const useGlobalWalletStore = defineStore('walletStore', {
       }
       this.is_loading = false;
     },
-    async update_accounts_nft() {
-      if (useWallet().publicKey.value) {
+    async update_accounts_nft(force = false) {
+      if (useWallet().publicKey.value || !this.nft_map.length || force) {
+        this.is_loading = true;
         this.nft_in_wallet = [];
-        this.nft_map = [];
 
+        this.nft_map = [];
         this.nft_in_wallet = (await getParsedNftAccountsByOwner({
           publicAddress: useWallet().publicKey.value!.toString(),
           connection: useGlobalStore().connection as Connection,
         })) as I_AccountNFT[];
 
         for (const meta of this.nft_in_wallet) {
-          try {
-            const largestAccounts =
-              await useGlobalStore().connection.getTokenLargestAccounts(
-                new PublicKey(meta.mint),
-              );
-            const largestAccountInfo =
-              await useGlobalStore().connection.getParsedAccountInfo(
-                largestAccounts.value[0].address,
-              );
+          const largestAccounts =
+            await useGlobalStore().connection.getTokenLargestAccounts(
+              new PublicKey(meta.mint),
+            );
+          const largestAccountInfo =
+            await useGlobalStore().connection.getParsedAccountInfo(
+              largestAccounts.value[0].address,
+            );
 
-            console.log(largestAccountInfo);
+          const info = largestAccountInfo.value.data.parsed
+            .info as I_AccountParsedInfo;
 
-            const info = largestAccountInfo.value.data.parsed
-              .info as I_AccountParsedInfo;
-
-            console.log(info);
-            // const account_info = (
-            //   await useGlobalStore().connection.getParsedAccountInfo(ata, {
-            //     commitment: 'confirmed',
-            //   })
-            // ).value;
-            //
-            // const info = account_info?.account.data.parsed
-            //   .info as I_AccountParsedInfo;
-
-            this.nft_map.push({
-              pubkey: largestAccounts.value[0].address.toString(),
-              account: largestAccountInfo.value,
-              info: info,
-              meta: meta,
-              data: await axios.get(meta.data.uri).then((resp) => {
-                return resp.data;
-              }),
-            });
-          } catch (err) {
-            console.warn(err);
-          }
+          this.nft_map.push({
+            pubkey: largestAccounts.value[0].address.toString(),
+            account: largestAccountInfo.value,
+            info: info,
+            meta: meta,
+            data: await fetch_data_url(meta.data.uri),
+          });
         }
       }
+      this.is_loading = false;
     },
   },
 });
+
+async function fetch_data_url(url: string) {
+  try {
+    return await axios.get(url).then((resp) => {
+      return resp.data;
+    });
+  } catch (err) {
+    console.warn(err);
+    return undefined;
+  }
+}
