@@ -14,8 +14,8 @@ import AccountWalletAccounts from 'components/Accounts/AccountWalletAccountsToke
 import AccountSolana from 'components/Accounts/AccountSolana.vue';
 import { useGlobalStore } from '../stores/globalStore';
 import { useGlobalWalletStore } from '../stores/globalWallet';
-import AccountWalletAccountsToken from 'components/Accounts/AccountWalletAccountsToken.vue'
-import AccountWalletAccountsNft from 'components/Accounts/AccountWalletAccountsNft.vue'
+import AccountWalletAccountsToken from 'components/Accounts/AccountWalletAccountsToken.vue';
+import AccountWalletAccountsNft from 'components/Accounts/AccountWalletAccountsNft.vue';
 
 const data = ref();
 const selected_tab_0 = ref('wallet');
@@ -24,34 +24,37 @@ const selected_tab_1 = ref('token');
 
 <template>
   <q-page class="col items-center justify-evenly">
-    <q-tabs
-      no-caps
-      outside-arrows
-      mobile-arrows
-      v-model="selected_tab_0"
-      class="shadow-2"
-      align="justify"
-    >
-      <q-tab name="wallet" label="Wallet" />
-      <q-tab name="solana" label="Solana" />
-    </q-tabs>
+    <div class="col shadow-1">
       <q-tabs
-          v-if="selected_tab_0 == 'wallet'"
-          no-caps
-          outside-arrows
-          mobile-arrows
-          v-model="selected_tab_1"
-          class="shadow-2"
-          align="justify"
+        no-caps
+        outside-arrows
+        mobile-arrows
+        v-model="selected_tab_0"
+        align="justify"
       >
-          <q-tab name="token" label="Token" />
-          <q-tab name="nft" label="NFT" />
+        <q-tab name="wallet" label="Wallet" />
+        <q-tab name="solana" label="Solana" />
       </q-tabs>
 
-    <q-tab-panels dark v-model="selected_tab_0" animated class="">
+      <div class="row">
+        <q-tabs
+          class="col"
+          v-if="selected_tab_0 == 'wallet'"
+          mobile-arrows
+          v-model="selected_tab_1"
+          align="justify"
+        >
+          <q-tab name="token" label="Token" />
+          <q-tab name="nft" label="NFT" />
+        </q-tabs>
+        <div class="col" />
+      </div>
+    </div>
+
+    <q-tab-panels dark v-model="selected_tab_0" animated class="q-ma-md">
       <q-tab-panel name="wallet">
         <AccountWalletAccountsToken v-if="selected_tab_1 == 'token'" />
-          <AccountWalletAccountsNft v-if="selected_tab_1 == 'nft'" />
+        <AccountWalletAccountsNft v-if="selected_tab_1 == 'nft'" />
       </q-tab-panel>
       <q-tab-panel name="solana" class="q-gutter-md">
         <AccountSolana />

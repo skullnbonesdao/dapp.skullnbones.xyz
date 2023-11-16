@@ -121,6 +121,7 @@ async function close_account() {
 
 <template>
   <q-btn
+    flat
     square
     color="primary"
     size="sm"
@@ -163,6 +164,7 @@ async function close_account() {
         </q-btn>
         <q-btn
           square
+          flat
           :disabled="amount > 0"
           class="full-width"
           color="orange"

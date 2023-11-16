@@ -11,7 +11,7 @@ import EditTokenButton from 'components/buttons/EditTokenButton.vue';
 
 const accounts = ref();
 
-const visibleColumns = ref(['account', 'decimals', 'amount', 'edit', 'send']);
+const visibleColumns = ref(['account', 'amount', 'mint', 'action']);
 
 const columns = [
   {
@@ -71,13 +71,14 @@ const columns = [
   {
     name: 'amount',
     label: 'Amount',
+    align: 'right',
     sortable: true,
   },
 
   {
     label: '',
     align: 'right',
-    name: 'send',
+    name: 'action',
   },
 ];
 
@@ -119,50 +120,6 @@ const pagination = ref({ rowsPerPage: 0 });
 
         <q-space />
 
-        <!--        <div v-if="$q.screen.gt.xs" class="col">-->
-        <!--          <q-toggle-->
-        <!--            size="sm"-->
-        <!--            v-model="visibleColumns"-->
-        <!--            val="account"-->
-        <!--            label="Account"-->
-        <!--          />-->
-        <!--          <q-toggle-->
-        <!--            size="sm"-->
-        <!--            v-model="visibleColumns"-->
-        <!--            val="mint"-->
-        <!--            label="Mint"-->
-        <!--          />-->
-        <!--          <q-toggle-->
-        <!--            size="sm"-->
-        <!--            v-model="visibleColumns"-->
-        <!--            val="owner"-->
-        <!--            label="Owner"-->
-        <!--          />-->
-        <!--          <q-toggle-->
-        <!--            size="sm"-->
-        <!--            v-model="visibleColumns"-->
-        <!--            val="space"-->
-        <!--            label="Space"-->
-        <!--          />-->
-        <!--          <q-toggle-->
-        <!--            size="sm"-->
-        <!--            v-model="visibleColumns"-->
-        <!--            val="lamports"-->
-        <!--            label="Lamports"-->
-        <!--          />-->
-        <!--          <q-toggle-->
-        <!--            size="sm"-->
-        <!--            v-model="visibleColumns"-->
-        <!--            val="state"-->
-        <!--            label="State"-->
-        <!--          />-->
-        <!--          <q-toggle-->
-        <!--            size="sm"-->
-        <!--            v-model="visibleColumns"-->
-        <!--            val="decimals"-->
-        <!--            label="Decimals"-->
-        <!--          />-->
-        <!--        </div>-->
         <q-select
           v-model="visibleColumns"
           multiple
@@ -200,17 +157,14 @@ const pagination = ref({ rowsPerPage: 0 });
 
           <q-td key="account" :props="props">
             <SolscanLink :address="props.row.pubkey" />
-            {{ format_address(props.row.pubkey.toString()) }}
           </q-td>
 
           <q-td key="mint" :props="props" class="">
             <SolscanLink :address="props.row.info.mint" />
-            {{ format_address(props.row.info.mint) }}
           </q-td>
 
           <q-td key="owner" :props="props">
             <SolscanLink :address="props.row.info.owner" />
-            {{ format_address(props.row.info.owner) }}
           </q-td>
 
           <q-td key="state" :props="props">
@@ -230,14 +184,14 @@ const pagination = ref({ rowsPerPage: 0 });
               :class="
                 props.row.info.tokenAmount.uiAmount > 0
                   ? 'text-white'
-                  : 'text-yellow'
+                  : 'text-secondary'
               "
             >
               {{ props.row.info.tokenAmount.uiAmount.toFixed(2) }}
             </div>
           </q-td>
 
-          <q-td key="send" :props="props" class="q-gutter-x-sm">
+          <q-td key="action" :props="props" class="q-gutter-x-sm">
             <EditTokenButton
               :amount="props.row.info.tokenAmount.uiAmount"
               :mint="props.row.info.mint"

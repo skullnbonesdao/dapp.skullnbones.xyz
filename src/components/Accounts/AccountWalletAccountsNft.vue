@@ -11,15 +11,7 @@ import EditTokenButton from 'components/buttons/EditTokenButton.vue';
 
 const accounts = ref();
 
-const visibleColumns = ref([
-  'account',
-  'mint',
-  'owner',
-  'decimals',
-  'amount',
-  'edit',
-  'send',
-]);
+const visibleColumns = ref(['account', 'amount', 'edit', 'send']);
 
 //const visibleColumns = ref(['account', 'decimals', 'amount', 'edit', 'send']);
 
@@ -103,10 +95,6 @@ watch(
   },
 );
 const pagination = ref({ rowsPerPage: 0 });
-
-// const table_data = computed(() => {
-//   return;
-// });
 </script>
 
 <template>
@@ -156,11 +144,6 @@ const pagination = ref({ rowsPerPage: 0 });
 
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="image" :props="props">
-            <q-avatar color="" size="sm" v-if="props.row.meta.data.uri">
-              <img :src="props.row.data.image" />
-            </q-avatar>
-          </q-td>
           <q-td key="name" :props="props" class="row items-center">
             <q-avatar
               color=""
@@ -173,60 +156,56 @@ const pagination = ref({ rowsPerPage: 0 });
             <div>{{ props.row.meta.data?.name || props.row.data.name }}</div>
           </q-td>
           <q-td key="symbol" :props="props">
-            <!--            <SolscanLink :address="props.row.pubkey" />-->
             {{ props.row.meta.data.symbol || props.row.data.symbol }}
           </q-td>
 
           <q-td key="account" :props="props">
-            <SolscanLink :address="props.row.account.tokenAccount" />
-            {{ props.row.pubkey }}
+            <SolscanLink :address="props.row.pubkey" />
           </q-td>
 
           <q-td key="mint" :props="props" class="">
-            <!--                      <SolscanLink :address="props.row.info.mint" />-->
-            {{ props.row.account }}
+            <SolscanLink :address="props.row.meta.mint" />
           </q-td>
 
-          <!--          <q-td key="owner" :props="props">-->
-          <!--            <SolscanLink :address="props.row.info.owner" />-->
-          <!--            {{ format_address(props.row.info.owner) }}-->
-          <!--          </q-td>-->
+          <q-td key="owner" :props="props">
+            <SolscanLink :address="props.row.info.owner" />
+          </q-td>
 
-          <!--          <q-td key="state" :props="props">-->
-          <!--            {{ props.row.account.account.data.parsed.info.state }}-->
-          <!--          </q-td>-->
-          <!--          <q-td key="space" :props="props">-->
-          <!--            {{ props.row.account.account.space }}-->
-          <!--          </q-td>-->
-          <!--          <q-td key="lamports" :props="props">-->
-          <!--            {{ props.row.account.account.lamports }}-->
-          <!--          </q-td>-->
-          <!--          <q-td key="decimals" :props="props">-->
-          <!--            {{ props.row.info.tokenAmount.decimals }}-->
-          <!--          </q-td>-->
-          <!--          <q-td key="amount" class="text-overline" :props="props">-->
-          <!--            <div-->
-          <!--              :class="-->
-          <!--                props.row.info.tokenAmount.uiAmount > 0-->
-          <!--                  ? 'text-white'-->
-          <!--                  : 'text-yellow'-->
-          <!--              "-->
-          <!--            >-->
-          <!--              {{ props.row.info.tokenAmount.uiAmount.toFixed(2) }}-->
-          <!--            </div>-->
-          <!--          </q-td>-->
+          <q-td key="state" :props="props">
+            {{ props.row.account.account.data.parsed.info.state }}
+          </q-td>
+          <q-td key="space" :props="props">
+            {{ props.row.account.account.space }}
+          </q-td>
+          <q-td key="lamports" :props="props">
+            {{ props.row.account.account.lamports }}
+          </q-td>
+          <q-td key="decimals" :props="props">
+            {{ props.row.info.tokenAmount.decimals }}
+          </q-td>
+          <q-td key="amount" class="text-overline" :props="props">
+            <div
+              :class="
+                props.row.info.tokenAmount.uiAmount > 0
+                  ? 'text-white'
+                  : 'text-yellow'
+              "
+            >
+              {{ props.row.info.tokenAmount.uiAmount.toFixed(2) }}
+            </div>
+          </q-td>
 
-          <!--          <q-td key="send" :props="props" class="q-gutter-x-sm">-->
-          <!--            <EditTokenButton-->
-          <!--              :amount="props.row.info.tokenAmount.uiAmount"-->
-          <!--              :mint="props.row.info.mint"-->
-          <!--              :decimals="props.row.info.tokenAmount.decimals"-->
-          <!--            />-->
-          <!--            <SendTokenButton-->
-          <!--              :mint="props.row.info.mint"-->
-          <!--              :decimals="props.row.info.tokenAmount.decimals"-->
-          <!--            />-->
-          <!--          </q-td>-->
+          <q-td key="send" :props="props" class="q-gutter-x-sm">
+            <EditTokenButton
+              :amount="props.row.info.tokenAmount.uiAmount"
+              :mint="props.row.info.mint"
+              :decimals="props.row.info.tokenAmount.decimals"
+            />
+            <SendTokenButton
+              :mint="props.row.info.mint"
+              :decimals="props.row.info.tokenAmount.decimals"
+            />
+          </q-td>
         </q-tr>
       </template>
     </q-table>
