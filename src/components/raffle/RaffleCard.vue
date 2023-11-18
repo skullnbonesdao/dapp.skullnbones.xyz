@@ -72,7 +72,7 @@ watch(_updateCount, async () => {
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>{{ entrants?.max }}</q-item-label>
+            <q-item-label class="text-h6">{{ entrants?.max }}</q-item-label>
             <q-item-label class="text-orange-9" caption
               >Total tickets</q-item-label
             >
@@ -85,7 +85,7 @@ watch(_updateCount, async () => {
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>{{
+            <q-item-label class="text-h6">{{
               (
                 raffle.account.ticketPrice.toNumber() *
                 Math.pow(10, -raffle.account.ticketDecimals)
@@ -103,35 +103,18 @@ watch(_updateCount, async () => {
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>
+            <q-item-label class="text-overline">
               {{ format_address(raffle.account.ticketTokenMint.toString()) }}
             </q-item-label>
             <q-item-label class="text-orange-9" caption
               >Ticket-Mint</q-item-label
             >
 
-            <q-item-label>
+            <q-item-label class="text-overline">
               {{ format_address(raffle.account.prizeTokenMint.toString()) }}
             </q-item-label>
             <q-item-label class="text-orange-9" caption
               >Prize-Mint</q-item-label
-            >
-          </q-item-section>
-        </q-item>
-        <q-item clickable>
-          <q-item-section avatar>
-            <q-icon color="red" name="paid" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>{{
-              (
-                raffle.account.ticketPrice.toNumber() *
-                Math.pow(10, -raffle.account.ticketDecimals)
-              ).toFixed(2)
-            }}</q-item-label>
-            <q-item-label class="text-orange-9" caption
-              >Price per ticket</q-item-label
             >
           </q-item-section>
         </q-item>

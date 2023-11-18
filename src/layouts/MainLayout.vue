@@ -83,6 +83,7 @@
             </q-list>
           </q-btn-dropdown>
           <q-space />
+          <q-btn @click="send()">Send</q-btn>
         </div>
 
         <div class="row">
@@ -106,6 +107,19 @@ import { Connection } from '@solana/web3.js';
 import { version } from 'src/../package.json';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useWhitelist } from '../stores/globalWhitelist';
+import {
+  DiscordMessageType,
+  handle_discord_webhook,
+} from 'components/messages/handle_discord_webhook';
+
+async function send() {
+  await handle_discord_webhook(
+    DiscordMessageType.TICKET_BUY,
+    'test',
+    'testing stuff',
+    99,
+  );
+}
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
