@@ -83,17 +83,6 @@
             </q-list>
           </q-btn-dropdown>
           <q-space />
-          <q-btn
-            @click="
-              useRaffleStore().send_discord_webhook(
-                DiscordMessageType.TICKET_BUY,
-                'testing message',
-                'testing',
-                2,
-              )
-            "
-            >Send</q-btn
-          >
         </div>
 
         <div class="row">
