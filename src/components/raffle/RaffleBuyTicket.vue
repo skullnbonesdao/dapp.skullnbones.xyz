@@ -136,7 +136,16 @@ async function buy_raffle_ticket() {
         label="Amount"
         v-model="input_raffle_ticket_amount"
       />
-      <q-btn square color="primary" icon="send" @click="buy_raffle_ticket()" />
+      <q-btn
+        square
+        color="primary"
+        icon="send"
+        @click="
+          buy_raffle_ticket().then(() => {
+            console.log('done sending!');
+          })
+        "
+      />
     </div>
   </div>
 </template>
