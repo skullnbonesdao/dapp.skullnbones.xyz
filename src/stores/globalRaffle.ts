@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import * as discord from 'webhook-discord';
-import { DiscordMessageType } from 'components/messages/handle_discord_webhook';
 
 const IMAGE_URL =
   'https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-ticket-icon-flat-style-png-image_1977183.jpg';
@@ -55,9 +54,9 @@ export const useRaffleStore = defineStore('raffleStore', {
       switch (type) {
         case DiscordMessageType.RAFFLE_CREATE:
           embed = new discord.MessageBuilder()
+            .setName('Raffle - Create')
             .setTitle(title)
             .setDescription(description)
-            .setAuthor('Raffle - Create', IMAGE_URL)
             .setColor('#ff9f2a')
             .addField('Tickets', ticket_count.toString(), true)
             .addField('Price', ticket_price?.toString() ?? 'none', true);
@@ -65,9 +64,9 @@ export const useRaffleStore = defineStore('raffleStore', {
           break;
         case DiscordMessageType.TICKET_BUY:
           embed = new discord.MessageBuilder()
+            .setName('Ticket - Buy')
             .setTitle(title)
             .setDescription(description)
-            .setAuthor('Ticket - Buy', IMAGE_URL)
             .setColor('#ff9f2a')
             .addField('Tickets', ticket_count.toString(), true);
 
