@@ -15,10 +15,8 @@ import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { useGlobalWalletStore } from '../../stores/globalWallet';
-import {
-  DiscordMessageType,
-  handle_discord_webhook,
-} from 'components/messages/handle_discord_webhook';
+
+import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
 
 const input_raffle_name = ref();
 const input_raffle_description = ref();
@@ -88,7 +86,7 @@ async function create_new_raffle() {
     console.log(signature);
 
     if (await handle_confirmation(signature)) {
-      await handle_discord_webhook(
+      await useRaffleStore().send_discord_webhook(
         DiscordMessageType.RAFFLE_CREATE,
         input_raffle_name.value,
         input_raffle_description.value,

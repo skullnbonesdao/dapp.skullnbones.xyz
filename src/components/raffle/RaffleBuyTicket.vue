@@ -14,11 +14,8 @@ import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { SystemProgram } from '@solana/web3.js';
-import {
-  DiscordMessageType,
-  handle_discord_webhook,
-} from 'components/messages/handle_discord_webhook';
-import { useRaffleStore } from 'stores/globalRaffle';
+
+import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
 
 const input_raffle_ticket_amount = ref();
 
@@ -99,7 +96,7 @@ async function buy_raffle_ticket() {
     console.log(signature);
 
     if (await handle_confirmation(signature)) {
-      await handle_discord_webhook(
+      await useRaffleStore().send_discord_webhook(
         DiscordMessageType.TICKET_BUY,
         props.raffle.account.name.value,
         props.raffle.account.description.value,
