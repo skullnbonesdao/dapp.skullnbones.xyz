@@ -1,4 +1,5 @@
 import * as discord from 'discord-webhook-node';
+import { useRaffleStore } from 'stores/globalRaffle';
 
 const IMAGE_URL =
   'https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-ticket-icon-flat-style-png-image_1977183.jpg';
@@ -15,9 +16,8 @@ export async function handle_discord_webhook(
   ticket_count: number,
   ticket_price?: number,
 ) {
-  const hook = new discord.Webhook(import.meta.env.VITE_DISCORD_WEBHOOK);
-  hook.setUsername('Raffle');
-  hook.setAvatar(IMAGE_URL);
+  useRaffleStore().disocrd_handle.setUsername('Raffle');
+  useRaffleStore().disocrd_handle.setAvatar(IMAGE_URL);
 
   let embed;
   switch (type) {
@@ -43,7 +43,7 @@ export async function handle_discord_webhook(
       break;
   }
 
-  if (embed) await hook.send(embed);
+  if (embed) await useRaffleStore().disocrd_handle.send(embed);
 
-  console.log(hook);
+  console.log(useRaffleStore().disocrd_handle);
 }

@@ -29,6 +29,7 @@ export const useGlobalStore = defineStore('globalstore', {
   state: () => ({
     rpc_selected: useLocalStorage('rpc_selected', RPC_NETWORKS[0]),
     connection: {} as Connection,
+
     admins: import.meta.env.VITE_ADMINS?.split(',') as Array<string>,
     token_list: [] as I_Token[],
   }),
