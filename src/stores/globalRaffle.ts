@@ -55,20 +55,26 @@ export const useRaffleStore = defineStore('raffleStore', {
         case DiscordMessageType.RAFFLE_CREATE:
           embed = new discord.MessageBuilder()
             .setName('Raffle - Create')
+            .setAvatar(IMAGE_URL)
             .setTitle(title)
             .setDescription(description)
             .setColor('#ff9f2a')
-            .addField('Tickets', ticket_count.toString(), true)
-            .addField('Price', ticket_price?.toString() ?? 'none', true);
+            .addField('Total tickets:', ticket_count.toString(), true)
+            .addField(
+              'Price per ticket:',
+              ticket_price?.toString() ?? 'none',
+              true,
+            );
 
           break;
         case DiscordMessageType.TICKET_BUY:
           embed = new discord.MessageBuilder()
             .setName('Ticket - Buy')
+            .setAvatar(IMAGE_URL)
             .setTitle(title)
             .setDescription(description)
             .setColor('#ff9f2a')
-            .addField('Tickets', ticket_count.toString(), true);
+            .addField('Ticket amount:', ticket_count.toString(), true);
 
           break;
       }
