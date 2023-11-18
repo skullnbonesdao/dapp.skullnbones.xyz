@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import * as discord from 'discord-webhook-node';
+import * as discord from 'webhook-discord';
 import { DiscordMessageType } from 'components/messages/handle_discord_webhook';
 
 const IMAGE_URL =
@@ -48,8 +48,8 @@ export const useRaffleStore = defineStore('raffleStore', {
       ticket_count: number,
       ticket_price?: number,
     ) {
-      this.disocrd_handle.setUsername('Raffle');
-      this.disocrd_handle.setAvatar(IMAGE_URL);
+      // this.disocrd_handle.setUsername('Raffle');
+      // this.disocrd_handle.setAvatar(IMAGE_URL);
 
       let embed;
       switch (type) {
@@ -60,8 +60,8 @@ export const useRaffleStore = defineStore('raffleStore', {
             .setAuthor('Raffle - Create', IMAGE_URL)
             .setColor('#ff9f2a')
             .addField('Tickets', ticket_count.toString(), true)
-            .addField('Price', ticket_price?.toString() ?? 'none', true)
-            .setTimestamp();
+            .addField('Price', ticket_price?.toString() ?? 'none', true);
+
           break;
         case DiscordMessageType.TICKET_BUY:
           embed = new discord.MessageBuilder()
@@ -69,9 +69,8 @@ export const useRaffleStore = defineStore('raffleStore', {
             .setDescription(description)
             .setAuthor('Ticket - Buy', IMAGE_URL)
             .setColor('#ff9f2a')
-            .addField('Tickets', ticket_count.toString(), true)
+            .addField('Tickets', ticket_count.toString(), true);
 
-            .setTimestamp();
           break;
       }
 

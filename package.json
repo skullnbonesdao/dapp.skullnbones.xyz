@@ -31,7 +31,6 @@
     "@staratlas/factory": "^0.6.0",
     "@vueuse/core": "^10.6.1",
     "axios": "^1.2.1",
-    "discord-webhook-node": "^1.1.8",
     "konva": "^9.2.3",
     "minidenticons": "^4.2.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
@@ -42,7 +41,8 @@
     "vite-plugin-node-polyfills": "^0.16.0",
     "vue": "^3.0.0",
     "vue-konva": "^3.0.2",
-    "vue-router": "^4.0.0"
+    "vue-router": "^4.0.0",
+    "webhook-discord": "^3.7.8"
   },
   "devDependencies": {
     "@coral-xyz/anchor": "^0.29.0",
