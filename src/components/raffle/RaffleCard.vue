@@ -72,7 +72,7 @@ watch(_updateCount, async () => {
           </q-item-section>
 
           <q-item-section>
-            <q-item-label class="text-h6">{{ entrants?.max }}</q-item-label>
+            <q-item-label class="text-h6"> {{ entrants?.max }}</q-item-label>
             <q-item-label class="text-orange-9" caption
               >Total tickets</q-item-label
             >
@@ -169,7 +169,7 @@ watch(_updateCount, async () => {
       <RaffleCollectProceeds :raffle="raffle" :is_admin="is_admin" />
       <RaffleClose :raffle="raffle" :is_admin="is_admin" />
     </q-card-actions>
-
+    {{ entrants }}
     <q-card-actions>
       <RaffleBuyTicket
         :raffle="raffle"

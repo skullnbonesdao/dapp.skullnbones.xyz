@@ -61,16 +61,6 @@ async function buy_raffle_ticket() {
       pg_whitelist.value.programId,
     );
 
-  console.log('---');
-  console.log(whitelist.toString());
-
-  console.log(raffle.toString());
-  console.log(entrants.toString());
-
-  console.log(proceeds.toString());
-  console.log(proceedsMint.toString());
-  console.log(ata.toString());
-
   try {
     const signature = await pg_raffle.value.methods
       .buyTickets(
@@ -96,12 +86,20 @@ async function buy_raffle_ticket() {
     console.log(signature);
 
     if (await handle_confirmation(signature)) {
-      await useRaffleStore().send_discord_webhook(
-        DiscordMessageType.TICKET_BUY,
-        props.raffle.account.name.value,
-        props.raffle.account.description.value,
+      await useRaffleStore().send_buy_message_discord(
+        props.raffle.account.name.value.toString(),
+        `${props.entrants.total + input_raffle_ticket_amount.value}/${
+          props.entrants.max
+        }`,
         input_raffle_ticket_amount.value,
       );
+
+      // await useRaffleStore().send_discord_webhook(
+      //   DiscordMessageType.TICKET_BUY,
+      //   props.raffle.account.name.value,
+      //   props.raffle.account.description.value,
+      //   input_raffle_ticket_amount.value,
+      // );
     }
   } catch (err) {
     Notify.create({

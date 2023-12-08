@@ -57,7 +57,6 @@ export const useRaffleStore = defineStore('raffleStore', {
             .setName('Raffle - Create')
             .setAvatar(IMAGE_URL)
             .setTitle(title)
-            .setDescription(description)
             .setColor('#ff9f2a')
             .addField('Total tickets:', ticket_count.toString(), true)
             .addField(
@@ -72,9 +71,8 @@ export const useRaffleStore = defineStore('raffleStore', {
             .setName('Ticket - Buy')
             .setAvatar(IMAGE_URL)
             .setTitle(title)
-            .setDescription(description)
             .setColor('#ff9f2a')
-            .addField('Ticket amount:', ticket_count.toString(), true);
+            .addField('Tickets sold:', ticket_count.toString(), true);
 
           break;
       }
@@ -82,6 +80,21 @@ export const useRaffleStore = defineStore('raffleStore', {
       if (embed) await useRaffleStore().disocrd_handle.send(embed);
 
       console.log(useRaffleStore().disocrd_handle);
+    },
+
+    async send_buy_message_discord(
+      raffle_name: string,
+      raffle_status: string,
+      tickets_bought: string,
+    ) {
+      const embed = new discord.MessageBuilder()
+        .setName('Ticket(s) sold...')
+        .setAvatar(IMAGE_URL)
+        .setColor('#ff9f2a')
+        .addField('Raffle:', raffle_name, true)
+        .addField('Status:', raffle_status, true)
+        .addField('Tickets bought:', tickets_bought, true);
+      if (embed) await useRaffleStore().disocrd_handle.send(embed);
     },
   },
 });
