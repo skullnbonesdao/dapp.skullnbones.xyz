@@ -103,7 +103,7 @@ async function create_new_raffle() {
   }
 }
 
-const options = ref();
+const options = ref<any[]>([]);
 
 const stringOptions = ref(
   useGlobalWalletStore().token_accounts.flatMap(
@@ -111,23 +111,32 @@ const stringOptions = ref(
   ),
 );
 
-options.value = stringOptions.value;
+stringOptions.value.forEach((o) =>
+  options.value.push({
+    label:
+      useGlobalStore().token_list.find((t) => t.address == o)?.name +
+      ' [' +
+      useGlobalStore().token_list.find((t) => t.address == o)?.symbol +
+      ']',
+    value: o,
+  }),
+);
 
-function filterFn(val: any, update: any) {
-  if (val === '') {
-    update(() => {
-      options.value = stringOptions.value;
-    });
-    return;
-  }
-
-  update(() => {
-    const needle = val.toLowerCase();
-    options.value = stringOptions.value.filter(
-      (v) => v.toLowerCase().indexOf(needle) > -1,
-    );
-  });
-}
+// function filterFn(val: any, update: any) {
+//   if (val === '') {
+//     update(() => {
+//       options.value = stringOptions.value;
+//     });
+//     return;
+//   }
+//
+//   update(() => {
+//     const needle = val.toLowerCase();
+//     options.value = stringOptions.value.filter(
+//       (v) => v.toLowerCase().indexOf(needle) > -1,
+//     );
+//   });
+// }
 </script>
 
 <template>

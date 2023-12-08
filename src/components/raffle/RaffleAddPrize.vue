@@ -18,28 +18,40 @@ const input_account_selected = ref('');
 
 const props = defineProps(['raffle', 'is_admin']);
 
-const options = ref();
+const options = ref<any[]>([]);
 const stringOptions = ref(
   useGlobalWalletStore().token_accounts.flatMap(
     (account) => account.account.data.parsed.info.mint,
   ),
 );
-options.value = stringOptions.value;
-function filterFn(val: any, update: any) {
-  if (val === '') {
-    update(() => {
-      options.value = stringOptions.value;
-    });
-    return;
-  }
 
-  update(() => {
-    const needle = val.toLowerCase();
-    options.value = stringOptions.value.filter(
-      (v) => v.toLowerCase().indexOf(needle) > -1,
-    );
-  });
-}
+stringOptions.value.forEach((o) =>
+  options.value.push({
+    label:
+      useGlobalStore().token_list.find((t) => t.address == o)?.name +
+      ' [' +
+      useGlobalStore().token_list.find((t) => t.address == o)?.symbol +
+      ']',
+    value: o,
+  }),
+);
+
+// options.value = stringOptions.value;
+// function filterFn(val: any, update: any) {
+//   if (val === '') {
+//     update(() => {
+//       options.value = stringOptions.value;
+//     });
+//     return;
+//   }
+//
+//   update(() => {
+//     const needle = val.toLowerCase();
+//     options.value = stringOptions.value.filter(
+//       (v) => v.toLowerCase().indexOf(needle) > -1,
+//     );
+//   });
+// }
 
 async function add_prize_to_raffle() {
   const { pg_raffle } = useWorkspaceAdapter();
@@ -106,7 +118,7 @@ async function add_prize_to_raffle() {
     class="col q-pa-sm"
     v-if="
       is_admin &&
-      raffle.account.prizeTokenMint.toString() ===
+      raffle.account.prizeTokenMint.toString() !=
         '11111111111111111111111111111111'
     "
   >

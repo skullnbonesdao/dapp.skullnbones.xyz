@@ -104,14 +104,27 @@ watch(_updateCount, async () => {
 
           <q-item-section>
             <q-item-label class="text-overline">
-              {{ format_address(raffle.account.ticketTokenMint.toString()) }}
+              {{
+                useGlobalStore().token_list.find(
+                  (t) => t.address == raffle.account.ticketTokenMint,
+                )?.symbol
+              }}
             </q-item-label>
             <q-item-label class="text-orange-9" caption
               >Ticket-Mint</q-item-label
             >
 
-            <q-item-label class="text-overline">
-              {{ format_address(raffle.account.prizeTokenMint.toString()) }}
+            <q-item-label class="q-pt-md text-overline">
+              {{
+                useGlobalStore().token_list.find(
+                  (t) => t.address == raffle.account.prizeTokenMint,
+                )?.name
+              }}
+              [{{
+                useGlobalStore().token_list.find(
+                  (t) => t.address == raffle.account.prizeTokenMint,
+                )?.symbol
+              }}]
             </q-item-label>
             <q-item-label class="text-orange-9" caption
               >Prize-Mint</q-item-label
@@ -129,9 +142,11 @@ watch(_updateCount, async () => {
 
           <q-item-section>
             <q-item-label class="text-h6" l>Winner</q-item-label>
-            <q-item-label class="text-orange-9" caption>{{
-              format_address(raffle.account.winner.toString())
-            }}</q-item-label>
+            <q-item-label class="text-orange-9" caption>
+              {{
+                format_address(raffle.account.winner.toString())
+              }}</q-item-label
+            >
           </q-item-section>
         </q-item>
       </q-list>

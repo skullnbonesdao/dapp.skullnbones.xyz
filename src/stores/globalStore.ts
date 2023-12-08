@@ -4,6 +4,9 @@ import { useWallet } from 'solana-wallets-vue';
 import { useLocalStorage } from '@vueuse/core';
 import axios from 'axios';
 import { I_Token, I_TokenList } from 'stores/I_TokenList';
+import { I_StarAtlasNFT } from 'stores/I_StarAtlasNFT';
+
+export const STARATLASAPI_URL = 'https://galaxy.staratlas.com/nfts';
 
 export const RPC_NETWORKS = [
   {
@@ -50,14 +53,39 @@ export const useGlobalStore = defineStore('globalstore', {
       });
     },
     async load_token_list() {
-      axios
-        .get(
+      // await axios
+      //   .get(
+      //     'https://cdn.jsdelivr.net/gh/solflare-wallet/token-list@latest/solana-tokenlist.json',
+      //   )
+      //   .then((response) => {
+      //     const data: I_TokenList = response.data;
+      //     this.token_list = data.tokens;
+      //   });
+
+      const token_list = (
+        await axios.get(
           'https://cdn.jsdelivr.net/gh/solflare-wallet/token-list@latest/solana-tokenlist.json',
         )
-        .then((response) => {
-          const data: I_TokenList = response.data;
-          this.token_list = data.tokens;
-        });
+      ).data as I_TokenList;
+      this.token_list = token_list.tokens;
+
+      const data_sa = (await axios.get(STARATLASAPI_URL))
+        .data as I_StarAtlasNFT[];
+
+      data_sa.forEach((asset) =>
+        this.token_list.push({
+          name: asset.name,
+          address: asset.mint,
+          chainId: 0,
+          decimals: 0,
+          extensions: undefined,
+          holders: null,
+          logoURI: null,
+          symbol: asset.symbol,
+          tags: [],
+          verified: true,
+        }),
+      );
     },
   },
 });
