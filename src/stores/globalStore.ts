@@ -13,7 +13,6 @@ export const RPC_NETWORKS = [
     name: 'mainnet.alchemy',
     url: 'https://solana-mainnet.g.alchemy.com/v2/hhh3czrJbOnssV11HBINkPZSe-HzR3Jy',
   },
-  { name: 'mainnet.extrnode', url: 'https://solana-mainnet.rpc.extrnode.com' },
   { name: 'devnet.ankr', url: 'https://rpc.ankr.com/solana_devnet' },
 ];
 
