@@ -169,7 +169,7 @@ watch(_updateCount, async () => {
       <RaffleCollectProceeds :raffle="raffle" :is_admin="is_admin" />
       <RaffleClose :raffle="raffle" :is_admin="is_admin" />
     </q-card-actions>
-    {{ entrants }}
+
     <q-card-actions>
       <RaffleBuyTicket
         :raffle="raffle"
