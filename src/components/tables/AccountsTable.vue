@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { format_address } from 'src/functions/format_address';
+import { useGlobalStore } from 'stores/globalStore';
 
 const props = defineProps(['accounts']);
 
@@ -11,7 +12,9 @@ const columns = ref([
     label: 'Mint',
     align: 'left',
     field: 'mint',
-    field: (row: never) => format_address(row.mint?.toString() ?? ''),
+    field: (row: never) =>
+      useGlobalStore().token_list.find((t) => t.address == row.mint?.toString())
+        ?.name ?? '',
     sortable: true,
   },
   {
