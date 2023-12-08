@@ -118,7 +118,7 @@ async function add_prize_to_raffle() {
     class="col q-pa-sm"
     v-if="
       is_admin &&
-      raffle.account.prizeTokenMint.toString() !=
+      raffle.account.prizeTokenMint.toString() ==
         '11111111111111111111111111111111'
     "
   >
