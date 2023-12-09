@@ -54,7 +54,7 @@ async function create_new_raffle() {
   );
 
   const account_info = await useGlobalStore().connection.getParsedAccountInfo(
-    new anchor.web3.PublicKey(input_account_selected.value),
+    new anchor.web3.PublicKey(input_account_selected.value.value),
   );
 
   try {
@@ -74,7 +74,9 @@ async function create_new_raffle() {
         entrants: entrants,
         creator: useWallet().publicKey.value,
         proceeds: proceeds,
-        proceedsMint: new anchor.web3.PublicKey(input_account_selected.value),
+        proceedsMint: new anchor.web3.PublicKey(
+          input_account_selected.value.value,
+        ),
         tokenProgram: TOKEN_PROGRAM_ID,
         rent: SYSVAR_RENT_PUBKEY,
         whitelist: whitelist,
