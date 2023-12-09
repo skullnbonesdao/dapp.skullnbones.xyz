@@ -106,9 +106,11 @@ async function create_new_raffle() {
 const options = ref<any[]>([]);
 
 const stringOptions = ref(
-  useGlobalWalletStore().token_accounts.flatMap(
-    (account) => account.account.data.parsed.info.mint,
-  ),
+  useGlobalWalletStore()
+    .token_accounts.filter(
+      (account) => account.account.data.parsed.info.tokenAmount.uiAmount > 0,
+    )
+    .flatMap((account) => account.account.data.parsed.info.mint),
 );
 
 stringOptions.value.forEach((o) =>
