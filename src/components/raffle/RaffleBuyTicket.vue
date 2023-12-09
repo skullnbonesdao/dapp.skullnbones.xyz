@@ -138,7 +138,8 @@ async function buy_raffle_ticket() {
         class="col"
         label="Amount"
         v-model="input_raffle_ticket_amount"
-      />
+      >
+      </q-input>
       <q-btn
         square
         color="primary"
@@ -150,6 +151,12 @@ async function buy_raffle_ticket() {
         "
       />
     </div>
+    <p class="text-caption text-right text-weight-thin">
+      0.001◎ fee
+      <q-tooltip anchor="bottom right" self="top middle">
+        cover deployment costs
+      </q-tooltip>
+    </p>
   </div>
 </template>
 
