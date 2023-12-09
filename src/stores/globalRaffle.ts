@@ -73,7 +73,6 @@ export const useRaffleStore = defineStore('raffleStore', {
             .setTitle(title)
             .setColor('#ff9f2a')
             .addField('Tickets sold:', ticket_count.toString(), true);
-
           break;
       }
 

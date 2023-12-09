@@ -53,7 +53,16 @@ watch(_updateCount, async () => {
 <template>
   <q-card square flat>
     <q-img height="200px" v-if="raffle.account.url" :src="raffle.account.url" />
-    <q-img height="200px" v-else src="snb_icon.svg" />
+
+    <q-img
+      height="200px"
+      v-else
+      :src="
+        useGlobalStore().token_list.find(
+          (t) => t.address == raffle.account.prizeTokenMint,
+        )?.logoURI
+      "
+    />
 
     <q-card-section>
       <RaffleStateBadge :raffle="raffle" :entrants="entrants" />

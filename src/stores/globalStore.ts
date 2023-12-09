@@ -79,7 +79,7 @@ export const useGlobalStore = defineStore('globalstore', {
           decimals: 0,
           extensions: undefined,
           holders: null,
-          logoURI: null,
+          logoURI: asset.image,
           symbol: asset.symbol,
           tags: [],
           verified: true,
