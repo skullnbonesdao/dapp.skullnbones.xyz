@@ -87,10 +87,11 @@ async function buy_raffle_ticket() {
 
     if (await handle_confirmation(signature)) {
       await useRaffleStore().send_buy_message_discord(
-        props.raffle.account.name.value.toString(),
-        `${props.entrants.total + input_raffle_ticket_amount.value}/${
-          props.entrants.max
-        }`,
+        props.raffle.account.name.toString(),
+        `${
+          parseInt(props.entrants.total.toString()) +
+          parseInt(input_raffle_ticket_amount.value.toString())
+        }/${props.entrants?.max}`,
         input_raffle_ticket_amount.value,
       );
 
