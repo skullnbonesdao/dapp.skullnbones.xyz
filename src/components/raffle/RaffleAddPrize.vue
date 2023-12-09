@@ -58,7 +58,9 @@ stringOptions.value.forEach((o) =>
 async function add_prize_to_raffle() {
   const { pg_raffle } = useWorkspaceAdapter();
 
-  const prize_mint = new anchor.web3.PublicKey(input_account_selected.value);
+  const prize_mint = new anchor.web3.PublicKey(
+    input_account_selected.value.value,
+  );
 
   const ata = (
     await useGlobalStore().connection.getParsedTokenAccountsByOwner(
