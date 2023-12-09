@@ -16,12 +16,16 @@ import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { SystemProgram } from '@solana/web3.js';
 
 import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
+import { useGlobalWalletStore } from 'stores/globalWallet';
 
 const input_raffle_ticket_amount = ref();
 
 const props = defineProps(['raffle', 'is_admin', 'entrants']);
 
 async function buy_raffle_ticket() {
+  await useRaffleStore().update_raffles();
+  await useGlobalWalletStore().update_accounts();
+
   const { pg_raffle, pg_whitelist } = useWorkspaceAdapter();
 
   const proceedsMint = new anchor.web3.PublicKey(
@@ -94,6 +98,9 @@ async function buy_raffle_ticket() {
         }/${props.entrants?.max}`,
         input_raffle_ticket_amount.value,
       );
+
+      await useRaffleStore().update_raffles();
+      await useGlobalWalletStore().update_accounts();
 
       // await useRaffleStore().send_discord_webhook(
       //   DiscordMessageType.TICKET_BUY,
