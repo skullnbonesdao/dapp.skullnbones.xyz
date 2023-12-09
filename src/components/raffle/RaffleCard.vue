@@ -145,7 +145,7 @@ watch(_updateCount, async () => {
           <q-item-section avatar>
             <IconFromSeed
               style="width: 100px"
-              :seed="raffle.account?.randomness?.toString()"
+              :seed="raffle.account?.winner?.toString()"
             />
           </q-item-section>
 
