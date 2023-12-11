@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RaffleCard from 'components/raffle/RaffleCard.vue';
-import { computed, PropType, ref } from 'vue';
+import { computed, onMounted, PropType, ref } from 'vue';
 import { useQuasar } from 'quasar';
 
 const props = defineProps({

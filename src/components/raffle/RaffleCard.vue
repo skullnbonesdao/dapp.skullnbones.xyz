@@ -16,6 +16,11 @@ import RaffleEditImageUrl from 'components/raffle/RaffleEditImageUrl.vue';
 import { format_address } from 'src/functions/format_address';
 import { useRaffleStore } from 'stores/globalRaffle';
 import { storeToRefs } from 'pinia';
+import { PublicKey } from '@solana/web3.js';
+
+import * as borsh from 'borsh';
+import { data } from 'autoprefixer';
+import TicketsTable from 'components/tables/TicketsTable.vue';
 
 const props = defineProps(['raffle', 'is_admin']);
 const entrants = ref();
@@ -38,9 +43,48 @@ async function update_entrants() {
       },
     );
 }
+const tickets = ref();
+async function get_tickets() {
+  const { pg_raffle } = useWorkspaceAdapter();
+
+  const accountInfo = await pg_raffle.value.account.entrants.getAccountInfo(
+    new PublicKey('GzCeuKQ4MVMHodAjrHQJDZKyX9QoDDUg45c4Ec5a261T'),
+  );
+
+  let wallts: PublicKey[] = [];
+
+  for (let i = 0; i < entrants.value.total; i++) {
+    let bytes = getEntrant(accountInfo.data, i);
+    wallts.push(bytes);
+  }
+
+  let array = Object.entries(
+    wallts.reduce((cnt, cur) => ((cnt[cur] = cnt[cur] + 1 || 1), cnt), {}),
+  );
+
+  tickets.value = array.flatMap((e) => {
+    return {
+      address: e[0],
+      amount: e[1],
+    };
+  });
+}
+
+function getEntrant(entrantsData: Uint8Array[], index: number): PublicKey {
+  const startIndex: number = 8 + 4 + 4 + 32 * index;
+  const endIndex: number = startIndex + 32;
+
+  // Assuming entrantsData is a Uint8Array, create a slice from start to end index
+  const slice = entrantsData.slice(startIndex, endIndex);
+
+  // Call the Pubkey.new method with the slice
+
+  return new PublicKey(slice);
+}
 
 onMounted(async () => {
   await update_entrants();
+  await get_tickets();
 });
 
 const { _updateCount } = storeToRefs(useRaffleStore());
@@ -165,8 +209,13 @@ watch(_updateCount, async () => {
       :icon="expanded ? 'expand_less' : ' expand_more'"
       @click="expanded = !expanded"
     ></q-btn>
+
     <q-slide-transition>
-      <AccountsTable :accounts="accounts" v-show="expanded"> </AccountsTable>
+      <AccountsTable :accounts="accounts" v-show="expanded" />
+    </q-slide-transition>
+
+    <q-slide-transition>
+      <TicketsTable :entrads="tickets" v-show="expanded" />
     </q-slide-transition>
 
     <RaffleAddPrize :raffle="raffle" :is_admin="is_admin" />

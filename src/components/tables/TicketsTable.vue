@@ -1,27 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { format_address } from 'src/functions/format_address';
 import { useGlobalStore } from 'stores/globalStore';
 
-const props = defineProps(['accounts']);
+const props = defineProps(['entrads']);
+
+const rows = ref();
 
 const columns = ref([
   {
-    name: 'mint',
+    name: 'wallet',
     required: true,
-    label: 'Mint',
+    label: 'Wallet',
     align: 'left',
-    field: 'mint',
-    field: (row: never) =>
-      useGlobalStore().token_list.find((t) => t.address == row.mint?.toString())
-        ?.name ?? '',
+    field: (row: never) => format_address(row.address),
     sortable: true,
   },
   {
-    name: 'calories',
+    name: 'amount',
     align: 'right',
     label: 'Amount',
-    field: (row: never) => row.tokenAmount.uiAmount,
+    field: 'amount',
     sortable: true,
   },
 ]);
@@ -32,8 +31,8 @@ const columns = ref([
     dense
     bordered
     class="col"
-    title="Accounts"
-    :rows="accounts?.value?.map((a) => a.account.data.parsed.info)"
+    title="Tickets"
+    :rows="entrads"
     :columns="columns"
     row-key="mint"
     hide-bottom
