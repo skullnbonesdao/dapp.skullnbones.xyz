@@ -4,6 +4,9 @@ import { format_address } from 'src/functions/format_address';
 import { useGlobalStore } from 'stores/globalStore';
 
 const props = defineProps(['entrads']);
+const pagination = ref({
+  rowsPerPage: 0,
+});
 
 const rows = ref();
 
@@ -37,6 +40,8 @@ const columns = ref([
     row-key="mint"
     hide-bottom
     flat
+    v-model:pagination="pagination"
+    :rows-per-page-options="[0]"
   />
 </template>
 

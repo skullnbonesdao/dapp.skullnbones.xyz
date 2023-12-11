@@ -58,11 +58,21 @@ async function get_tickets() {
     wallts.push(bytes);
   }
 
-  let array = Object.entries(
-    wallts.reduce((cnt, cur) => ((cnt[cur] = cnt[cur] + 1 || 1), cnt), {}),
-  );
+  const walllet_strings = wallts.map((w) => w.toString());
+  console.log(walllet_strings);
 
-  tickets.value = array.flatMap((e) => {
+  let objAllRepition = {};
+
+  const array = walllet_strings.reduce((accumulator, value) => {
+    return {
+      ...accumulator,
+      [value]: (accumulator[value] || 0) + 1,
+    };
+  }, {});
+
+  console.log(array);
+
+  tickets.value = Object.entries(array).flatMap((e) => {
     return {
       address: e[0],
       amount: e[1],
@@ -95,6 +105,7 @@ watch(_updateCount, async () => {
 </script>
 
 <template>
+  {{ entrants }}
   <q-card square flat>
     <q-img height="200px" v-if="raffle.account.url" :src="raffle.account.url" />
 

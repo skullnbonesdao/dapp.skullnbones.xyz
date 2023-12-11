@@ -5,6 +5,10 @@ import { useGlobalStore } from 'stores/globalStore';
 
 const props = defineProps(['accounts']);
 
+const pagination = ref({
+  rowsPerPage: 0,
+});
+
 const columns = ref([
   {
     name: 'mint',
@@ -38,6 +42,8 @@ const columns = ref([
     row-key="mint"
     hide-bottom
     flat
+    v-model:pagination="pagination"
+    :rows-per-page-options="[0]"
   />
 </template>
 
