@@ -105,7 +105,6 @@ watch(_updateCount, async () => {
 </script>
 
 <template>
-  {{ entrants }}
   <q-card square flat>
     <q-img height="200px" v-if="raffle.account.url" :src="raffle.account.url" />
 
