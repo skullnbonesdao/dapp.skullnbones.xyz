@@ -62,7 +62,7 @@ onMounted(async () => {
     </div>
     <div
       v-if="useRaffleStore().raffles && !useRaffleStore().is_loading"
-      class="q-mx-md q-mt-md"
+      class="q-mx-md"
     >
       <RaffleGrid
         :raffles="useRaffleStore().get_running_raffles"
