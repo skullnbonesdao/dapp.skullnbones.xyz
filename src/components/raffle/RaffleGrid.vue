@@ -47,21 +47,6 @@ const pagination = ref();
     v-model:pagination="pagination"
     :rows-per-page-options="rowsPerPageOptions"
   >
-    <template v-slot:top-right>
-      {{}}
-      <q-input
-        borderless
-        dense
-        debounce="300"
-        v-model="filter"
-        placeholder="Search"
-      >
-        <template v-slot:append>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-    </template>
-
     <template v-slot:item="props">
       <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
         <RaffleCard :is_admin="is_admin" :raffle="props.row" />

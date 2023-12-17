@@ -27,7 +27,7 @@ onMounted(async () => {
 <template>
   <q-page
     v-if="!useWallet().publicKey.value"
-    class="row items-center justify-center"
+    class="row items-center justify-center bg-image"
   >
     <WalletMultiButton dark />
   </q-page>
