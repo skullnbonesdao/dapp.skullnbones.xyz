@@ -48,7 +48,7 @@ async function get_tickets() {
   const { pg_raffle } = useWorkspaceAdapter();
 
   const accountInfo = await pg_raffle.value.account.entrants.getAccountInfo(
-    new PublicKey('GzCeuKQ4MVMHodAjrHQJDZKyX9QoDDUg45c4Ec5a261T'),
+    props.raffle.publicKey,
   );
 
   let wallts: PublicKey[] = [];
@@ -59,9 +59,6 @@ async function get_tickets() {
   }
 
   const walllet_strings = wallts.map((w) => w.toString());
-  console.log(walllet_strings);
-
-  let objAllRepition = {};
 
   const array = walllet_strings.reduce((accumulator, value) => {
     return {
@@ -69,8 +66,6 @@ async function get_tickets() {
       [value]: (accumulator[value] || 0) + 1,
     };
   }, {});
-
-  console.log(array);
 
   tickets.value = Object.entries(array).flatMap((e) => {
     return {
