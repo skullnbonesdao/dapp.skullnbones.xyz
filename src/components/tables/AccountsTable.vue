@@ -34,7 +34,6 @@ const columns = ref([
 <template>
   <q-table
     dense
-    bordered
     class="col"
     title="Accounts"
     :rows="accounts?.value?.map((a) => a.account.data.parsed.info)"

@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { format_address } from 'src/functions/format_address';
 import { useGlobalStore } from 'stores/globalStore';
 
-const props = defineProps(['entrads']);
+const props = defineProps(['entrants']);
 const pagination = ref({
   rowsPerPage: 0,
 });
@@ -32,10 +32,9 @@ const columns = ref([
 <template>
   <q-table
     dense
-    bordered
     class="col"
     title="Tickets"
-    :rows="entrads"
+    :rows="entrants"
     :columns="columns"
     row-key="mint"
     hide-bottom

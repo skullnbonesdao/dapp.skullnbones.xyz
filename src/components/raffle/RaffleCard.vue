@@ -21,6 +21,7 @@ import { PublicKey } from '@solana/web3.js';
 import * as borsh from 'borsh';
 import { data } from 'autoprefixer';
 import TicketsTable from 'components/tables/TicketsTable.vue';
+import RaffleLinks from 'components/raffle/RaffleLinks.vue';
 
 const props = defineProps(['raffle', 'is_admin']);
 const entrants = ref();
@@ -48,17 +49,19 @@ async function get_tickets() {
   const { pg_raffle } = useWorkspaceAdapter();
 
   const accountInfo = await pg_raffle.value.account.entrants.getAccountInfo(
-    props.raffle.publicKey,
+    props.raffle.account.entrants,
   );
 
-  let wallts: PublicKey[] = [];
+  let wallets: PublicKey[] = [];
 
   for (let i = 0; i < entrants.value.total; i++) {
     let bytes = getEntrant(accountInfo.data, i);
-    wallts.push(bytes);
+    wallets.push(bytes);
   }
 
-  const walllet_strings = wallts.map((w) => w.toString());
+  console.log(wallets);
+
+  const walllet_strings = wallets.map((w) => w.toString());
 
   const array = walllet_strings.reduce((accumulator, value) => {
     return {
@@ -220,7 +223,11 @@ watch(_updateCount, async () => {
     </q-slide-transition>
 
     <q-slide-transition>
-      <TicketsTable :entrads="tickets" v-show="expanded" />
+      <TicketsTable :entrants="tickets" v-show="expanded" />
+    </q-slide-transition>
+
+    <q-slide-transition>
+      <RaffleLinks :raffle="raffle" :entrants="tickets" v-show="expanded" />
     </q-slide-transition>
 
     <RaffleAddPrize :raffle="raffle" :is_admin="is_admin" />
