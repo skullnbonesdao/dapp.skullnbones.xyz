@@ -40,7 +40,6 @@ async function reveal_raffle_winner() {
     await handle_confirmation(signature);
 
     await useRaffleStore().update_raffles();
-    show_drawing_animation.value = false;
   } catch (err) {
     Notify.create({
       color: 'red',
