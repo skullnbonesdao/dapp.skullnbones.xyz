@@ -15,7 +15,7 @@ import { useGlobalStore } from '../stores/globalStore';
         <WalletMultiButton dark />
         <q-space />
       </div>
-      <IconFromSeed seed="devApp" />
+      <!--      <IconFromSeed seed="devApp" />-->
     </div>
   </q-page>
 </template>
