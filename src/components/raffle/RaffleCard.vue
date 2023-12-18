@@ -59,8 +59,6 @@ async function get_tickets() {
     wallets.push(bytes);
   }
 
-  console.log(wallets);
-
   const walllet_strings = wallets.map((w) => w.toString());
 
   const array = walllet_strings.reduce((accumulator, value) => {

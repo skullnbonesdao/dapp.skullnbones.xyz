@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { useGlobalStore } from 'stores/globalStore';
 import RaffleGrid from 'components/raffle/RaffleGrid.vue';
@@ -19,9 +19,36 @@ import {
 const tab_selected = ref('raffle');
 
 onMounted(async () => {
-  await useRaffleStore().update_raffles();
   await useGlobalWalletStore().update_accounts();
+  if (!useRaffleStore().raffles.length) await useRaffleStore().update_raffles();
 });
+
+onBeforeUnmount(() => {
+  clearInterval(task_id.value);
+});
+
+watch(
+  () => useWallet().publicKey.value,
+  async () => {
+    await useGlobalWalletStore().update_accounts();
+    await useRaffleStore().update_raffles();
+  },
+);
+
+const task_id = ref();
+
+async function asyncRaffleUpdateJob() {
+  await useRaffleStore().update_raffles();
+  console.log('Raffles updated!');
+}
+
+function scheduleRaffleUpdateJob(interval: number) {
+  task_id.value = setInterval(async () => {
+    await asyncRaffleUpdateJob();
+  }, interval);
+}
+
+scheduleRaffleUpdateJob(60000);
 </script>
 
 <template>
