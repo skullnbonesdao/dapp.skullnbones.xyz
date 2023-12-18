@@ -6,16 +6,18 @@ import { useGlobalStore } from '../stores/globalStore';
 
 <template>
   <q-page class="row items-center justify-evenly">
-    <div>
-      <h1>devAPP</h1>
-      <h2>Skull&Bones</h2>
-      <!--      <TestCanvas />-->
-      <div class="row">
-        <q-space />
-        <WalletMultiButton dark />
-        <q-space />
+    <transition appear enter-active-class="animated fadeInDown ">
+      <div>
+        <h1>devAPP</h1>
+        <h2>Skull&Bones</h2>
+        <!--      <TestCanvas />-->
+        <div class="row">
+          <q-space />
+          <WalletMultiButton dark />
+          <q-space />
+        </div>
+        <!--      <IconFromSeed seed="devApp" />-->
       </div>
-      <!--      <IconFromSeed seed="devApp" />-->
-    </div>
+    </transition>
   </q-page>
 </template>

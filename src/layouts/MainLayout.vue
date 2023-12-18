@@ -48,13 +48,16 @@
             :key="link.text"
             v-ripple
             clickable
-            class="col bg-black q-ma-md"
+            active-class="bg-primary"
+            class="col q-ma-sm"
           >
             <q-item-section avatar>
-              <q-icon color="grey" :name="link.icon" />
+              <q-icon :name="link.icon" />
             </q-item-section>
             <q-item-section>
-              <q-item-label class="text-bold">{{ link.text }}</q-item-label>
+              <q-item-label class="text-bold text-subtitle1">{{
+                link.text
+              }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item> </q-item>
