@@ -15,6 +15,7 @@ import {
   DiscordMessageType,
   handle_discord_webhook,
 } from 'components/messages/handle_discord_webhook';
+import { evaSearch } from '@quasar/extras/eva-icons';
 
 const tab_selected = ref('raffle');
 
@@ -49,6 +50,17 @@ function scheduleRaffleUpdateJob(interval: number) {
 }
 
 scheduleRaffleUpdateJob(60000);
+
+watch(
+  () => tab_selected.value,
+  () => {
+    if (tab_selected.value == 'raffle') {
+      scheduleRaffleUpdateJob(60000);
+    } else {
+      clearInterval(task_id.value);
+    }
+  },
+);
 </script>
 
 <template>
