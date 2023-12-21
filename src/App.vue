@@ -7,12 +7,16 @@ import { useGlobalStore } from 'stores/globalStore';
 import { useQuasar } from 'quasar';
 import { useRaffleStore } from 'stores/globalRaffle';
 import { useWhitelist } from 'stores/globalWhitelist';
-import { initWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import {
+  initWorkspaceAdapter,
+  useWorkspaceAdapter,
+} from 'src/idls/adapter/apapter';
 import { onMounted } from 'vue';
 import 'src/css/backgrounds.scss';
 
 useGlobalStore();
 useGlobalStore().update_connection();
+useWorkspaceAdapter();
 initWorkspaceAdapter();
 
 useWhitelist();

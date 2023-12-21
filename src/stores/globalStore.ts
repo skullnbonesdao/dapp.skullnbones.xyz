@@ -3,7 +3,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
 import { useLocalStorage } from '@vueuse/core';
 import axios from 'axios';
-import { I_Token, I_TokenList } from 'stores/I_TokenList';
+import { I_TokenList, I_Tokens } from 'stores/I_TokenList';
 import { I_StarAtlasNFT } from 'stores/I_StarAtlasNFT';
 
 export const STARATLASAPI_URL = 'https://galaxy.staratlas.com/nfts';
@@ -33,7 +33,7 @@ export const useGlobalStore = defineStore('globalstore', {
     connection: {} as Connection,
 
     admins: import.meta.env.VITE_ADMINS?.split(',') as Array<string>,
-    token_list: [] as I_Token[],
+    token_list: [] as I_Tokens[],
   }),
 
   getters: {
@@ -62,11 +62,9 @@ export const useGlobalStore = defineStore('globalstore', {
       //   });
 
       const token_list = (
-        await axios.get(
-          'https://cdn.jsdelivr.net/gh/solflare-wallet/token-list@latest/solana-tokenlist.json',
-        )
+        await axios.get('https://token-list-api.solana.cloud/v1/list')
       ).data as I_TokenList;
-      this.token_list = token_list.tokens;
+      this.token_list = token_list.content;
 
       const data_sa = (await axios.get(STARATLASAPI_URL))
         .data as I_StarAtlasNFT[];

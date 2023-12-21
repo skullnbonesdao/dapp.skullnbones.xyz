@@ -1,34 +1,20 @@
 export interface I_TokenList {
-  name: string;
-  logoURI: string;
-  keywords: string[];
-  tags: I_Tags;
-  timestamp: Date;
-  tokens: I_Token[];
+  content: I_Tokens[];
 }
 
-export interface I_Tags {
-  'lp-token': I_LpToken;
+export interface I_Tokens {
+  address?: string;
+  chainId?: number;
+  name?: string;
+  symbol?: string;
+  verified?: boolean;
+  decimals?: number;
+  holders?: number | null;
+  logoURI?: null | string;
+  tags?: string[];
+  extensions?: Extensions;
 }
 
-export interface I_LpToken {
-  name: string;
-  description: string;
-}
-
-export interface I_Token {
-  chainId: number;
-  name: string;
-  symbol: string;
-  address: string;
-  decimals: number;
-  logoURI: null | string;
-  tags: string[];
-  verified: boolean;
-  holders: number | null;
-  extensions?: I_Extensions;
-}
-
-export interface I_Extensions {
-  coingeckoId: string;
+export interface Extensions {
+  coingeckoId?: string;
 }
