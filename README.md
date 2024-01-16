@@ -1,6 +1,6 @@
 # dApp (dapp-web)
 
-dApp SnB
+dApp SnB Dev
 
 ## Install the dependencies
 ```bash
