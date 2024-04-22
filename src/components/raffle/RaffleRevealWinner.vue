@@ -32,7 +32,7 @@ async function reveal_raffle_winner() {
         entrants: entrants,
         recentBlockHashes: SYSVAR_RECENT_BLOCKHASHES_PUBKEY,
       })
-      .rpc();
+      ;
 
     show_drawing_animation.value = true;
     console.log(signature);
