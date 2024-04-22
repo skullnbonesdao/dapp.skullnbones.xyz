@@ -14,6 +14,8 @@ const input_raffle_ticket_amount = ref();
 const props = defineProps(['raffle', 'is_admin']);
 const show_drawing_animation = ref(false);
 
+
+
 async function reveal_raffle_winner() {
   const { pg_raffle, pg_whitelist } = useWorkspaceAdapter();
 
@@ -31,15 +33,12 @@ async function reveal_raffle_winner() {
         raffle: raffle,
         entrants: entrants,
         recentBlockHashes: SYSVAR_RECENT_BLOCKHASHES_PUBKEY,
-      })
-      ;
+      }).rpc();
 
     show_drawing_animation.value = true;
     console.log(signature);
-
     await handle_confirmation(signature);
 
-    await useRaffleStore().update_raffles();
   } catch (err) {
     Notify.create({
       color: 'red',
