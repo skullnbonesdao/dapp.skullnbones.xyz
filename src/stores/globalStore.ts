@@ -10,8 +10,8 @@ export const STARATLASAPI_URL = 'https://galaxy.staratlas.com/nfts';
 
 export const RPC_NETWORKS = [
   {
-    name: 'mainnet.quicknode',
-    url: 'https://tiniest-soft-borough.solana-mainnet.quiknode.pro/9aa5c92f180bfead6f486d3ccffc34cecbd8e91a',
+    name: 'mainnet.helius',
+    url: 'https://mainnet.helius-rpc.com/?api-key=2f63b517-5c14-4618-be86-4c918b7a8073',
   },
   { name: 'devnet.ankr', url: 'https://rpc.ankr.com/solana_devnet' },
 ];
