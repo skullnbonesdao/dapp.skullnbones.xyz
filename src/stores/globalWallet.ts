@@ -19,6 +19,7 @@ import { getParsedNftAccountsByOwner } from '@nfteyez/sol-rayz';
 import { I_AccountNFT } from 'stores/I_AccountNFT';
 import axios from 'axios';
 import { getTokenAccount } from '@staratlas/factory';
+import { useRPCStore } from 'stores/rpcStore';
 
 export const NULL_WALLET = '11111111111111111111111111111111';
 
@@ -77,7 +78,7 @@ export const useGlobalWalletStore = defineStore('walletStore', {
       if (useWallet().publicKey.value) {
         this.token_accounts = [];
         this.token_accounts = (
-          await useGlobalStore().connection.getParsedTokenAccountsByOwner(
+          await useRPCStore().connection.getParsedTokenAccountsByOwner(
             useWallet().publicKey.value!,
             {
               programId: TOKEN_PROGRAM_ID,
@@ -95,16 +96,16 @@ export const useGlobalWalletStore = defineStore('walletStore', {
         this.nft_map = [];
         this.nft_in_wallet = (await getParsedNftAccountsByOwner({
           publicAddress: useWallet().publicKey.value!.toString(),
-          connection: useGlobalStore().connection as Connection,
+          connection: useRPCStore().connection as Connection,
         })) as I_AccountNFT[];
 
         for (const meta of this.nft_in_wallet) {
           const largestAccounts =
-            await useGlobalStore().connection.getTokenLargestAccounts(
+            await useRPCStore().connection.getTokenLargestAccounts(
               new PublicKey(meta.mint),
             );
           const largestAccountInfo =
-            await useGlobalStore().connection.getParsedAccountInfo(
+            await useRPCStore().connection.getParsedAccountInfo(
               largestAccounts.value[0].address,
             );
 

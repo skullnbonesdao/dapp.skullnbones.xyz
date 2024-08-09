@@ -10,6 +10,7 @@ import {
 import { Notify } from 'quasar';
 import TokenCreate from 'components/token/TokenCreate.vue';
 import TokenMetadata from 'components/token/TokenMetadata.vue';
+import { useRPCStore } from 'stores/rpcStore';
 
 const selected_tab = ref('create');
 
@@ -39,7 +40,7 @@ function onItemClick(account: string | undefined) {
 
 async function create_more_token() {
   const wallet = useAnchorWallet();
-  const connection = useGlobalStore().connection as Connection;
+  const connection = useRPCStore().connection as Connection;
   const { publicKey, sendTransaction } = useWallet();
   if (!publicKey.value) return;
 

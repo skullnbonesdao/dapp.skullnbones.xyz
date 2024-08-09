@@ -17,6 +17,7 @@ import { Connection, Transaction } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { useRPCStore } from 'stores/rpcStore';
 
 const props = defineProps(['raffle', 'is_admin']);
 
@@ -39,7 +40,7 @@ async function claim_raffle() {
     ASSOCIATED_PROGRAM_ID,
   );
 
-  if ((await useGlobalStore().connection.getAccountInfo(ata)) === null) {
+  if ((await useRPCStore().connection.getAccountInfo(ata)) === null) {
     let tx = new Transaction();
     tx.add(
       createAssociatedTokenAccountInstruction(
@@ -52,7 +53,7 @@ async function claim_raffle() {
 
     await useWallet().sendTransaction(
       tx,
-      useGlobalStore().connection as Connection,
+      useRPCStore().connection as Connection,
     );
   }
 

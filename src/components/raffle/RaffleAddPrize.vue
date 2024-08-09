@@ -11,6 +11,7 @@ import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { format_address } from 'src/functions/format_address';
 import { useGlobalWalletStore } from 'stores/globalWallet';
+import { useRPCStore } from 'stores/rpcStore';
 
 const input_prize_count = ref(1);
 const input_prize_url = ref('');
@@ -63,7 +64,7 @@ async function add_prize_to_raffle() {
   );
 
   const ata = (
-    await useGlobalStore().connection.getParsedTokenAccountsByOwner(
+    await useRPCStore().connection.getParsedTokenAccountsByOwner(
       useWallet().publicKey.value!,
       { mint: prize_mint },
     )
@@ -78,7 +79,7 @@ async function add_prize_to_raffle() {
     );
 
   const account_info =
-    await useGlobalStore().connection.getParsedAccountInfo(prize_mint);
+    await useRPCStore().connection.getParsedAccountInfo(prize_mint);
 
   console.log(account_info.value?.data.parsed.info.decimals);
 

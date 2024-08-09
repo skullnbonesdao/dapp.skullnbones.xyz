@@ -5,6 +5,7 @@ import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
 import dapp_whitelist_idl from 'src/idls/whitelist.json';
 import dapp_raffle_idl from 'src/idls/raffle.json';
 import { useGlobalStore } from 'stores/globalStore';
+import { useRPCStore } from 'stores/rpcStore';
 
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
@@ -18,7 +19,7 @@ export const useWorkspaceAdapter = () => workspace;
 
 export const initWorkspaceAdapter = () => {
   const wallet = useAnchorWallet();
-  const connection = useGlobalStore().connection as Connection;
+  const connection = useRPCStore().connection as Connection;
   const provider = computed(
     () =>
       new AnchorProvider(connection, wallet.value, {

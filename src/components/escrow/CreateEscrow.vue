@@ -4,6 +4,7 @@ import { useGlobalStore } from 'stores/globalStore';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWallet } from 'solana-wallets-vue';
 import SelectEscrowToken from 'components/escrow/SelectEscrowToken.vue';
+import { useRPCStore } from 'stores/rpcStore';
 
 const is_loading = ref(true);
 
@@ -16,7 +17,7 @@ const receive_amount = ref();
 
 onMounted(async () => {
   const accounts =
-    await useGlobalStore().connection.getParsedTokenAccountsByOwner(
+    await useRPCStore().connection.getParsedTokenAccountsByOwner(
       useWallet().publicKey.value!,
       {
         programId: TOKEN_PROGRAM_ID,

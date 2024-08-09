@@ -65,27 +65,19 @@
       </q-scroll-area>
       <div class="col absolute-bottom q-ma-md q-gutter-y-md">
         <div class="row">
-          <q-space />
-          <q-btn-dropdown
+
+          <q-select
+            class="col"
             square
-            color="primary"
-            :label="useGlobalStore().rpc_selected.name"
-          >
-            <q-list>
-              <q-item
-                clickable
-                v-close-popup
-                :key="rpc"
-                v-for="rpc in RPC_NETWORKS"
-                @click="useGlobalStore().rpc_selected = rpc"
-              >
-                <q-item-section>
-                  <q-item-label>{{ rpc.name }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-          <q-space />
+            borderless
+            standout
+            @newValue="() =>  update_selection()"
+            color="white"
+            v-model="useRPCStore().rpc_stored_name"
+            :options="RPC_NETWORKS.map((rpc) => rpc.name)"
+            label="Select an RPC to use:"
+          />
+
         </div>
 
         <div class="row">
@@ -104,19 +96,35 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { RPC_NETWORKS, useGlobalStore } from 'stores/globalStore';
+import { RPC_NETWORKS } from 'stores/interfaces/RPC_Networks';
+import { useGlobalStore } from 'stores/globalStore';
 import { version } from 'src/../package.json';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useWhitelist } from '../stores/globalWhitelist';
 import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
+import { useRPCStore } from 'stores/rpcStore';
+import { useQuasar } from 'quasar';
+
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
+const q = useQuasar();
 
 const display_version = ref(version);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+function update_selection() {
+  useRPCStore().show_rpc_select = false;
+  useRPCStore().update_connection();
+  q.notify({
+    type: 'positive',
+    icon: 'info',
+    message: `RPC has been updated to: ${useRPCStore().rpc_stored_name}`,
+    timeout: 5000,
+  });
 }
 
 watch(

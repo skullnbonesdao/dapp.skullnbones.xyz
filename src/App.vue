@@ -13,9 +13,10 @@ import {
 } from 'src/idls/adapter/apapter';
 import { onMounted } from 'vue';
 import 'src/css/backgrounds.scss';
+import { useRPCStore } from 'stores/rpcStore';
 
 useGlobalStore();
-useGlobalStore().update_connection();
+useRPCStore().update_connection();
 useWorkspaceAdapter();
 initWorkspaceAdapter();
 

@@ -13,6 +13,7 @@ import * as spl from '@solana/spl-token';
 import { useWallet } from 'solana-wallets-vue';
 import { Notify } from 'quasar';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { useRPCStore } from 'stores/rpcStore';
 
 const show_modal = ref(false);
 
@@ -36,7 +37,7 @@ async function send_token() {
   );
 
   const receiverAccount =
-    await useGlobalStore().connection.getAccountInfo(reciever_ata);
+    await useRPCStore().connection.getAccountInfo(reciever_ata);
   if (receiverAccount === null) {
     tx.add(
       createAssociatedTokenAccountInstruction(
@@ -60,7 +61,7 @@ async function send_token() {
   try {
     const signature = await useWallet().sendTransaction(
       tx,
-      useGlobalStore().connection as Connection,
+      useRPCStore().connection as Connection,
     );
     await handle_confirmation(signature);
   } catch (err) {

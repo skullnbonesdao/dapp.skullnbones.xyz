@@ -20,6 +20,7 @@ import {
 } from '@solana/spl-token';
 import { Notify } from 'quasar';
 import { ref } from 'vue';
+import { useRPCStore } from 'stores/rpcStore';
 
 const token_mint = ref(Keypair.generate());
 const token_decimals = ref(0);
@@ -27,7 +28,7 @@ const token_amount = ref(100);
 
 async function create_new_token() {
   const wallet = useAnchorWallet();
-  const connection = useGlobalStore().connection as Connection;
+  const connection = useRPCStore().connection as Connection;
   const { publicKey, sendTransaction } = useWallet();
   if (!publicKey.value) return;
 

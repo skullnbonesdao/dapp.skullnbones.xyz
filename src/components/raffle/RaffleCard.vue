@@ -22,6 +22,7 @@ import * as borsh from 'borsh';
 import { data } from 'autoprefixer';
 import TicketsTable from 'components/tables/TicketsTable.vue';
 import RaffleLinks from 'components/raffle/RaffleLinks.vue';
+import { useRPCStore } from 'stores/rpcStore';
 
 const props = defineProps(['raffle', 'is_admin']);
 const entrants = ref();
@@ -37,7 +38,7 @@ async function update_entrants() {
   );
 
   accounts.value =
-    await useGlobalStore().connection.getParsedTokenAccountsByOwner(
+    await useRPCStore().connection.getParsedTokenAccountsByOwner(
       props.raffle.publicKey,
       {
         programId: TOKEN_PROGRAM_ID,

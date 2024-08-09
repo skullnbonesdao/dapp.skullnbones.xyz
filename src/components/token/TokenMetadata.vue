@@ -5,6 +5,7 @@ import TokenSelectDropdown from 'components/dropdown/TokenSelectDropdown.vue';
 import { useWallet } from 'solana-wallets-vue';
 import { Metaplex } from '@metaplex-foundation/js';
 import { Connection, PublicKey } from '@solana/web3.js';
+import { useRPCStore } from 'stores/rpcStore';
 
 const token_selected = ref();
 const token_metadata = ref();
@@ -24,7 +25,7 @@ watch(
       token_selected.value.account.data.parsed.info.mint,
     );
 
-    new Metaplex(useGlobalStore().connection as Connection)
+    new Metaplex(useRPCStore().connection as Connection)
       .nfts()
       .findByMint({
         mint,

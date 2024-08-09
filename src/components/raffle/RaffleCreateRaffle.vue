@@ -17,6 +17,7 @@ import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { useGlobalWalletStore } from '../../stores/globalWallet';
 
 import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
+import { useRPCStore } from 'stores/rpcStore';
 
 const input_raffle_name = ref();
 const input_raffle_description = ref();
@@ -53,7 +54,7 @@ async function create_new_raffle() {
     pg_whitelist.value.programId,
   );
 
-  const account_info = await useGlobalStore().connection.getParsedAccountInfo(
+  const account_info = await useRPCStore().connection.getParsedAccountInfo(
     new anchor.web3.PublicKey(input_account_selected.value.value),
   );
 

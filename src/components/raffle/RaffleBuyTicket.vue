@@ -17,6 +17,7 @@ import { SystemProgram } from '@solana/web3.js';
 
 import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
 import { useGlobalWalletStore } from 'stores/globalWallet';
+import { useRPCStore } from 'stores/rpcStore';
 
 const input_raffle_ticket_amount = ref();
 
@@ -33,7 +34,7 @@ async function buy_raffle_ticket() {
   );
 
   const ata = (
-    await useGlobalStore().connection.getParsedTokenAccountsByOwner(
+    await useRPCStore().connection.getParsedTokenAccountsByOwner(
       useWallet().publicKey.value!,
       { mint: proceedsMint },
     )
