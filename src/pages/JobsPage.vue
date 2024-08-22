@@ -116,6 +116,7 @@ function onDrop(evt, newID) {
               <q-btn
                 v-if="is_admin"
                 icon="delete"
+                color="red"
                 flat
                 dense
                 size="xs"
