@@ -31,7 +31,7 @@ const jobTypes = ref([
     id: 2,
     name: 'On-hold',
     description: 'This is pushed back',
-    color: 'orange  -7',
+    color: 'orange-7',
   },
 
   {
