@@ -53,7 +53,6 @@ export const useJsonBinStore = defineStore('jsonBin', {
       apiJsonBin
         .get(`/${BIN}/latest`, config)
         .then((resp) => {
-          console.log(resp);
           this.data = resp.data as I_JsonBin;
         })
         .catch(function (error) {
@@ -66,7 +65,7 @@ export const useJsonBinStore = defineStore('jsonBin', {
       if (useGlobalStore().is_admin || import.meta.env.DEV) {
         apiJsonBin
           .put(`/${BIN}`, JSON.stringify(this.data.record), config)
-          .then((resp) => console.log(resp))
+          .then(() => console.log('send update!'))
           .catch(function (error) {
             console.error(error);
           });
