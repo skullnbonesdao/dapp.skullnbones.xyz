@@ -50,7 +50,6 @@ export const useJsonBinStore = defineStore('jsonBin', {
       );
     },
     read() {
-      console.log(config);
       apiJsonBin
         .get(`/${BIN}/latest`, config)
         .then((resp) => {
