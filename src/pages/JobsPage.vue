@@ -5,6 +5,7 @@ import draggable from 'vuedraggable';
 import { watchDeep } from '@vueuse/core';
 import CreateNewJobDialog from 'components/dialogs/CreateNewJobDialog.vue';
 import { useGlobalStore } from 'stores/globalStore';
+import ConfirmDeleteJob from 'components/dialogs/ConfirmDeleteJob.vue';
 
 onMounted(async () => {
   let data = await useJsonBinStore().read();
@@ -113,15 +114,7 @@ function onDrop(evt, newID) {
                   />
                 </q-popup-edit>
               </div>
-              <q-btn
-                v-if="is_admin"
-                icon="delete"
-                color="red"
-                flat
-                dense
-                size="xs"
-                @click="useJsonBinStore().remove(job)"
-              />
+              <ConfirmDeleteJob v-if="is_admin" />
             </div>
             <div class="row q-gutter-x-sm">
               <div class="col text-subtitle1 text-weight-light">
