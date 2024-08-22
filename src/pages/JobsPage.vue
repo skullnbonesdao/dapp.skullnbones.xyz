@@ -141,6 +141,7 @@ function onDrop(evt, newID) {
                     autofocus
                     counter
                     @keyup.enter="scope.set"
+                    type="textarea"
                   />
                 </q-popup-edit>
               </div>
