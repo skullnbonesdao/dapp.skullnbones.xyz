@@ -98,7 +98,12 @@ function onDrop(evt, newID) {
             <div class="row q-mb-md">
               <div class="text-h6 col">
                 {{ job.name }}
-                <q-popup-edit v-model="job.name" auto-save v-slot="scope">
+                <q-popup-edit
+                  v-if="is_admin"
+                  v-model="job.name"
+                  auto-save
+                  v-slot="scope"
+                >
                   <q-input
                     v-model="scope.value"
                     dense
