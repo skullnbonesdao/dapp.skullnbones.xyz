@@ -118,6 +118,7 @@ function onDrop(evt, newID) {
               <div class="col text-subtitle1 text-weight-light">
                 {{ job.description }}
                 <q-popup-edit
+                  v-if="is_admin"
                   v-model="job.description"
                   auto-save
                   v-slot="scope"
@@ -134,7 +135,12 @@ function onDrop(evt, newID) {
 
               <q-badge>
                 {{ job.assigned ?? '-none-' }}
-                <q-popup-edit v-model="job.assigned" auto-save v-slot="scope">
+                <q-popup-edit
+                  v-if="is_admin"
+                  v-model="job.assigned"
+                  auto-save
+                  v-slot="scope"
+                >
                   <q-input
                     v-model="scope.value"
                     dense
@@ -146,7 +152,12 @@ function onDrop(evt, newID) {
               </q-badge>
               <q-badge class="justify-center" color="grey">
                 {{ job.reward ?? '-none-' }}
-                <q-popup-edit v-model="job.reward" auto-save v-slot="scope">
+                <q-popup-edit
+                  v-if="is_admin"
+                  v-model="job.reward"
+                  auto-save
+                  v-slot="scope"
+                >
                   <q-input
                     v-model="scope.value"
                     dense
