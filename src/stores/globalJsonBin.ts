@@ -6,7 +6,6 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { api, apiJsonBin } from 'boot/axios';
 import { useGlobalStore } from 'stores/globalStore';
 
-export const BASEURL = 'https://api.jsonbin.io/v3/b/';
 const BIN = '66b6b699e41b4d34e41e3c95';
 const key = import.meta.env.VITE_JSONBINKEY as string;
 const config = {
