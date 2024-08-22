@@ -144,7 +144,8 @@ function onDrop(evt, newID) {
                   />
                 </q-popup-edit>
               </div>
-
+            </div>
+            <div class="row q-mt-sm">
               <q-badge>
                 {{ job.assigned ?? '-none-' }}
                 <q-popup-edit
@@ -162,6 +163,7 @@ function onDrop(evt, newID) {
                   />
                 </q-popup-edit>
               </q-badge>
+              <q-space />
               <q-badge class="justify-center" color="grey">
                 {{ job.reward ?? '-none-' }}
                 <q-popup-edit
