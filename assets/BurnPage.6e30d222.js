@@ -1,0 +1,1 @@
+import{Q as e}from"./QPage.ba7b88a7.js";import{_ as r}from"./plugin-vue_export-helper.21dcd24c.js";import{b3 as t,ak as a,bz as o,at as s}from"./index.8621ca6e.js";const c={};function n(f,_){return t(),a(e,{class:"row items-center justify-evenly"},{default:o(()=>[s(" BURN")]),_:1})}var p=r(c,[["render",n]]);export{p as default};
