@@ -18,7 +18,7 @@ const jobTypes = ref([
     id: 0,
     name: 'Todo',
     description: "This hasn't been completed",
-    color: 'green',
+    color: 'purple',
   },
   {
     id: 1,
@@ -38,7 +38,7 @@ const jobTypes = ref([
     id: 3,
     name: 'Done',
     description: 'This has been completed',
-    color: 'purple',
+    color: 'green',
   },
 ]);
 
