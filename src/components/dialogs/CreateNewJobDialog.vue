@@ -34,19 +34,25 @@ const addEnabled = computed(() => {
           option-value="id"
           option-label="name"
           option-disable="inactive"
-          label="JobType"
+          label="JobType*"
           emit-value
           map-options
         />
-        <q-input v-model="newJob.name" label="Label" />
-        <q-input v-model="newJob.description" label="Description" />
+        <q-input v-model="newJob.name" label="Label*" />
+        <q-input
+          v-model="newJob.description"
+          label="Description*"
+          type="textarea"
+        />
         <div class="row">
           <q-input v-model="newJob.assigned" label="Assigned" />
           <q-input v-model="newJob.reward" label="Reward" />
         </div>
       </q-card-section>
 
-      <q-card-actions align="right">
+      <q-card-actions>
+        <div class="text-subtitle2 text-weight-thin">*required</div>
+        <q-space />
         <q-btn label="Close" color="primary" v-close-popup />
         <q-btn
           :disable="addEnabled"
