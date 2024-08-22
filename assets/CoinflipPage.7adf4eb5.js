@@ -1,1 +1,0 @@
-import{Q as e}from"./QPage.ba7b88a7.js";import{_ as t}from"./plugin-vue_export-helper.21dcd24c.js";import{b3 as a,ak as r,bz as o,at as s}from"./index.8621ca6e.js";const c={};function f(n,i){return a(),r(e,{class:"row items-center justify-evenly"},{default:o(()=>[s(" COINFLIP")]),_:1})}var p=t(c,[["render",f]]);export{p as default};
