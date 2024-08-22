@@ -91,7 +91,10 @@ function onDrop(evt, newID) {
           )"
           :key="job.timestamp"
         >
-          <q-card-section draggable="true" @dragstart="startDrag($event, job)">
+          <q-card-section
+            :draggable="is_admin"
+            @dragstart="startDrag($event, job)"
+          >
             <div class="row q-mb-md">
               <div class="text-h6 col">
                 {{ job.name }}
