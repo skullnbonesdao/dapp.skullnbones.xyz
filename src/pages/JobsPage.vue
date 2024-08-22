@@ -6,6 +6,7 @@ import { watchDeep } from '@vueuse/core';
 import CreateNewJobDialog from 'components/dialogs/CreateNewJobDialog.vue';
 import { useGlobalStore } from 'stores/globalStore';
 import ConfirmDeleteJob from 'components/dialogs/ConfirmDeleteJob.vue';
+import ExportJobs from 'components/dialogs/ExportJobs.vue';
 
 onMounted(async () => {
   let data = await useJsonBinStore().read();
@@ -25,8 +26,16 @@ const jobTypes = ref([
     description: 'This is actively worked on',
     color: 'yellow-7',
   },
+
   {
     id: 2,
+    name: 'On-hold',
+    description: 'This is pushed back',
+    color: 'orange  -7',
+  },
+
+  {
+    id: 3,
     name: 'Done',
     description: 'This has been completed',
     color: 'purple',
@@ -59,8 +68,9 @@ function onDrop(evt, newID) {
 
 <template>
   <q-page class="col q-pa-sm">
-    <div class="row q-pb-sm">
+    <div class="row q-pb-sm q-gutter-x-sm">
       <q-space />
+      <ExportJobs />
       <CreateNewJobDialog :job-types="jobTypes" v-if="is_admin" />
     </div>
     <div class="row q-gutter-x-sm">
@@ -114,7 +124,7 @@ function onDrop(evt, newID) {
                   />
                 </q-popup-edit>
               </div>
-              <ConfirmDeleteJob v-if="is_admin" />
+              <ConfirmDeleteJob v-if="is_admin" :job="job" />
             </div>
             <div class="row q-gutter-x-sm">
               <div class="col text-subtitle1 text-weight-light">
