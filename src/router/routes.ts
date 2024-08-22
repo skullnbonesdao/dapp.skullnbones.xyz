@@ -51,6 +51,12 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/BurnPage.vue') }],
   },
 
+  {
+    path: '/jobs',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/JobsPage.vue') }],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

@@ -64,21 +64,21 @@
         </q-list>
       </q-scroll-area>
       <div class="col absolute-bottom q-ma-md q-gutter-y-md">
-        <div class="row">
+
 
           <q-select
             class="col"
             square
-            borderless
-            standout
+
+
             @newValue="() =>  update_selection()"
-            color="white"
+
             v-model="useRPCStore().rpc_stored_name"
             :options="RPC_NETWORKS.map((rpc) => rpc.name)"
             label="Select an RPC to use:"
           />
 
-        </div>
+
 
         <div class="row">
           <q-space />
@@ -152,6 +152,10 @@ const links1 = computed(() => {
 
   if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
     data.push({ icon: 'local_activity', text: 'Raffle', to: '/raffle' });
+  }
+
+  if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
+    data.push({ icon: 'work', text: 'Jobs', to: '/jobs' });
   }
 
   return data;
