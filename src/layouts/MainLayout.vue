@@ -64,21 +64,14 @@
         </q-list>
       </q-scroll-area>
       <div class="col absolute-bottom q-ma-md q-gutter-y-md">
-
-
-          <q-select
-            class="col"
-            square
-
-
-            @newValue="() =>  update_selection()"
-
-            v-model="useRPCStore().rpc_stored_name"
-            :options="RPC_NETWORKS.map((rpc) => rpc.name)"
-            label="Select an RPC to use:"
-          />
-
-
+        <q-select
+          class="col"
+          square
+          @newValue="() => update_selection()"
+          v-model="useRPCStore().rpc_stored_name"
+          :options="RPC_NETWORKS.map((rpc) => rpc.name)"
+          label="Select an RPC to use:"
+        />
 
         <div class="row">
           <q-space />
@@ -104,7 +97,6 @@ import { useWhitelist } from '../stores/globalWhitelist';
 import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
 import { useRPCStore } from 'stores/rpcStore';
 import { useQuasar } from 'quasar';
-
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
@@ -145,6 +137,7 @@ const links1 = computed(() => {
   let data = [
     { icon: 'home', text: 'Home', to: '/' },
     { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
+    { icon: 'lock_clock', text: 'StarAtlasLocker', to: '/staratlaslocker' },
   ];
   if (useGlobalStore().is_admin || import.meta.env.DEV) {
     data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
