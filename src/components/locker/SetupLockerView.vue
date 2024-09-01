@@ -16,7 +16,7 @@ import { useStarAtlasLockerStore } from 'stores/globalStarAtlasLockerStore';
         Please enter the required information so send instructions to your
         Squads Account
       </div>
-      <div class="text-subtitle2 text-weight-thin">
+      <div class="text-subtitle2 text-weight-thin text-orange-5">
         You will still need to approve the transaction in you squads account!
       </div>
     </q-card-section>
