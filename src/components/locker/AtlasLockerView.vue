@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useStarAtlasLockerStore } from 'stores/globalStarAtlasLockerStore';
+import {
+  LOCKER_TOKEN_DECIMALS,
+  useStarAtlasLockerStore,
+} from 'stores/globalStarAtlasLockerStore';
 
 const amount_to_stake = ref<number>(0);
 
@@ -149,7 +152,7 @@ onMounted(async () => {
         <div class="col">
           <div class="text-h6">Cancel Unstake</div>
           <div class="text-subtitle2 text-weight-light">
-            This instruction will cancel withdraw of all tokens
+            This instruction will cancel unstake of all tokens
           </div>
         </div>
 
@@ -162,7 +165,7 @@ onMounted(async () => {
         <div class="col">
           <div class="text-h6">Withdraw Tokens</div>
           <div class="text-subtitle2 text-weight-light">
-            This instruction will withdraw of all tokens
+            This instruction will withdraw of all tokens after unstake
           </div>
         </div>
 
@@ -198,7 +201,14 @@ onMounted(async () => {
               <div>{{ key.toUpperCase() }}</div>
             </div>
             <div class="col text-right text-subtitle1">
-              <div>
+              <div v-if="key == 'totalStake' || key == 'activeStake'">
+                {{
+                  parseInt(
+                    useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
+                  ) * Math.pow(10, -LOCKER_TOKEN_DECIMALS)
+                }}
+              </div>
+              <div v-else>
                 {{ useStarAtlasLockerStore().stakingAccountAtlasInfo[key] }}
               </div>
             </div>

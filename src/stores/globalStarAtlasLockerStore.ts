@@ -35,7 +35,7 @@ import { amount } from '@metaplex-foundation/js';
 
 const MEMO_PREFIX_ATLAS = '[ATLAS-LOCKER] ';
 const MEMO_PREFIX_POLIS = '[POLIS-LOCKER] ';
-const TOKEN_DECIMALS = 8;
+export const LOCKER_TOKEN_DECIMALS = 8;
 
 export const ATLAS = new PublicKey(
   'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx',
@@ -197,7 +197,7 @@ export const useStarAtlasLockerStore = defineStore(
           tokenSource: ATLAS_ATA,
           stakingAccount: this.stakingAccountAtlas,
           stakeQuantity: new BN(
-            parseFloat(amount.toString()) * Math.pow(10, TOKEN_DECIMALS),
+            parseFloat(amount.toString()) * Math.pow(10, LOCKER_TOKEN_DECIMALS),
           ),
           registeredStake: this.registeredStakeAtlas,
           programId: ATLAS_LOCKER,
