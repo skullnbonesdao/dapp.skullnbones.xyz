@@ -18,7 +18,7 @@ const lockerTabs = ref('setup');
       <WalletMultiButton dark></WalletMultiButton>
     </div>
     <div v-else>
-      <q-tabs v-model="lockerTabs" align="left">
+      <q-tabs v-model="lockerTabs" align="left" class="">
         <q-tab name="setup" label="Setup" />
         <q-tab name="atlas" label="Atlas" />
         <q-tab name="polis" label="Polis" />

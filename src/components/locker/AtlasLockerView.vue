@@ -132,7 +132,7 @@ onMounted(async () => {
         <div class="col">
           <div class="text-h6">Unstake Tokens</div>
           <div class="text-subtitle2 text-weight-light">
-            This instruction will stake additional tokens
+            This instruction will initiate unstake of all tokens
           </div>
         </div>
         <div class="col-4">
@@ -149,7 +149,7 @@ onMounted(async () => {
         <div class="col">
           <div class="text-h6">Cancel Unstake</div>
           <div class="text-subtitle2 text-weight-light">
-            This instruction will stake additional tokens
+            This instruction will cancel withdraw of all tokens
           </div>
         </div>
 
@@ -162,7 +162,7 @@ onMounted(async () => {
         <div class="col">
           <div class="text-h6">Withdraw Tokens</div>
           <div class="text-subtitle2 text-weight-light">
-            This instruction will stake additional tokens
+            This instruction will withdraw of all tokens
           </div>
         </div>
 
@@ -185,7 +185,7 @@ onMounted(async () => {
         <q-separator class="q-mx-sm" vertical />
         <div
           class="col"
-          v-if="useStarAtlasLockerStore().stakingAccountAtlasInfo.length"
+          v-if="useStarAtlasLockerStore().stakingAccountAtlasInfo"
         >
           <div
             class="row q-pr-md items-center"

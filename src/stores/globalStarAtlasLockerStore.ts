@@ -62,7 +62,7 @@ export const useStarAtlasLockerStore = defineStore(
       registeredStakeAtlas: {} as PublicKey,
       registeredStakePolis: {} as PublicKey,
       stakingAccountAtlas: {} as PublicKey,
-      stakingAccountAtlasInfo: {},
+      stakingAccountAtlasInfo: {} as PublicKey | undefined,
       atlas_balance_wallet: '0',
       polis_balance_wallet: '0',
       atlas_balance_squads: '0',
@@ -105,6 +105,7 @@ export const useStarAtlasLockerStore = defineStore(
         useStarAtlasLockerStore().polis_balance_squads = '0';
         useStarAtlasLockerStore().atlas_balance_locker = '0';
         useStarAtlasLockerStore().polis_balance_locker = '0';
+        useStarAtlasLockerStore().stakingAccountAtlasInfo = undefined;
 
         //setVaultPDA
         const [vaultPda] = multisig.getVaultPda({
@@ -151,11 +152,11 @@ export const useStarAtlasLockerStore = defineStore(
 
         //setStakingAccountAtlasInfo
         try {
-          this.stakingAccountAtlasInfo = await getStakingAccountInfo(
+          this.stakingAccountAtlasInfo = (await getStakingAccountInfo(
             useRPCStore().connection as Connection,
             this.stakingAccountAtlas,
             ATLAS_LOCKER,
-          );
+          )) as any;
         } catch (err) {}
 
         //Account Balances
