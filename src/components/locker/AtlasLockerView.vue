@@ -198,15 +198,53 @@ onMounted(async () => {
             :key="idx"
           >
             <div class="col text-right text-subtitle2 text-weight-light">
-              <div>{{ key.toUpperCase() }}</div>
+              <div>{{ key }}</div>
             </div>
             <div class="col text-right text-subtitle1">
-              <div v-if="key == 'totalStake' || key == 'activeStake'">
+              <div
+                v-if="
+                  [
+                    'totalStake',
+                    'activeStake',
+                    'paidRewards',
+                    'pendingRewards',
+                  ].includes(key)
+                "
+              >
                 {{
                   parseInt(
                     useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
                   ) * Math.pow(10, -LOCKER_TOKEN_DECIMALS)
                 }}
+              </div>
+              <div
+                v-else-if="
+                  [
+                    'stakedAtTs',
+                    'lastPendingRewardCalcTs',
+                    'lastHarvestTs',
+                    'unstakedTs',
+                  ].includes(key)
+                "
+              >
+                <div
+                  v-if="
+                    parseInt(
+                      useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
+                    ) == 0
+                  "
+                >
+                  -
+                </div>
+                <div v-else>
+                  {{
+                    new Date(
+                      parseInt(
+                        useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
+                      ) * 1000,
+                    ).toLocaleString()
+                  }}
+                </div>
               </div>
               <div v-else>
                 {{ useStarAtlasLockerStore().stakingAccountAtlasInfo[key] }}
