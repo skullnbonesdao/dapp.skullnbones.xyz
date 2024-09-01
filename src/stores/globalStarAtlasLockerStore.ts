@@ -347,25 +347,35 @@ async function getTokenAccountAmounts() {
     useStarAtlasLockerStore().atlas_balance_wallet =
       (await useRPCStore().connection.getTokenAccountBalance(atlas_ata_wallet))
         .value.uiAmountString ?? '0';
-  } catch (error) {}
+  } catch (error) {
+    useStarAtlasLockerStore().atlas_balance_wallet = '-';
+  }
   try {
     useStarAtlasLockerStore().polis_balance_wallet =
       (await useRPCStore().connection.getTokenAccountBalance(polis_ata_wallet))
         .value.uiAmountString ?? '0';
-  } catch (error) {}
+  } catch (error) {
+    useStarAtlasLockerStore().polis_balance_wallet = '-';
+  }
   try {
     useStarAtlasLockerStore().atlas_balance_squads =
       (await useRPCStore().connection.getTokenAccountBalance(atlas_ata_squads))
         .value.uiAmountString ?? '0';
-  } catch (error) {}
+  } catch (error) {
+    useStarAtlasLockerStore().atlas_balance_squads = '-';
+  }
   try {
     useStarAtlasLockerStore().polis_balance_squads =
       (await useRPCStore().connection.getTokenAccountBalance(polis_ata_squads))
         .value.uiAmountString ?? '0';
-  } catch (error) {}
+  } catch (error) {
+    useStarAtlasLockerStore().polis_balance_squads = '-';
+  }
   try {
     useStarAtlasLockerStore().atlas_balance_locker =
       (await useRPCStore().connection.getTokenAccountBalance(atlas_ata_locker))
-        .value.uiAmountString ?? '0';
-  } catch (error) {}
+        .value.uiAmountString ?? '';
+  } catch (error) {
+    useStarAtlasLockerStore().atlas_balance_locker = '-';
+  }
 }

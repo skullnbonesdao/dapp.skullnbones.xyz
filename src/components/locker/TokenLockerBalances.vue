@@ -22,7 +22,9 @@ watch(
         <div class="col-3">Wallet</div>
         <div class="col">
           <div class="row q-gutter-x-xs no-wrap justify-end">
-            <div>{{ useStarAtlasLockerStore().atlas_balance_wallet }}</div>
+            <div>
+              {{ useStarAtlasLockerStore().atlas_balance_wallet }}
+            </div>
             <div>Atlas</div>
           </div>
         </div>
