@@ -33,6 +33,7 @@ import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { amount } from '@metaplex-foundation/js';
 
+import { SAFactory_LockerAtlas } from 'src/StarAtlasFactory/SAFactory_LockerAtlas';
 const MEMO_PREFIX_ATLAS = '[ATLAS-LOCKER] ';
 const MEMO_PREFIX_POLIS = '[POLIS-LOCKER] ';
 export const LOCKER_TOKEN_DECIMALS = 8;
@@ -69,6 +70,7 @@ export const useStarAtlasLockerStore = defineStore(
       polis_balance_squads: '0',
       atlas_balance_locker: '0',
       polis_balance_locker: '0',
+      SAFactory_LockerAtlas: new SAFactory_LockerAtlas(),
     }),
 
     getters: {
@@ -165,106 +167,59 @@ export const useStarAtlasLockerStore = defineStore(
 
       //ATLAS LOCKER
       async build_CreateStatingAccount(this) {
-        const inst_createStakingAccount = await createStakingAccountInstruction(
-          {
-            connection: useRPCStore().connection as Connection,
-            user: this.vaultPDA,
-            registeredStake: this.registeredStakeAtlas,
-            programId: ATLAS_LOCKER,
-          },
-        );
+        await this.SAFactory_LockerAtlas.init(this.multisigPDA as PublicKey);
 
         await build_send(
           MEMO_PREFIX_ATLAS + 'CreateStatingAccount: ' + amount,
-          [inst_createStakingAccount.instructions[0]],
+          [
+            (await this.SAFactory_LockerAtlas.buildCreateStatingAccount())
+              .instructions[0],
+          ],
         );
       },
 
       async build_StakeTokens(this, amount: number) {
-        const [ATLAS_ATA] = PublicKey.findProgramAddressSync(
-          [
-            this.vaultPDA.toBuffer(),
-            TOKEN_PROGRAM_ID.toBuffer(),
-            ATLAS.toBuffer(),
-          ],
-          ASSOCIATED_PROGRAM_ID,
-        );
-
-        const inst_Stake = await stakeTokensInstruction({
-          connection: useRPCStore().connection as Connection,
-          user: this.vaultPDA,
-          stakeMint: ATLAS,
-          tokenSource: ATLAS_ATA,
-          stakingAccount: this.stakingAccountAtlas,
-          stakeQuantity: new BN(
-            parseFloat(amount.toString()) * Math.pow(10, LOCKER_TOKEN_DECIMALS),
-          ),
-          registeredStake: this.registeredStakeAtlas,
-          programId: ATLAS_LOCKER,
-        });
+        await this.SAFactory_LockerAtlas.init(this.multisigPDA as PublicKey);
 
         await build_send(MEMO_PREFIX_ATLAS + 'StakeTokens: ' + amount, [
-          inst_Stake.instructions[0],
+          (await this.SAFactory_LockerAtlas.buildStakeTokens(amount))
+            .instructions[0],
         ]);
       },
 
       async build_harvestRewards(this) {
-        const inst_Withdraw = await harvestRewardsInstruction({
-          connection: useRPCStore().connection as Connection,
-          user: this.vaultPDA,
-          rewardMint: POLIS,
-          registeredStake: this.registeredStakeAtlas,
-          stakingAccount: this.stakingAccountAtlas,
-          programId: ATLAS_LOCKER,
-        });
+        await this.SAFactory_LockerAtlas.init(this.multisigPDA as PublicKey);
 
         await build_send(MEMO_PREFIX_ATLAS + 'HarvestRewards', [
-          inst_Withdraw.instructions[0],
+          (await this.SAFactory_LockerAtlas.buildHarvestRewards())
+            .instructions[0],
         ]);
       },
 
       async build_withdrawTokens(this) {
-        const inst_Withdraw = await withdrawTokensInstruction({
-          connection: useRPCStore().connection as Connection,
-          user: this.vaultPDA,
-          authority: this.vaultPDA,
-          stakeMint: ATLAS,
-          registeredStake: this.registeredStakeAtlas,
-          stakingAccount: this.stakingAccountAtlas,
-
-          programId: ATLAS_LOCKER,
-        });
+        await this.SAFactory_LockerAtlas.init(this.multisigPDA as PublicKey);
 
         await build_send(MEMO_PREFIX_ATLAS + 'WithdrawTokens', [
-          inst_Withdraw.instructions[0],
+          (await this.SAFactory_LockerAtlas.buildWithdrawTokens())
+            .instructions[0],
         ]);
       },
 
       async build_unstakeTokens(this) {
-        const inst_Withdraw = await unstakeTokensInstruction({
-          connection: useRPCStore().connection as Connection,
-          user: this.vaultPDA,
-          registeredStake: this.registeredStakeAtlas,
-          stakingAccount: this.stakingAccountAtlas,
-
-          programId: ATLAS_LOCKER,
-        });
+        await this.SAFactory_LockerAtlas.init(this.multisigPDA as PublicKey);
 
         await build_send(MEMO_PREFIX_ATLAS + 'UnstakeTokens', [
-          inst_Withdraw.instructions[0],
+          (await this.SAFactory_LockerAtlas.buildUnstakeTokens())
+            .instructions[0],
         ]);
       },
 
       async build_cancelUnstake(this) {
-        const inst_Withdraw = await cancelUnstakeInstruction({
-          connection: useRPCStore().connection as Connection,
-          user: this.vaultPDA,
-          registeredStake: this.registeredStakeAtlas,
-          programId: ATLAS_LOCKER,
-        });
+        await this.SAFactory_LockerAtlas.init(this.multisigPDA as PublicKey);
 
         await build_send(MEMO_PREFIX_ATLAS + 'CancelUnstake', [
-          inst_Withdraw.instructions[0],
+          (await this.SAFactory_LockerAtlas.buildCancelUnstake())
+            .instructions[0],
         ]);
       },
     },

@@ -157,7 +157,12 @@ onMounted(async () => {
         </div>
 
         <div class="col-4">
-          <q-btn class="full-width" label="Sign" color="primary"></q-btn>
+          <q-btn
+            class="full-width"
+            label="Sign"
+            color="primary"
+            @click="useStarAtlasLockerStore().build_cancelUnstake()"
+          ></q-btn>
         </div>
       </div>
 

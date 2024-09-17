@@ -4,7 +4,8 @@ import { useWallet } from 'solana-wallets-vue';
 import { useStarAtlasLockerStore } from 'stores/globalStarAtlasLockerStore';
 
 onMounted(async () => {
-  await useStarAtlasLockerStore().setAccounts();
+  if (useWallet().publicKey.value)
+    await useStarAtlasLockerStore().setAccounts();
 });
 
 watch(
