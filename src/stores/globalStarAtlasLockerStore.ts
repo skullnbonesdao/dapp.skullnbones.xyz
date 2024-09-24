@@ -33,7 +33,7 @@ import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { amount } from '@metaplex-foundation/js';
 
-import { SAFactory_LockerAtlas } from 'src/StarAtlasFactory/SAFactory_LockerAtlas';
+import { SAFactory_LockerAtlas } from 'src/StarAtlasInterfaces/SAFactory_LockerAtlas';
 const MEMO_PREFIX_ATLAS = '[ATLAS-LOCKER] ';
 const MEMO_PREFIX_POLIS = '[POLIS-LOCKER] ';
 export const LOCKER_TOKEN_DECIMALS = 8;

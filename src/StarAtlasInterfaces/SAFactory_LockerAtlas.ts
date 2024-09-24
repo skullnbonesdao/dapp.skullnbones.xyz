@@ -27,10 +27,10 @@ const ATLAS_LOCKER = new PublicKey(
 );
 
 export class SAFactory_LockerAtlas {
-  public multisigPDA: PublicKey;
-  public vaultPDA: PublicKey;
-  public registeredStakeAtlas: PublicKey;
-  public stakingAccountAtlas: PublicKey;
+  public multisigPDA: PublicKey | undefined;
+  public vaultPDA: PublicKey | undefined;
+  public registeredStakeAtlas: PublicKey | undefined;
+  public stakingAccountAtlas: PublicKey | undefined;
 
   async init(multisigPDA: PublicKey) {
     this.multisigPDA = multisigPDA;
