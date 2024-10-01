@@ -264,7 +264,3 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="sass"></style>
-
-"pendingRewards": "paidRewards": "currentPeriod": "stakedAtTs": "66d3957f",
-"lastPendingRewardCalcTs": "66d3a257", "lastHarvestTs": "00", "unstakedTs":
-"00", "bump": 252

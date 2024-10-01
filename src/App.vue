@@ -14,11 +14,14 @@ import {
 import { onMounted } from 'vue';
 import 'src/css/backgrounds.scss';
 import { useRPCStore } from 'stores/rpcStore';
+import { useLockerPolisStore } from 'stores/globalLockerPolisStore';
 
 useGlobalStore();
 useRPCStore().update_connection();
 useWorkspaceAdapter();
 initWorkspaceAdapter();
+
+useLockerPolisStore();
 
 useWhitelist();
 useRaffleStore();
