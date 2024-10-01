@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-import { I_Record, useJsonBinStore } from 'stores/globalJsonBin';
-import draggable from 'vuedraggable';
+import { onMounted, ref } from 'vue';
+import { useJsonBinStore } from 'stores/globalJsonBin';
 import { watchDeep } from '@vueuse/core';
 import CreateNewJobDialog from 'components/dialogs/CreateNewJobDialog.vue';
 import { useGlobalStore } from 'stores/globalStore';
@@ -17,27 +16,31 @@ const jobTypes = ref([
   {
     id: 0,
     name: 'Todo',
-    description: "This hasn't been completed",
+    description: "Task is pending and hasn't started yet",
     color: 'purple',
   },
   {
     id: 1,
     name: 'In Progress',
-    description: 'This is actively worked on',
+    description: 'Task is actively being worked on',
     color: 'yellow-7',
   },
-
   {
     id: 2,
     name: 'On-hold',
-    description: 'This is pushed back',
+    description: 'Task is paused and waiting to be resumed',
     color: 'orange-7',
   },
-
+  {
+    id: 4,
+    name: 'Payout',
+    description: 'Task is completed and awaiting payout',
+    color: 'blue-7',
+  },
   {
     id: 3,
     name: 'Done',
-    description: 'This has been completed',
+    description: 'Task is fully completed and finalized',
     color: 'green',
   },
 ]);
