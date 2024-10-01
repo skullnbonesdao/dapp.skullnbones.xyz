@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import {
-  initWorkspaceAdapter,
-  useWorkspaceAdapter,
-} from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import * as anchor from '@coral-xyz/anchor';
+import { web3 } from '@coral-xyz/anchor';
 import {
   Connection,
   PublicKey,
@@ -13,7 +11,6 @@ import {
   Transaction,
 } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
-import { web3 } from '@coral-xyz/anchor';
 import { useRPCStore } from 'stores/rpcStore';
 import {
   LOCKER_TOKEN_DECIMALS,
@@ -24,7 +21,6 @@ import {
   createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
-import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { useLockerPolisStore } from 'stores/globalLockerPolisStore';
 
 const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
@@ -301,7 +297,7 @@ async function build_createLocker() {
 </script>
 
 <template>
-  !Under construction!
+  <div class="text-h1 text-red">!Under construction!</div>
 
   <q-card flat>
     <q-card-section>
@@ -374,9 +370,27 @@ async function build_createLocker() {
       <q-separator class="q-my-sm" />
       <div class="row items-center q-ma-md">
         <div class="col">
-          <div class="text-h6">Create Staking Account</div>
+          <div class="col text-h6">1. Initialize</div>
+
           <div class="text-subtitle2 text-weight-light">
-            This instruction will create a new locker instance for you
+            Instruction will initialize the ATA token accounts
+          </div>
+        </div>
+
+        <div class="col-4">
+          <q-btn
+            class="full-width"
+            label="Sign"
+            color="primary"
+            @click="useLockerPolisStore().make_createATAs()"
+          ></q-btn>
+        </div>
+      </div>
+      <div class="row items-center q-ma-md">
+        <div class="col">
+          <div class="text-h6">2. Setup</div>
+          <div class="text-subtitle2 text-weight-light">
+            Instruction will create a new locker instance
           </div>
         </div>
 

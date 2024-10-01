@@ -1,4 +1,4 @@
-import { AnchorWallet, useAnchorWallet } from 'solana-wallets-vue';
+import { AnchorWallet } from 'solana-wallets-vue';
 import { useRPCStore } from 'stores/rpcStore';
 import {
   Connection,
@@ -7,21 +7,18 @@ import {
   SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
 } from '@solana/web3.js';
-import { AnchorProvider, Idl, Program, web3 } from '@coral-xyz/anchor';
 import * as anchor from '@coral-xyz/anchor';
+import { AnchorProvider, Idl, Program, web3 } from '@coral-xyz/anchor';
 
 import proxy_rewarder_idl from 'src/idls/proxy_rewarder.json';
 import locked_voter_idl from 'src/idls/locked_voter.json';
 import snapshot_idl from 'src/idls/snapshots.json';
 import { POLIS } from 'stores/globalStarAtlasLockerStore';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
 import {
   createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
-import { transactions } from '@sqds/multisig';
-import { getTxSize } from 'src/StarAtlasInterfaces/TXCalc';
 
 const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
@@ -193,36 +190,8 @@ export class SAFactory_LockerPolis {
     }
   }
 
-  async buildATAMaker() {
+  async buildCreateAccounts() {
     await this.setAccounts();
-    const transaction = new Transaction();
-
-    //Create ATA_Proxy
-    transaction.add(
-      createAssociatedTokenAccountInstruction(
-        this.payer!,
-        this.ata_proxy,
-        this.proxy,
-        POLIS,
-      ),
-    );
-
-    //Create ATA_Escrow
-    transaction.add(
-      createAssociatedTokenAccountInstruction(
-        this.payer,
-        this.ata_escrow,
-        this.escrow,
-        POLIS,
-      ),
-    );
-
-    return transaction;
-  }
-
-  async buildCreateLocker(duration: number, amount: number) {
-    await this.setAccounts();
-
     const transaction = new Transaction();
 
     // Proxy Rewarder: New Proxy Escrow
@@ -268,6 +237,34 @@ export class SAFactory_LockerPolis {
         })
         .instruction(),
     );
+
+    //Create ATA_Proxy
+    transaction.add(
+      createAssociatedTokenAccountInstruction(
+        this.payer!,
+        this.ata_proxy,
+        this.proxy,
+        POLIS,
+      ),
+    );
+
+    //Create ATA_Escrow
+    transaction.add(
+      createAssociatedTokenAccountInstruction(
+        this.payer,
+        this.ata_escrow,
+        this.escrow,
+        POLIS,
+      ),
+    );
+
+    return transaction;
+  }
+
+  async buildCreateLocker(duration: number, amount: number) {
+    await this.setAccounts();
+
+    const transaction = new Transaction();
 
     //Snapshots: Create Escrow History
     for (const era of getERAs(duration)) {
@@ -356,11 +353,12 @@ export class SAFactory_LockerPolis {
 }
 
 function getERAs(duration_sec: number): number[] {
+  const START_AT = 3;
   const intervals = duration_sec / 60 / 60 / 24 / 255;
   const result = [];
 
   for (let i = 0; i < intervals; i++) {
-    result.push(3 + i);
+    result.push(START_AT + i);
   }
 
   return result;
