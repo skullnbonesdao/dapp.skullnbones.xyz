@@ -40,18 +40,18 @@ function scheduleRaffleUpdateJob(interval: number) {
   }, interval);
 }
 
-scheduleRaffleUpdateJob(60000);
+//scheduleRaffleUpdateJob(60000);
 
-watch(
-  () => tab_selected.value,
-  () => {
-    if (tab_selected.value == 'raffle') {
-      scheduleRaffleUpdateJob(60000);
-    } else {
-      clearInterval(task_id.value);
-    }
-  },
-);
+// watch(
+//   () => tab_selected.value,
+//   () => {
+//     if (tab_selected.value == 'raffle') {
+//       scheduleRaffleUpdateJob(60000);
+//     } else {
+//       clearInterval(task_id.value);
+//     }
+//   },
+// );
 </script>
 
 <template>
