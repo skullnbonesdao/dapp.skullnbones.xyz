@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import SolscanIcon from 'components/icons/SolscanIcon.vue';
-import { format_address } from '../../functions/format_address';
 import { ref } from 'vue';
 
 const props = defineProps(['raffle', 'entrants']);
@@ -10,10 +9,11 @@ const pagination = ref({
 </script>
 
 <template>
-  <div class="row items-center q-ma-md">
+  <q-card bordered flat square class="row items-center q-pa-md">
     <div class="col q-gutter-y-sm">
       <div>Raffle account</div>
       <div>Entrants account</div>
+      <div>Use Whitelist?</div>
     </div>
 
     <div class="col q-gutter-y-sm">
@@ -38,8 +38,10 @@ const pagination = ref({
       >
         <SolscanIcon />
       </q-btn>
+      <q-icon name="check" v-if="raffle.account.useWhitelist"></q-icon>
+      <q-icon name="clear" v-else></q-icon>
     </div>
-  </div>
+  </q-card>
 </template>
 
 <style scoped lang="sass"></style>

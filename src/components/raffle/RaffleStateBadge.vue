@@ -1,37 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const props = defineProps(['raffle', 'entrants']);
+const props = defineProps(['raffle', 'tickets']);
 
 const progress = computed(() => {
-  return props.entrants?.total / props.entrants?.max;
+  return props.tickets?.sold / props.tickets?.total;
 });
+
+const enum badgeColorMap {
+  'created' = 'orange',
+  'ready' = 'orange',
+  'paused' = 'pink',
+  'full' = 'purple',
+  'claimprize' = 'purple',
+  'claimtickets' = 'purple',
+  'running' = 'primary',
+}
 </script>
 
 <template>
-  <q-badge
-    color="cyan"
-    v-if="raffle.account.isClaimed"
-    class="text-caption text-md"
-  >
-    ready-to-close
-  </q-badge>
-  <q-badge
-    color="yellow"
-    v-else-if="raffle.account.isRunning && raffle.account.randomness"
-    class="text-caption text-md text-black"
-  >
-    claimable
-  </q-badge>
-  <q-badge
-    color="orange"
-    class="text-caption text-md text-black"
-    v-else-if="raffle.account.isRunning && entrants?.total == entrants?.max"
-    >waiting for draw</q-badge
-  >
-
   <q-linear-progress
-    v-else-if="raffle.account.isRunning"
+    v-if="Object.keys(raffle.account.state)[0] == 'running'"
     size="25px"
     :value="progress"
     color="primary"
@@ -40,10 +29,18 @@ const progress = computed(() => {
       <q-badge
         color="black"
         text-color="primary"
-        :label="`Tickets: ${entrants?.total}/${entrants?.max}`"
+        :label="`Tickets: ${tickets?.sold}/${tickets?.total}`"
       />
     </div>
   </q-linear-progress>
+
+  <q-badge
+    v-else
+    :color="badgeColorMap[Object.keys(raffle.account.state)[0]]"
+    class="text-h6 justify-center full-width"
+  >
+    {{ Object.keys(raffle.account.state)[0].toUpperCase() }}
+  </q-badge>
 </template>
 
 <style scoped lang="sass"></style>

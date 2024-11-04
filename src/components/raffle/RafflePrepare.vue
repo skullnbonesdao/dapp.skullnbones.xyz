@@ -4,22 +4,21 @@ import { ref } from 'vue';
 import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
 import { useWallet } from 'solana-wallets-vue';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
-import { format_address } from 'src/functions/format_address';
 import { useGlobalWalletStore } from 'stores/globalWallet';
 import { useRPCStore } from 'stores/rpcStore';
+import { useRaffleStore } from 'stores/globalRaffle';
 
 const input_prize_count = ref(1);
 const input_prize_url = ref('');
-const input_account_selected = ref('');
+const prize_account_selected = ref('');
 
-const props = defineProps(['raffle', 'is_admin']);
+const props = defineProps(['raffle']);
 
 const options = ref<any[]>([]);
+
 const stringOptions = ref(
   useGlobalWalletStore()
     .token_accounts.filter(
@@ -30,37 +29,21 @@ const stringOptions = ref(
 
 stringOptions.value.forEach((o) =>
   options.value.push({
-    label:
-      useGlobalStore().token_list.find((t) => t.address == o)?.name +
-      ' [' +
-      useGlobalStore().token_list.find((t) => t.address == o)?.symbol +
-      ']',
+    label: useGlobalStore().token_list.find((t) => t.address == o)
+      ? useGlobalStore().token_list.find((t) => t.address == o)?.name +
+        ' [' +
+        useGlobalStore().token_list.find((t) => t.address == o)?.symbol +
+        ']'
+      : o,
     value: o,
   }),
 );
 
-// options.value = stringOptions.value;
-// function filterFn(val: any, update: any) {
-//   if (val === '') {
-//     update(() => {
-//       options.value = stringOptions.value;
-//     });
-//     return;
-//   }
-//
-//   update(() => {
-//     const needle = val.toLowerCase();
-//     options.value = stringOptions.value.filter(
-//       (v) => v.toLowerCase().indexOf(needle) > -1,
-//     );
-//   });
-// }
-
 async function add_prize_to_raffle() {
-  const { pg_raffle } = useWorkspaceAdapter();
+  const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
 
   const prize_mint = new anchor.web3.PublicKey(
-    input_account_selected.value.value,
+    prize_account_selected.value.value,
   );
 
   const ata = (
@@ -72,42 +55,32 @@ async function add_prize_to_raffle() {
 
   const raffle = new anchor.web3.PublicKey(props.raffle.publicKey.toString());
 
-  let [prize_vault, prize_vault_bump] =
-    anchor.web3.PublicKey.findProgramAddressSync(
-      [anchor.utils.bytes.utf8.encode('vault'), raffle.toBytes()],
-      pg_raffle.value.programId,
-    );
-
   const account_info =
     await useRPCStore().connection.getParsedAccountInfo(prize_mint);
 
   console.log(account_info.value?.data.parsed.info.decimals);
 
   try {
-    const signature = await pg_raffle.value.methods
-      .addPrize(
+    const signature = await pg_raffle?.methods
+      .prepare(
         new BN(
           input_prize_count.value *
             Math.pow(10, account_info.value?.data.parsed.info.decimals),
         ),
-        new BN(account_info.value?.data.parsed.info.decimals),
         input_prize_url.value,
       )
-      .accounts({
-        raffle: raffle,
+      .accountsPartial({
         creator: useWallet().publicKey.value,
+        raffle: raffle,
         from: ata,
-        prizeVault: prize_vault,
         prizeMint: prize_mint,
-        systemProgram: SystemProgram.programId,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        rent: SYSVAR_RENT_PUBKEY,
       })
       .rpc();
 
     console.log(signature);
 
     await handle_confirmation(signature);
+    await useRaffleStore().update_raffles();
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -119,21 +92,14 @@ async function add_prize_to_raffle() {
 </script>
 
 <template>
-  <div
-    class="col q-pa-sm"
-    v-if="
-      is_admin &&
-      raffle.account.prizeTokenMint.toString() ==
-        '11111111111111111111111111111111'
-    "
-  >
+  <div class="col q-pa-sm">
     <p class="text-overline">Add a prize:</p>
     <div class="col q-gutter-y-sm">
       <q-select
         class="full-width"
         filled
         square
-        v-model="input_account_selected"
+        v-model="prize_account_selected"
         clearable
         use-input
         hide-selected
@@ -142,7 +108,6 @@ async function add_prize_to_raffle() {
         behavior="menu"
         label="Select Ticket by mint"
         :options="options"
-        @filter="filterFn"
         style="width: 250px"
       >
         <template v-slot:no-option>

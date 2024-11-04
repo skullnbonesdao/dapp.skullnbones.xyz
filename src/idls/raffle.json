@@ -1,7 +1,12 @@
 {
   "version": "0.1.0",
-  "name": "raffle",
+  "name": "snb_raffle",
   "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [],
+      "args": []
+    },
     {
       "name": "createRaffle",
       "accounts": [
@@ -16,7 +21,7 @@
           "isSigner": false
         },
         {
-          "name": "entrants",
+          "name": "tickets",
           "isMut": true,
           "isSigner": false
         },
@@ -26,7 +31,7 @@
           "isSigner": false
         },
         {
-          "name": "proceedsMint",
+          "name": "ticketMint",
           "isMut": false,
           "isSigner": false
         },
@@ -48,7 +53,8 @@
         {
           "name": "whitelist",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "isOptional": true
         },
         {
           "name": "feeAccount",
@@ -70,12 +76,12 @@
           "type": "u64"
         },
         {
-          "name": "ticketDecimals",
-          "type": "u8"
-        },
-        {
           "name": "maxEntrants",
           "type": "u32"
+        },
+        {
+          "name": "seed",
+          "type": "u64"
         }
       ]
     },
@@ -129,32 +135,7 @@
           "type": "u64"
         },
         {
-          "name": "decimals",
-          "type": "u8"
-        },
-        {
           "name": "imageUrl",
-          "type": "string"
-        }
-      ]
-    },
-    {
-      "name": "editUrl",
-      "accounts": [
-        {
-          "name": "creator",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "raffle",
-          "isMut": true,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "url",
           "type": "string"
         }
       ]
@@ -163,17 +144,22 @@
       "name": "buyTickets",
       "accounts": [
         {
-          "name": "buyer",
+          "name": "signer",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "raffle",
+          "name": "entrant",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "entrants",
+          "name": "raffle",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickets",
           "isMut": true,
           "isSigner": false
         },
@@ -193,11 +179,6 @@
           "isSigner": false
         },
         {
-          "name": "transferAuth",
-          "isMut": false,
-          "isSigner": true
-        },
-        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -211,19 +192,20 @@
           "name": "whitelist",
           "isMut": true,
           "isSigner": false,
-          "docs": [
-            "Checks"
-          ]
+          "isOptional": true,
+          "docs": ["Checks"]
         },
         {
-          "name": "entry",
+          "name": "whitelistEntry",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "isOptional": true
         },
         {
           "name": "whitelistProgram",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "isOptional": true
         },
         {
           "name": "feeAccount",
@@ -234,15 +216,7 @@
       "args": [
         {
           "name": "ticketAmount",
-          "type": "u64"
-        },
-        {
-          "name": "listName",
-          "type": "string"
-        },
-        {
-          "name": "listAdmin",
-          "type": "publicKey"
+          "type": "u32"
         }
       ]
     },
@@ -255,7 +229,7 @@
           "isSigner": false
         },
         {
-          "name": "entrants",
+          "name": "tickets",
           "isMut": true,
           "isSigner": false
         },
@@ -281,7 +255,7 @@
           "isSigner": false
         },
         {
-          "name": "entrants",
+          "name": "tickets",
           "isMut": false,
           "isSigner": false
         },
@@ -306,15 +280,10 @@
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "name",
-          "type": "string"
-        }
-      ]
+      "args": []
     },
     {
-      "name": "collectProceeds",
+      "name": "collectTicketProceeds",
       "accounts": [
         {
           "name": "creator",
@@ -347,12 +316,7 @@
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "name",
-          "type": "string"
-        }
-      ]
+      "args": []
     },
     {
       "name": "closeRaffle",
@@ -363,7 +327,7 @@
           "isSigner": true
         },
         {
-          "name": "entrants",
+          "name": "tickets",
           "isMut": true,
           "isSigner": false
         },
@@ -389,20 +353,35 @@
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "name",
-          "type": "string"
-        }
-      ]
+      "args": []
     }
   ],
   "accounts": [
+    {
+      "name": "Tickets",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total",
+            "type": "u32"
+          },
+          {
+            "name": "max",
+            "type": "u32"
+          }
+        ]
+      }
+    },
     {
       "name": "Raffle",
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "seed",
+            "type": "u64"
+          },
           {
             "name": "bump",
             "type": "u8"
@@ -410,6 +389,12 @@
           {
             "name": "creator",
             "type": "publicKey"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": "RaffleState"
+            }
           },
           {
             "name": "name",
@@ -424,15 +409,7 @@
             "type": "string"
           },
           {
-            "name": "isRunning",
-            "type": "bool"
-          },
-          {
-            "name": "isClaimed",
-            "type": "bool"
-          },
-          {
-            "name": "ticketTokenMint",
+            "name": "ticketMint",
             "type": "publicKey"
           },
           {
@@ -456,39 +433,56 @@
             "type": "u8"
           },
           {
-            "name": "randomness",
-            "type": {
-              "option": {
-                "array": [
-                  "u8",
-                  32
-                ]
-              }
-            }
-          },
-          {
-            "name": "entrants",
+            "name": "tickets",
             "type": "publicKey"
           },
           {
             "name": "winner",
             "type": "publicKey"
+          },
+          {
+            "name": "randomness",
+            "type": {
+              "option": {
+                "array": ["u8", 32]
+              }
+            }
+          },
+          {
+            "name": "useWhitelist",
+            "type": "bool"
+          },
+          {
+            "name": "whitelist",
+            "type": "publicKey"
           }
         ]
       }
-    },
+    }
+  ],
+  "types": [
     {
-      "name": "Entrants",
+      "name": "RaffleState",
       "type": {
-        "kind": "struct",
-        "fields": [
+        "kind": "enum",
+        "variants": [
           {
-            "name": "total",
-            "type": "u32"
+            "name": "CREATED"
           },
           {
-            "name": "max",
-            "type": "u32"
+            "name": "RUNNING"
+          },
+          {
+            "name": "FULL"
+          },
+          {
+            "name": "CLAIMPRICE"
+          },
+          {
+            "name": "CLAIMTICKETS"
+          },
+          {
+            "name": "DONE"
           }
         ]
       }
@@ -533,7 +527,7 @@
     {
       "code": 6007,
       "name": "InvalidTicketCount",
-      "msg": "No prize"
+      "msg": "Amount of sold tickets is not fulfilled"
     },
     {
       "code": 6008,
@@ -609,6 +603,16 @@
       "code": 6022,
       "name": "InvalidTreasuryTokenAccountOwner",
       "msg": "Invalid treasury token account owner"
+    },
+    {
+      "code": 6023,
+      "name": "AccountMismatch",
+      "msg": "AccountMismatch"
+    },
+    {
+      "code": 6024,
+      "name": "StateMismatch",
+      "msg": "StateMismatch"
     }
   ],
   "metadata": {

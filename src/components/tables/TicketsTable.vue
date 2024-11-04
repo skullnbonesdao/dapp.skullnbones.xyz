@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { format_address } from 'src/functions/format_address';
-import { useGlobalStore } from 'stores/globalStore';
 
 const props = defineProps(['entrants']);
 const pagination = ref({
@@ -31,6 +30,8 @@ const columns = ref([
 
 <template>
   <q-table
+    bordered
+    square
     dense
     class="col"
     title="Tickets"

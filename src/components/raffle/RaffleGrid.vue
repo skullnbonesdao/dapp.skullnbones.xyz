@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RaffleCard from 'components/raffle/RaffleCard.vue';
-import { computed, onMounted, PropType, ref } from 'vue';
+import { computed, PropType, ref } from 'vue';
 import { useQuasar } from 'quasar';
 
 const props = defineProps({
@@ -26,14 +26,12 @@ const cardContainerClass = computed(() => {
 });
 
 const rowsPerPageOptions = computed(() => {
-  return useQuasar().screen.gt.xs
-    ? useQuasar().screen.gt.sm
-      ? [3, 6, 9]
-      : [3, 6]
-    : [3];
+  return [0];
 });
 
-const pagination = ref();
+const pagination = ref({
+  rowsPerPage: 0,
+});
 </script>
 
 <template>

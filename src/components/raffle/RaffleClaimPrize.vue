@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import {
-  WHITELIST_CREATOR_WALLET,
-  NULL_WALLET,
-  useGlobalStore,
-} from 'stores/globalStore';
-
 import * as anchor from '@coral-xyz/anchor';
 import {
   createAssociatedTokenAccountInstruction,
@@ -18,14 +12,15 @@ import { useWallet } from 'solana-wallets-vue';
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { useRPCStore } from 'stores/rpcStore';
+import { useRaffleStore } from 'stores/globalRaffle';
 
 const props = defineProps(['raffle', 'is_admin']);
 
 async function claim_raffle() {
-  const { pg_raffle } = useWorkspaceAdapter();
+  const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
 
   const prizeTokenMint = new anchor.web3.PublicKey(
-    props.raffle.account.prizeTokenMint.toString(),
+    props.raffle.account.prizeMint.toString(),
   );
 
   const winner = new anchor.web3.PublicKey(
@@ -59,36 +54,29 @@ async function claim_raffle() {
 
   const raffle = new anchor.web3.PublicKey(props.raffle.publicKey.toString());
 
-  let [entrants, entrants_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('entrants'), raffle.toBytes()],
-    pg_raffle.value.programId,
-  );
-
   let [prize_vault, prize_vault_bump] =
     anchor.web3.PublicKey.findProgramAddressSync(
-      [anchor.utils.bytes.utf8.encode('vault'), raffle.toBytes()],
-      pg_raffle.value.programId,
+      [anchor.utils.bytes.utf8.encode('vaultPrize'), raffle.toBytes()],
+      pg_raffle?.programId,
     );
 
   console.log(props.raffle.account.name);
 
   try {
-    const signature = await pg_raffle.value.methods
-      .claimPrize(props.raffle.account.name)
-      .accounts({
-        creator: WHITELIST_CREATOR_WALLET,
+    const signature = await pg_raffle?.methods
+      .claimPrize()
+      .accountsPartial({
         raffle: raffle,
-        entrants: entrants,
-        prizeVault: prize_vault,
         prizeMint: prizeTokenMint,
+        prizeVault: prize_vault,
         to: ata,
-        tokenProgram: TOKEN_PROGRAM_ID,
       })
       .rpc();
 
     console.log(signature);
 
     await handle_confirmation(signature);
+    await useRaffleStore().update_raffles();
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -101,8 +89,8 @@ async function claim_raffle() {
 
 <template>
   <q-btn
-    v-if="raffle.account.winner != NULL_WALLET && is_admin"
     color="primary"
+    icon="send"
     label="Claim Prize"
     @click="claim_raffle()"
   />

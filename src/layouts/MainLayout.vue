@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff" class="bg-image-dark">
-    <q-header class="bg-black">
+    <q-header class="bg-dark">
       <q-toolbar>
         <q-btn
           flat
@@ -94,7 +94,6 @@ import { useGlobalStore } from 'stores/globalStore';
 import { version } from 'src/../package.json';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useWhitelist } from '../stores/globalWhitelist';
-import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
 import { useRPCStore } from 'stores/rpcStore';
 import { useQuasar } from 'quasar';
 
@@ -118,13 +117,6 @@ function update_selection() {
     timeout: 5000,
   });
 }
-
-watch(
-  () => useGlobalStore().rpc_selected,
-  () => {
-    useGlobalStore().update_connection();
-  },
-);
 
 watch(
   () => useWallet().publicKey.value,

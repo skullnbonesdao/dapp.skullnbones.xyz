@@ -26,13 +26,17 @@ export const useRaffleStore = defineStore('raffleStore', {
   getters: {
     get_running_raffles(state) {
       return state.raffles.filter(
-        (raffle) => raffle.account.isRunning === true,
+        (raffle) =>
+          Object.keys(raffle.account.state)[0] == 'running' ||
+          Object.keys(raffle.account.state)[0] == 'full',
       );
     },
   },
   actions: {
     async update_raffles() {
-      const { pg_raffle } = useWorkspaceAdapter();
+      console.log('Hello');
+
+      const { pg_raffle } = useWorkspaceAdapter()!;
       if (useWallet().publicKey.value) {
         this.is_loading = true;
         this.raffles = await pg_raffle.value.account.raffle.all();

@@ -1,56 +1,53 @@
 <script setup lang="ts">
 import * as anchor from '@coral-xyz/anchor';
 import { useWallet } from 'solana-wallets-vue';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { checkAccountExists } from 'src/functions/checkAccountExists';
+import { useRaffleStore } from 'stores/globalRaffle';
 
-const props = defineProps(['raffle', 'is_admin']);
+const props = defineProps(['raffle']);
 
 async function close_raffle() {
-  const { pg_raffle } = useWorkspaceAdapter();
+  const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
 
-  let [raffle, raffle_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      anchor.utils.bytes.utf8.encode('raffle'),
-      anchor.utils.bytes.utf8.encode(props.raffle.account.name),
-    ],
-    pg_raffle.value.programId,
+  let raffle = props.raffle.publicKey;
+
+  let [tickets, tickets_bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [anchor.utils.bytes.utf8.encode('tickets'), raffle.toBytes()],
+    pg_raffle?.programId,
   );
 
-  let [entrants, entrants_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('entrants'), raffle.toBytes()],
-    pg_raffle.value.programId,
-  );
-
-  let [proceeds, proceeds_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('proceeds'), raffle.toBytes()],
-    pg_raffle.value.programId,
-  );
-
-  let [prize_vault, prize_vault_bump] =
+  let [ticketsVault, proceeds_bump] =
     anchor.web3.PublicKey.findProgramAddressSync(
-      [anchor.utils.bytes.utf8.encode('vault'), raffle.toBytes()],
-      pg_raffle.value.programId,
+      [anchor.utils.bytes.utf8.encode('vaultTickets'), raffle.toBytes()],
+      pg_raffle?.programId,
     );
 
+  let [prizeVault, prize_vault_bump] =
+    anchor.web3.PublicKey.findProgramAddressSync(
+      [anchor.utils.bytes.utf8.encode('vaultPrize'), raffle.toBytes()],
+      pg_raffle?.programId,
+    );
+
+  if (!(await checkAccountExists(prizeVault))) prizeVault = null;
+
   try {
-    const signature = await pg_raffle.value.methods
-      .closeRaffle(props.raffle.account.name)
-      .accounts({
+    const signature = await pg_raffle?.methods
+      .close()
+      .accountsPartial({
         creator: useWallet().publicKey.value,
-        entrants: entrants,
         raffle: raffle,
-        proceeds: proceeds,
-        prizeVault: prize_vault,
-        tokenProgram: TOKEN_PROGRAM_ID,
+        tickets: tickets,
+        ticketsVault: ticketsVault,
+        prizeVault: prizeVault,
       })
       .rpc();
 
     console.log(signature);
-
     await handle_confirmation(signature);
+    await useRaffleStore().update_raffles();
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -64,11 +61,11 @@ async function close_raffle() {
 <template>
   <q-btn
     square
-    v-if="is_admin && (!raffle.account.isRunning || raffle.account.isClaimed)"
     color="primary"
+    icon="send"
+    label="Close Raffle"
     @click="close_raffle()"
-    >Close Raffle</q-btn
-  >
+  />
 </template>
 
 <style scoped lang="sass"></style>

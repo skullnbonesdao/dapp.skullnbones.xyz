@@ -3,19 +3,10 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { useGlobalStore } from 'stores/globalStore';
 import RaffleGrid from 'components/raffle/RaffleGrid.vue';
-import {
-  initWorkspaceAdapter,
-  useWorkspaceAdapter,
-} from 'src/idls/adapter/apapter';
 import RaffleCreateRaffle from 'components/raffle/RaffleCreateRaffle.vue';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useRaffleStore } from 'stores/globalRaffle';
 import { useGlobalWalletStore } from 'stores/globalWallet';
-import {
-  DiscordMessageType,
-  handle_discord_webhook,
-} from 'components/messages/handle_discord_webhook';
-import { evaSearch } from '@quasar/extras/eva-icons';
 
 const tab_selected = ref('raffle');
 
@@ -77,7 +68,7 @@ watch(
         no-caps
         outside-arrows
         mobile-arrows
-        class="col"
+        class="col bg-dark"
       >
         <q-tab name="raffle" label="Raffle" />
         <q-tab name="create" label="Create" v-if="useGlobalStore().is_admin" />
@@ -85,6 +76,7 @@ watch(
       </q-tabs>
       <q-btn
         flat
+        class="bg-dark"
         icon="refresh"
         @click="
           useRaffleStore()
@@ -108,7 +100,10 @@ watch(
         :is_admin="false"
         v-if="tab_selected === 'raffle'"
       />
-      <RaffleCreateRaffle v-if="tab_selected === 'create'" />
+      <div class="row justify-center" v-if="tab_selected === 'create'">
+        <RaffleCreateRaffle class="q-mt-xl" />
+      </div>
+
       <RaffleGrid
         :raffles="useRaffleStore().raffles"
         :is_admin="useGlobalStore().is_admin"

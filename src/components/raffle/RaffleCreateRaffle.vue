@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import { onMounted, ref, watch } from 'vue';
 import { Notify } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import {
-  WHITELIST_CREATOR_WALLET,
-  RAFLLE_WHITELIST_NAME,
   useGlobalStore,
-  FEE_WALLET,
+  WHITELIST_CREATOR_WALLET,
 } from '../../stores/globalStore';
 import { useWallet } from 'solana-wallets-vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
@@ -18,40 +14,59 @@ import { useGlobalWalletStore } from '../../stores/globalWallet';
 
 import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
 import { useRPCStore } from 'stores/rpcStore';
+import { useWhitelist } from 'stores/globalWhitelist';
 
 const input_raffle_name = ref();
 const input_raffle_description = ref();
 const input_raffle_ticket_count = ref();
 const input_raffle_ticket_price = ref();
 const input_account_selected = ref();
+const whitelist_selected = ref<{ label: string; value: string | null }>();
+const whitelist_options = ref<{ label: string; value: string | null }[]>([]);
+
+onMounted(() => update_whitelists());
+watch(
+  () => useWhitelist().whitelists,
+  () => update_whitelists(),
+);
+
+function update_whitelists() {
+  useWhitelist().whitelists.forEach((whitelist) => {
+    whitelist_options.value.push({
+      label: 'Crew',
+      value: whitelist.publicKey.toString(),
+    });
+  });
+  whitelist_options.value.push({ label: 'none', value: null });
+  whitelist_selected.value = whitelist_options.value.find(
+    (entry) => entry.label == 'Crew',
+  );
+}
 
 async function create_new_raffle() {
-  const { pg_raffle, pg_whitelist } = useWorkspaceAdapter();
+  const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
+  const pg_whitelist = useWorkspaceAdapter()?.pg_whitelist.value;
 
+  const raffleSeed = new anchor.BN(
+    window.crypto.getRandomValues(new Uint8Array(8)),
+  );
+
+  //Accounts
   let [raffle, raffle_bump] = anchor.web3.PublicKey.findProgramAddressSync(
     [
       anchor.utils.bytes.utf8.encode('raffle'),
       anchor.utils.bytes.utf8.encode(input_raffle_name.value),
+      raffleSeed.toArrayLike(Buffer).reverse(),
     ],
-    pg_raffle.value.programId,
-  );
-
-  let [entrants, entrants_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('entrants'), raffle.toBytes()],
-    pg_raffle.value.programId,
-  );
-
-  let [proceeds, proceeds_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('proceeds'), raffle.toBytes()],
-    pg_raffle.value.programId,
+    pg_raffle?.programId,
   );
 
   let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
     [
       WHITELIST_CREATOR_WALLET.toBuffer(),
-      anchor.utils.bytes.utf8.encode(RAFLLE_WHITELIST_NAME),
+      anchor.utils.bytes.utf8.encode(whitelist_selected.value?.label),
     ],
-    pg_whitelist.value.programId,
+    pg_whitelist?.programId,
   );
 
   const account_info = await useRPCStore().connection.getParsedAccountInfo(
@@ -59,36 +74,31 @@ async function create_new_raffle() {
   );
 
   try {
-    const signature = await pg_raffle.value.methods
-      .createRaffle(
+    const signature = await pg_raffle?.methods
+      .initialize(
         input_raffle_name.value,
         input_raffle_description.value,
         new BN(
           input_raffle_ticket_price.value *
             Math.pow(10, account_info.value?.data.parsed.info.decimals),
         ),
-        new BN(account_info.value?.data.parsed.info.decimals),
         input_raffle_ticket_count.value,
+        raffleSeed,
       )
-      .accounts({
-        raffle: raffle,
-        entrants: entrants,
+      .accountsPartial({
         creator: useWallet().publicKey.value,
-        proceeds: proceeds,
-        proceedsMint: new anchor.web3.PublicKey(
+        raffle: raffle,
+        ticketsMint: new anchor.web3.PublicKey(
           input_account_selected.value.value,
         ),
-        tokenProgram: TOKEN_PROGRAM_ID,
-        rent: SYSVAR_RENT_PUBKEY,
         whitelist: whitelist,
-        feeAccount: FEE_WALLET,
-        systemProgram: SystemProgram.programId,
       })
       .rpc();
 
     console.log(signature);
 
     if (await handle_confirmation(signature)) {
+      await useRaffleStore().update_raffles();
       await useRaffleStore().send_discord_webhook(
         DiscordMessageType.RAFFLE_CREATE,
         input_raffle_name.value,
@@ -116,36 +126,23 @@ const stringOptions = ref(
     .flatMap((account) => account.account.data.parsed.info.mint),
 );
 
-stringOptions.value.forEach((o) =>
-  options.value.push({
-    label:
-      useGlobalStore().token_list.find((t) => t.address == o)?.name +
+stringOptions.value.forEach((o) => {
+  const label =
+    useGlobalStore().token_list.find((t) => t.address == o)?.name ??
+    o +
       ' [' +
-      useGlobalStore().token_list.find((t) => t.address == o)?.symbol +
-      ']',
-    value: o,
-  }),
-);
+      useGlobalStore().token_list.find((t) => t.address == o)?.symbol ??
+    '' + ']';
 
-// function filterFn(val: any, update: any) {
-//   if (val === '') {
-//     update(() => {
-//       options.value = stringOptions.value;
-//     });
-//     return;
-//   }
-//
-//   update(() => {
-//     const needle = val.toLowerCase();
-//     options.value = stringOptions.value.filter(
-//       (v) => v.toLowerCase().indexOf(needle) > -1,
-//     );
-//   });
-// }
+  options.value.push({
+    label: label,
+    value: o,
+  });
+});
 </script>
 
 <template>
-  <q-card square flat class="col q-pa-sm">
+  <q-card square flat class="col q-pa-sm" style="max-width: 800px">
     <q-card-section class="q-gutter-y-md">
       <p class="text-h5">Raffle</p>
       <q-input
@@ -182,7 +179,6 @@ stringOptions.value.forEach((o) =>
           behavior="menu"
           label="Select Ticket by mint"
           :options="options"
-          @filter="filterFn"
           style="width: 250px"
         >
           <template v-slot:no-option>
@@ -191,6 +187,12 @@ stringOptions.value.forEach((o) =>
             </q-item>
           </template>
         </q-select>
+        <q-btn
+          icon="refresh"
+          color="primary"
+          square
+          @click="useGlobalWalletStore().update_accounts()"
+        ></q-btn>
       </div>
 
       <q-input
@@ -209,11 +211,42 @@ stringOptions.value.forEach((o) =>
         label="Ticket Price"
       />
     </q-card-section>
+    <q-card-section class="q-gutter-y-md">
+      <p class="text-h5">Whitelist</p>
+
+      <div class="col q-gutter-y-sm">
+        <q-select
+          class="full-width"
+          filled
+          square
+          v-model="whitelist_selected"
+          clearable
+          use-input
+          hide-selected
+          fill-input
+          input-debounce="0"
+          behavior="menu"
+          label="Whitelist selcted"
+          :options="whitelist_options"
+          style="width: 250px"
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"> No results </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+    </q-card-section>
     <q-separator />
-    <q-card-section>
-      <q-btn class="row" color="primary" @click="create_new_raffle()"
-        >Create</q-btn
-      >
+    <q-card-section class="row justify-end">
+      <q-btn
+        icon="send"
+        class="row"
+        color="primary"
+        @click="create_new_raffle()"
+        label="Create"
+      ></q-btn>
     </q-card-section>
   </q-card>
 </template>

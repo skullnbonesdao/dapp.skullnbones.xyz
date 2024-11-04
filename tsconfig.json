@@ -1,6 +1,14 @@
 {
   "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "lib": ["ES2020", "DOM"],
+    "types": ["mocha", "chai"],
+    "typeRoots": ["./node_modules/@types"],
+
+    "module": "commonjs",
+    "target": "es6",
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   }
 }
