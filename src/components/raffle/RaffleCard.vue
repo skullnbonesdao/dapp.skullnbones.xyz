@@ -8,7 +8,6 @@ import RaffleClaimPirze from 'components/raffle/RaffleClaimPrize.vue';
 import RaffleClose from 'components/raffle/RaffleClose.vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import RaffleClaimTickets from 'components/raffle/RaffleClaimTickets.vue';
-import { useGlobalStore } from 'stores/globalStore';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import AccountsTable from 'components/tables/AccountsTable.vue';
 import IconFromSeed from 'components/icons/IconFromSeed.vue';
@@ -19,7 +18,7 @@ import TicketsTable from 'components/tables/TicketsTable.vue';
 import RaffleLinks from 'components/raffle/RaffleLinks.vue';
 import { useRPCStore } from 'stores/rpcStore';
 import RaffleToggleMode from 'components/raffle/RaffleToggleMode.vue';
-import { format_address } from '../../functions/format_address';
+import { useGlobalStore } from '../../stores/globalStore';
 
 const props = defineProps(['raffle', 'is_admin']);
 const ticketsAccount = ref();
@@ -97,20 +96,26 @@ const { _updateCount } = storeToRefs(useRaffleStore());
 watch(_updateCount, async () => {
   await update_entrants();
 });
+
+function getRaffleImage() {
+  if (props.raffle.account.url) return props.raffle.account.url;
+  else
+    console.log(
+      useGlobalStore().token_list.find(
+        (token) => token.address === props.raffle.account.prizeMint.toString(),
+      ),
+    );
+  return (
+    useGlobalStore().token_list.find(
+      (token) => token.address === props.raffle.account.prizeMint.toString(),
+    )?.logoURI ?? 'snb_icon.svg'
+  );
+}
 </script>
 
 <template>
   <q-card square flat>
-    <q-img height="200px" v-if="raffle.account.url" :src="raffle.account.url" />
-    <q-img
-      height="200px"
-      v-else
-      :src="
-        useGlobalStore().token_list.find(
-          (t) => t.address == raffle.account.prizeTokenMint,
-        )?.logoURI ?? 'snb_icon.svg'
-      "
-    />
+    <q-img height="200px" :src="getRaffleImage()" />
 
     <q-card-section>
       <RaffleStateBadge :raffle="raffle" :tickets="ticketsAccount" />

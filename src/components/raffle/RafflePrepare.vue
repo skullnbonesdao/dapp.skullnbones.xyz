@@ -60,6 +60,10 @@ async function add_prize_to_raffle() {
 
   console.log(account_info.value?.data.parsed.info.decimals);
 
+  input_prize_url.value =
+    useGlobalStore().token_list.find((token) => token.address == prize_mint)
+      ?.logoURI ?? '';
+
   try {
     const signature = await pg_raffle?.methods
       .prepare(
