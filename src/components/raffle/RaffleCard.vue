@@ -245,7 +245,7 @@ watch(_updateCount, async () => {
 
     <q-card-section class="col" v-if="is_admin">
       <p class="text-overline">Actions</p>
-      <div class="col row justify-center justify-around">
+      <div class="col row justify-end q-mx-sm">
         <RaffleRevealWinnert
           :raffle="raffle"
           v-if="Object.keys(raffle.account.state)[0] == 'full'"
