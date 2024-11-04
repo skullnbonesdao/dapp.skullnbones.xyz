@@ -16,7 +16,7 @@ const selected_tab = ref('view');
       outside-arrows
       mobile-arrows
       v-model="selected_tab"
-      class="shadow-2"
+      class="shadow-2 bg-dark"
       align="justify"
     >
       <q-tab name="create" label="Create Whitelist" />
@@ -26,6 +26,7 @@ const selected_tab = ref('view');
 
       <q-tab name="view" label="View " />
     </q-tabs>
+    <q-separator />
 
     <q-tab-panels dark v-model="selected_tab" animated>
       <q-tab-panel name="create">

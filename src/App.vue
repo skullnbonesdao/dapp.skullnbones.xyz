@@ -30,5 +30,6 @@ useQuasar().dark.set(true);
 
 onMounted(async () => {
   await useGlobalStore().load_token_list();
+  await useWhitelist().update_whitelist();
 });
 </script>

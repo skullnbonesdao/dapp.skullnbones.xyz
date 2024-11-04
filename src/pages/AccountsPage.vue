@@ -12,7 +12,7 @@ const selected_tab_1 = ref('token');
 
 <template>
   <q-page class="col items-center justify-evenly">
-    <div class="col shadow-1">
+    <div class="col shadow-1 bg-dark">
       <q-tabs
         no-caps
         outside-arrows

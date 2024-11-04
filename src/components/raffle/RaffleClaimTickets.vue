@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useGlobalStore } from 'stores/globalStore';
 import { ref } from 'vue';
 import * as anchor from '@coral-xyz/anchor';
 import { useWallet } from 'solana-wallets-vue';
@@ -14,6 +13,7 @@ import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { Connection, Transaction } from '@solana/web3.js';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { useRPCStore } from 'stores/rpcStore';
+import { useRaffleStore } from 'stores/globalRaffle';
 
 const input_prize_count = ref();
 const input_account_selected = ref();
@@ -21,14 +21,14 @@ const input_account_selected = ref();
 const props = defineProps(['raffle', 'is_admin']);
 
 async function collect_proceeds() {
-  const { pg_raffle } = useWorkspaceAdapter();
+  const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
 
-  const mint = new anchor.web3.PublicKey(
-    props.raffle.account.ticketTokenMint.toString(),
+  const ticketMint = new anchor.web3.PublicKey(
+    props.raffle.account.ticketMint.toString(),
   );
 
   const ata = await getAssociatedTokenAddress(
-    mint,
+    ticketMint,
     useWallet().publicKey.value!,
     true,
     TOKEN_PROGRAM_ID,
@@ -42,7 +42,7 @@ async function collect_proceeds() {
         useWallet().publicKey.value!,
         ata,
         useWallet().publicKey.value!,
-        mint,
+        ticketMint,
       ),
     );
 
@@ -52,35 +52,21 @@ async function collect_proceeds() {
     );
   }
 
-  let [raffle, raffle_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      anchor.utils.bytes.utf8.encode('raffle'),
-      anchor.utils.bytes.utf8.encode(props.raffle.account.name),
-    ],
-    pg_raffle.value.programId,
-  );
-
-  let [proceeds, proceeds_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('proceeds'), raffle.toBytes()],
-    pg_raffle.value.programId,
-  );
-
   try {
-    const signature = await pg_raffle.value.methods
-      .collectProceeds(props.raffle.account.name)
-      .accounts({
+    const signature = await pg_raffle?.methods
+      .claimTickets()
+      .accountsPartial({
         creator: useWallet().publicKey.value,
-        raffle: raffle,
-        proceeds: proceeds,
-        proceedsMint: mint,
+        raffle: props.raffle.publicKey,
+        ticketsMint: ticketMint,
         to: ata,
-        tokenProgram: TOKEN_PROGRAM_ID,
       })
       .rpc();
 
     console.log(signature);
 
     await handle_confirmation(signature);
+    await useRaffleStore().update_raffles();
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -93,11 +79,11 @@ async function collect_proceeds() {
 
 <template>
   <q-btn
-    v-if="props.is_admin && raffle.account.isClaimed"
     color="primary"
+    icon="send"
+    label="Claim Tickets"
     @click="collect_proceeds()"
-    >Collect Proceeds</q-btn
-  >
+  />
 </template>
 
 <style scoped lang="sass"></style>

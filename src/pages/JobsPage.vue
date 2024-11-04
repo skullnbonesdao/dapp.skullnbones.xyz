@@ -70,8 +70,8 @@ function onDrop(evt, newID) {
 </script>
 
 <template>
-  <q-page class="col q-pa-sm">
-    <div class="row q-pb-sm q-gutter-x-sm">
+  <q-page class="col q-pa-sm bg-black">
+    <div class="row q-pa-sm q-gutter-x-sm">
       <q-space />
       <ExportJobs />
       <CreateNewJobDialog :job-types="jobTypes" v-if="is_admin" />
@@ -87,15 +87,14 @@ function onDrop(evt, newID) {
       >
         <q-card flat square class="q-pa-sm">
           <div class="row items-center q-gutter-x-sm">
-            <div class="col text-h5">{{ jobType.name }}</div>
             <q-badge rounded :color="jobType.color" text-color="black">
             </q-badge>
+            <div class="col text-h5">{{ jobType.name }}</div>
           </div>
           <div class="text-subtitle1 text-weight-light">
             {{ jobType.description }}
           </div>
         </q-card>
-        <q-separator />
         <q-card
           flat
           square

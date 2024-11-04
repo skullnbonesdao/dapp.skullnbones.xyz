@@ -60,7 +60,7 @@ module.exports = configure(function (/* ctx */) {
 
       target: {
         browser: ['chrome87'],
-        node: 'node16',
+        node: 'es2020',
       },
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'

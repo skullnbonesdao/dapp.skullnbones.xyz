@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { format_address } from 'src/functions/format_address';
 import { useGlobalStore } from 'stores/globalStore';
 
 const props = defineProps(['accounts']);
@@ -18,7 +17,7 @@ const columns = ref([
     field: 'mint',
     field: (row: never) =>
       useGlobalStore().token_list.find((t) => t.address == row.mint?.toString())
-        ?.name ?? '',
+        ?.name ?? row.mint?.toString(),
     sortable: true,
   },
   {
@@ -33,6 +32,8 @@ const columns = ref([
 
 <template>
   <q-table
+    bordered
+    square
     dense
     class="col"
     title="Accounts"

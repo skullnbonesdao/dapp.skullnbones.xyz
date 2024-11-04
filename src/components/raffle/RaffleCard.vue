@@ -1,31 +1,28 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import RaffleAddPrize from 'components/raffle/RaffleAddPrize.vue';
+import RafflePrepare from 'components/raffle/RafflePrepare.vue';
 import RaffleBuyTicket from 'components/raffle/RaffleBuyTicket.vue';
 import RaffleRevealWinnert from 'components/raffle/RaffleRevealWinner.vue';
 import RaffleStateBadge from 'components/raffle/RaffleStateBadge.vue';
 import RaffleClaimPirze from 'components/raffle/RaffleClaimPrize.vue';
 import RaffleClose from 'components/raffle/RaffleClose.vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import RaffleCollectProceeds from 'components/raffle/RaffleCollectProceeds.vue';
+import RaffleClaimTickets from 'components/raffle/RaffleClaimTickets.vue';
 import { useGlobalStore } from 'stores/globalStore';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import AccountsTable from 'components/tables/AccountsTable.vue';
 import IconFromSeed from 'components/icons/IconFromSeed.vue';
-import RaffleEditImageUrl from 'components/raffle/RaffleEditImageUrl.vue';
-import { format_address } from 'src/functions/format_address';
 import { useRaffleStore } from 'stores/globalRaffle';
 import { storeToRefs } from 'pinia';
 import { PublicKey } from '@solana/web3.js';
-
-import * as borsh from 'borsh';
-import { data } from 'autoprefixer';
 import TicketsTable from 'components/tables/TicketsTable.vue';
 import RaffleLinks from 'components/raffle/RaffleLinks.vue';
 import { useRPCStore } from 'stores/rpcStore';
+import RaffleToggleMode from 'components/raffle/RaffleToggleMode.vue';
+import { format_address } from '../../functions/format_address';
 
 const props = defineProps(['raffle', 'is_admin']);
-const entrants = ref();
+const ticketsAccount = ref();
 
 const accounts = ref();
 const expanded = ref(false);
@@ -33,29 +30,30 @@ const expanded = ref(false);
 async function update_entrants() {
   const { pg_raffle } = useWorkspaceAdapter();
 
-  entrants.value = await pg_raffle.value.account.entrants.fetch(
-    props.raffle.account.entrants,
+  ticketsAccount.value = await pg_raffle.value.account.tickets.fetch(
+    props.raffle.account.tickets,
   );
 
-  accounts.value =
-    await useRPCStore().connection.getParsedTokenAccountsByOwner(
-      props.raffle.publicKey,
-      {
-        programId: TOKEN_PROGRAM_ID,
-      },
-    );
+  console.log(ticketsAccount.value);
+
+  accounts.value = await useRPCStore().connection.getParsedTokenAccountsByOwner(
+    props.raffle.publicKey,
+    {
+      programId: TOKEN_PROGRAM_ID,
+    },
+  );
 }
 const tickets = ref();
 async function get_tickets() {
   const { pg_raffle } = useWorkspaceAdapter();
 
-  const accountInfo = await pg_raffle.value.account.entrants.getAccountInfo(
-    props.raffle.account.entrants,
+  const accountInfo = await pg_raffle.value.account.tickets.getAccountInfo(
+    props.raffle.account.tickets,
   );
 
   let wallets: PublicKey[] = [];
 
-  for (let i = 0; i < entrants.value.total; i++) {
+  for (let i = 0; i < ticketsAccount.value.total; i++) {
     let bytes = getEntrant(accountInfo.data, i);
     wallets.push(bytes);
   }
@@ -104,26 +102,24 @@ watch(_updateCount, async () => {
 <template>
   <q-card square flat>
     <q-img height="200px" v-if="raffle.account.url" :src="raffle.account.url" />
-
     <q-img
       height="200px"
       v-else
       :src="
         useGlobalStore().token_list.find(
           (t) => t.address == raffle.account.prizeTokenMint,
-        )?.logoURI
+        )?.logoURI ?? 'snb_icon.svg'
       "
     />
 
     <q-card-section>
-      <RaffleStateBadge :raffle="raffle" :entrants="entrants" />
-
+      <RaffleStateBadge :raffle="raffle" :tickets="ticketsAccount" />
       <div class="text-h5 q-mt-sm q-mb-xs">{{ raffle.account.name }}</div>
       <div class="text-caption text-grey">
         {{ raffle.account.description }}
       </div>
     </q-card-section>
-
+    <q-separator />
     <q-card-section>
       <q-list>
         <q-item clickable>
@@ -132,7 +128,9 @@ watch(_updateCount, async () => {
           </q-item-section>
 
           <q-item-section>
-            <q-item-label class="text-h6"> {{ entrants?.max }}</q-item-label>
+            <q-item-label class="text-h6">
+              {{ ticketsAccount?.total }}</q-item-label
+            >
             <q-item-label class="text-orange-9" caption
               >Total tickets</q-item-label
             >
@@ -166,8 +164,12 @@ watch(_updateCount, async () => {
             <q-item-label class="text-overline">
               {{
                 useGlobalStore().token_list.find(
-                  (t) => t.address == raffle.account.ticketTokenMint,
-                )?.symbol
+                  (t) => t.address == raffle.account.ticketMint,
+                )
+                  ? useGlobalStore().token_list.find(
+                      (t) => t.address == raffle.account.ticketMint,
+                    ).symbol
+                  : raffle.account.ticketMint
               }}
             </q-item-label>
             <q-item-label class="text-orange-9" caption
@@ -177,14 +179,18 @@ watch(_updateCount, async () => {
             <q-item-label class="q-pt-md text-overline">
               {{
                 useGlobalStore().token_list.find(
-                  (t) => t.address == raffle.account.prizeTokenMint,
+                  (t) => t.address == raffle.account.prizeMint,
                 )?.name
               }}
-              [{{
+              {{
                 useGlobalStore().token_list.find(
-                  (t) => t.address == raffle.account.prizeTokenMint,
-                )?.symbol
-              }}]
+                  (t) => t.address == raffle.account.prizeMint,
+                )
+                  ? useGlobalStore().token_list.find(
+                      (t) => t.address == raffle.account.prizeMint,
+                    ).symbol
+                  : raffle.account.prizeMint
+              }}
             </q-item-label>
             <q-item-label class="text-orange-9" caption
               >Prize-Mint</q-item-label
@@ -204,48 +210,74 @@ watch(_updateCount, async () => {
             <q-item-label class="text-h6" l>Winner</q-item-label>
             <q-item-label class="text-orange-9" caption>
               {{
-                format_address(raffle.account.winner.toString())
+                format_address(raffle.account.winner?.toString())
               }}</q-item-label
             >
           </q-item-section>
         </q-item>
       </q-list>
     </q-card-section>
-    <q-btn
-      class="full-width"
-      :icon="expanded ? 'expand_less' : ' expand_more'"
-      @click="expanded = !expanded"
-    ></q-btn>
-
-    <q-slide-transition>
-      <AccountsTable :accounts="accounts" v-show="expanded" />
-    </q-slide-transition>
-
-    <q-slide-transition>
-      <TicketsTable :entrants="tickets" v-show="expanded" />
-    </q-slide-transition>
-
-    <q-slide-transition>
-      <RaffleLinks :raffle="raffle" :entrants="tickets" v-show="expanded" />
-    </q-slide-transition>
-
-    <RaffleAddPrize :raffle="raffle" :is_admin="is_admin" />
-    <RaffleEditImageUrl class="q-mx-sm" :raffle="raffle" :is_admin="is_admin" />
-
-    <q-card-actions class="row q-gutter-y-sm justify-center q-mx-sm">
-      <RaffleRevealWinnert :raffle="raffle" :is_admin="is_admin" />
-      <RaffleClaimPirze :raffle="raffle" :is_admin="is_admin" />
-      <RaffleCollectProceeds :raffle="raffle" :is_admin="is_admin" />
-      <RaffleClose :raffle="raffle" :is_admin="is_admin" />
-    </q-card-actions>
-
-    <q-card-actions>
-      <RaffleBuyTicket
+    <q-separator />
+    <q-expansion-item icon="info" label="Details">
+      <q-card flat>
+        <q-card-section>
+          <AccountsTable :accounts="accounts" />
+        </q-card-section>
+        <q-card-section>
+          <TicketsTable :entrants="tickets" />
+        </q-card-section>
+        <q-card-section>
+          <RaffleLinks :raffle="raffle" :entrants="tickets" class="q-pb-md" />
+        </q-card-section>
+      </q-card>
+    </q-expansion-item>
+    <q-separator />
+    <q-card-section v-if="is_admin">
+      <RafflePrepare
+        v-if="Object.keys(raffle.account.state)[0] == 'created'"
         :raffle="raffle"
-        :is_admin="is_admin"
-        :entrants="entrants"
       />
+    </q-card-section>
+
+    <q-card-actions v-if="Object.keys(raffle.account.state)[0] == 'running'">
+      <RaffleBuyTicket :raffle="raffle" :tickets="ticketsAccount" />
     </q-card-actions>
+
+    <q-card-section class="col" v-if="is_admin">
+      <p class="text-overline">Actions</p>
+      <div class="col row justify-center justify-around">
+        <RaffleRevealWinnert
+          :raffle="raffle"
+          v-if="Object.keys(raffle.account.state)[0] == 'full'"
+        />
+        <RaffleClaimPirze
+          v-if="
+            Object.keys(raffle.account.state)[0] == 'claimprize' ||
+            Object.keys(raffle.account.state)[0] == 'ready'
+          "
+          :raffle="raffle"
+        />
+        <RaffleClaimTickets
+          :raffle="raffle"
+          v-if="Object.keys(raffle.account.state)[0] == 'claimtickets'"
+        />
+        <RaffleToggleMode
+          v-if="
+            Object.keys(raffle.account.state)[0] == 'ready' ||
+            Object.keys(raffle.account.state)[0] == 'running' ||
+            Object.keys(raffle.account.state)[0] == 'paused'
+          "
+          :raffle="raffle"
+        />
+        <RaffleClose
+          v-if="
+            Object.keys(raffle.account.state)[0] == 'created' ||
+            Object.keys(raffle.account.state)[0] == 'done'
+          "
+          :raffle="raffle"
+        />
+      </div>
+    </q-card-section>
   </q-card>
 </template>
 
