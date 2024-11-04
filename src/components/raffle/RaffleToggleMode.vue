@@ -62,7 +62,7 @@ async function start_stop_raffle() {
 <template>
   <q-btn
     icon="send"
-    label="Start/Stop"
+    label="Start/Pause"
     square
     color="primary"
     @click="start_stop_raffle()"
