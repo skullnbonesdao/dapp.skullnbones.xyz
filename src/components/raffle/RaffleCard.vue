@@ -244,7 +244,9 @@ function getRaffleImage() {
       />
     </q-card-section>
 
-    <q-card-actions v-if="Object.keys(raffle.account.state)[0] == 'running'">
+    <q-card-actions
+      v-if="Object.keys(raffle.account.state)[0] == 'running' && !is_admin"
+    >
       <RaffleBuyTicket :raffle="raffle" :tickets="ticketsAccount" />
     </q-card-actions>
 
