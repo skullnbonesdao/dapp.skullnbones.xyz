@@ -112,6 +112,10 @@ function getRaffleImage() {
     )?.logoURI ?? 'snb_icon.svg'
   );
 }
+
+function dummy() {
+  format_address('none');
+}
 </script>
 
 <template>
