@@ -28,7 +28,8 @@ export const useRaffleStore = defineStore('raffleStore', {
       return state.raffles.filter(
         (raffle) =>
           Object.keys(raffle.account.state)[0] == 'running' ||
-          Object.keys(raffle.account.state)[0] == 'full',
+          Object.keys(raffle.account.state)[0] == 'full' ||
+          Object.keys(raffle.account.state)[0] == 'claimprize',
       );
     },
   },
