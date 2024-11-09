@@ -19,6 +19,7 @@ import RaffleLinks from 'components/raffle/RaffleLinks.vue';
 import { useRPCStore } from 'stores/rpcStore';
 import RaffleToggleMode from 'components/raffle/RaffleToggleMode.vue';
 import { useGlobalStore } from '../../stores/globalStore';
+import { format_address } from '../../functions/format_address';
 
 const props = defineProps(['raffle', 'is_admin']);
 const ticketsAccount = ref();
