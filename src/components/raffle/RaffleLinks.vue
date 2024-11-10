@@ -9,7 +9,7 @@ const pagination = ref({
 </script>
 
 <template>
-  <q-card bordered flat square class="row items-center q-pa-md">
+  <q-card flat square class="row items-center q-pa-md">
     <div class="col q-gutter-y-sm">
       <div>Raffle account</div>
       <div>Entrants account</div>

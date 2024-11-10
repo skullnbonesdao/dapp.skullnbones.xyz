@@ -1,6 +1,6 @@
 {
   "name": "dapp-web",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "S&B dApp",
   "productName": "dApp",
   "author": "snb",
@@ -33,6 +33,7 @@
     "@sqds/multisig": "2.0.0",
     "@staratlas/factory": "^0.6.0",
     "@vueuse/core": "^10.6.1",
+    "apexcharts": "^4.0.0",
     "axios": "^1.2.1",
     "crypto": "^1.0.1",
     "konva": "^9.2.3",
@@ -46,6 +47,7 @@
     "vue": "^3.0.0",
     "vue-konva": "^3.0.2",
     "vue-router": "^4.0.0",
+    "vue3-apexcharts": "^1.7.0",
     "vuedraggable": "^4.1.0",
     "webhook-discord": "^3.7.8"
   },
