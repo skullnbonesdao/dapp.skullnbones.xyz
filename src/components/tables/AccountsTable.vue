@@ -32,7 +32,6 @@ const columns = ref([
 
 <template>
   <q-table
-    bordered
     square
     dense
     class="col"

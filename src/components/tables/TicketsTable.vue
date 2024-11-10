@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { format_address } from 'src/functions/format_address';
+import Apex_TicketsChart from 'components/apexcharts/Apex_TicketsChart.vue';
 
 const props = defineProps(['entrants']);
 const pagination = ref({
@@ -30,7 +31,6 @@ const columns = ref([
 
 <template>
   <q-table
-    bordered
     square
     dense
     class="col"
@@ -42,6 +42,10 @@ const columns = ref([
     flat
     v-model:pagination="pagination"
     :rows-per-page-options="[0]"
+  />
+  <Apex_TicketsChart
+    :data_value="entrants?.map((e) => e.amount)"
+    :data_label="entrants?.map((e) => format_address(e.address))"
   />
 </template>
 

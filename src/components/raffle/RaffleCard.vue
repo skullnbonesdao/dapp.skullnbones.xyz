@@ -230,12 +230,15 @@ function dummy() {
     <q-separator />
     <q-expansion-item icon="info" label="Details">
       <q-card flat>
+        <q-separator />
         <q-card-section>
           <AccountsTable :accounts="accounts" />
         </q-card-section>
+        <q-separator />
         <q-card-section>
           <TicketsTable :entrants="tickets" />
         </q-card-section>
+        <q-separator />
         <q-card-section>
           <RaffleLinks :raffle="raffle" :entrants="tickets" class="q-pb-md" />
         </q-card-section>
