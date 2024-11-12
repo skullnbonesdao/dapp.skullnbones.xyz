@@ -16,8 +16,11 @@ import 'src/css/backgrounds.scss';
 import { useRPCStore } from 'stores/rpcStore';
 import { useLockerPolisStore } from 'stores/globalLockerPolisStore';
 
-useGlobalStore();
+useRPCStore();
 useRPCStore().update_connection();
+
+useGlobalStore();
+
 useWorkspaceAdapter();
 initWorkspaceAdapter();
 
