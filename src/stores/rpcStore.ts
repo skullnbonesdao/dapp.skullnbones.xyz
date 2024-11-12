@@ -5,13 +5,20 @@ import { useLocalStorage } from '@vueuse/core';
 
 export const useRPCStore = defineStore('rpcStore', {
   state: () => ({
-    show_rpc_select: false,
+    show_rpc_select:
+      RPC_NETWORKS.find((rpc) =>
+        rpc.name.includes(useLocalStorage('rpc_store_0', RPC_NETWORKS[0].name)),
+      )?.name ?? RPC_NETWORKS[0].name,
     rpc_stored_name: useLocalStorage('rpc_store_0', RPC_NETWORKS[0].name),
     rpc_selected:
       RPC_NETWORKS.find((rpc) =>
         rpc.name.includes(useLocalStorage('rpc_store_0', RPC_NETWORKS[0].name)),
       ) ?? RPC_NETWORKS[0],
-    connection: {} as Connection,
+    connection: new Connection(
+      RPC_NETWORKS.find((rpc) =>
+        rpc.name.includes(useLocalStorage('rpc_store_0', RPC_NETWORKS[0].name)),
+      )?.url ?? RPC_NETWORKS[0].url,
+    ),
   }),
   actions: {
     update_connection() {
