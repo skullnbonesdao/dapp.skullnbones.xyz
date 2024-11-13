@@ -19,10 +19,10 @@ import { useLockerPolisStore } from 'stores/globalLockerPolisStore';
 useRPCStore();
 useRPCStore().update_connection();
 
-useGlobalStore();
-
-useWorkspaceAdapter();
 initWorkspaceAdapter();
+useWorkspaceAdapter();
+
+useGlobalStore();
 
 useLockerPolisStore();
 
