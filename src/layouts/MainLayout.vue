@@ -67,7 +67,7 @@
         <q-select
           class="col"
           square
-          @newValue="() => update_selection()"
+          @newValue="update_selection()"
           v-model="useRPCStore().rpc_stored_name"
           :options="RPC_NETWORKS.map((rpc) => rpc.name)"
           label="Select an RPC to use:"
