@@ -35,15 +35,15 @@ export const useRaffleStore = defineStore('raffleStore', {
   },
   actions: {
     async update_raffles() {
-      console.log('Hello');
-
-      const { pg_raffle } = useWorkspaceAdapter()!;
-      if (useWallet().publicKey.value) {
-        this.is_loading = true;
-        this.raffles = await pg_raffle.value.account.raffle.all();
-        this._updateCount++;
+      if (useWorkspaceAdapter()) {
+        const { pg_raffle } = useWorkspaceAdapter()!;
+        if (useWallet().publicKey.value) {
+          this.is_loading = true;
+          this.raffles = await pg_raffle.value.account.raffle.all();
+          this._updateCount++;
+        }
+        this.is_loading = false;
       }
-      this.is_loading = false;
     },
     async send_discord_webhook(
       type: DiscordMessageType,
@@ -82,8 +82,6 @@ export const useRaffleStore = defineStore('raffleStore', {
       }
 
       if (embed) await useRaffleStore().disocrd_handle.send(embed);
-
-      console.log(useRaffleStore().disocrd_handle);
     },
 
     async send_buy_message_discord(

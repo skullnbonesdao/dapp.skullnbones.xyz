@@ -21,8 +21,8 @@ useRPCStore().update_connection();
 
 useGlobalStore();
 
-initWorkspaceAdapter();
 useWorkspaceAdapter();
+initWorkspaceAdapter();
 
 useLockerPolisStore();
 

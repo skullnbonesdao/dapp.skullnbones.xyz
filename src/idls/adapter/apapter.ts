@@ -20,7 +20,7 @@ const commitment = 'confirmed';
 
 interface Workspace {
   wallet: Ref<AnchorWallet | undefined>;
-  connection: Connection;
+  connection: ComputedRef<Connection>;
   provider: ComputedRef<AnchorProvider>;
   pg_raffle: ComputedRef<Program<Raffle>>;
   pg_whitelist: ComputedRef<Program<Whitelist>>;
@@ -29,15 +29,15 @@ interface Workspace {
   pg_snapshot: ComputedRef<Program<Snapshot>>;
 }
 
-let workspace: Workspace | null = null;
+let workspace: Workspace | undefined = undefined;
 export const useWorkspaceAdapter = () => workspace;
 
 export const initWorkspaceAdapter = () => {
   const wallet = useAnchorWallet();
-  const connection = useRPCStore().connection as Connection;
+  const connection = computed(() => useRPCStore().connection as Connection);
   const provider = computed(
     () =>
-      new AnchorProvider(connection, wallet.value!, {
+      new AnchorProvider(connection.value, wallet.value!, {
         preflightCommitment,
         commitment,
       }),

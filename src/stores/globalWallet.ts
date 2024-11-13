@@ -6,19 +6,13 @@ import {
   PublicKey,
 } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_2022_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useGlobalStore } from 'stores/globalStore';
 import { I_Token } from 'stores/I_TokenList';
 import { I_AccountParsedInfo } from 'stores/I_AccountParsedInfo';
 import { getParsedNftAccountsByOwner } from '@nfteyez/sol-rayz';
 import { I_AccountNFT } from 'stores/I_AccountNFT';
 import axios from 'axios';
-import { getTokenAccount } from '@staratlas/factory';
 import { useRPCStore } from 'stores/rpcStore';
 
 export const NULL_WALLET = '11111111111111111111111111111111';
@@ -72,21 +66,23 @@ export const useGlobalWalletStore = defineStore('walletStore', {
   },
   actions: {
     async update_accounts() {
-      this.is_loading = true;
-      this.token_accounts = [];
-
-      if (useWallet().publicKey.value) {
+      if (useRPCStore().connection) {
+        this.is_loading = true;
         this.token_accounts = [];
-        this.token_accounts = (
-          await useRPCStore().connection.getParsedTokenAccountsByOwner(
-            useWallet().publicKey.value!,
-            {
-              programId: TOKEN_PROGRAM_ID,
-            },
-          )
-        ).value;
+
+        if (useWallet().publicKey.value) {
+          this.token_accounts = [];
+          this.token_accounts = (
+            await useRPCStore().connection.getParsedTokenAccountsByOwner(
+              useWallet().publicKey.value!,
+              {
+                programId: TOKEN_PROGRAM_ID,
+              },
+            )
+          ).value;
+        }
+        this.is_loading = false;
       }
-      this.is_loading = false;
     },
     async update_accounts_nft(force = false) {
       if (useWallet().publicKey.value || !this.nft_map.length || force) {
