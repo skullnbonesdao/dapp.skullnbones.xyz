@@ -130,6 +130,7 @@ const links1 = computed(() => {
     { icon: 'home', text: 'Home', to: '/' },
     { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
     { icon: 'lock_clock', text: 'StarAtlasLocker', to: '/staratlaslocker' },
+    { icon: 'lock_clock', text: 'Wrapper', to: '/wrapper' },
   ];
   if (useGlobalStore().is_admin || import.meta.env.DEV) {
     data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
