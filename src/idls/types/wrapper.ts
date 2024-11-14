@@ -163,6 +163,83 @@ export type WrapperFactory = {
       args: [];
     },
     {
+      name: 'createVault';
+      discriminator: [29, 237, 247, 208, 193, 82, 54, 135];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'wrapper';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.mint_unwrapped';
+                account: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'signer';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintUnwrapped';
+        },
+        {
+          name: 'vaultWrapped';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.mint_unwrapped';
+                account: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+        },
+      ];
+      args: [];
+    },
+    {
       name: 'edit';
       discriminator: [15, 183, 33, 86, 87, 28, 151, 145];
       accounts: [
@@ -310,40 +387,6 @@ export type WrapperFactory = {
           name: 'mintUnwrapped';
         },
         {
-          name: 'vaultWrapped';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  114,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116,
-                ];
-              },
-              {
-                kind: 'account';
-                path: 'wrapper';
-              },
-              {
-                kind: 'account';
-                path: 'mintUnwrapped';
-              },
-            ];
-          };
-        },
-        {
           name: 'group';
           pda: {
             seeds: [
@@ -371,10 +414,6 @@ export type WrapperFactory = {
               },
             ];
           };
-        },
-        {
-          name: 'whitelist';
-          optional: true;
         },
         {
           name: 'systemProgram';

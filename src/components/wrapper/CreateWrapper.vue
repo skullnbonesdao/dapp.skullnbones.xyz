@@ -6,7 +6,6 @@ import { useQuasar } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey } from '@solana/web3.js';
-import { useWrapperStore } from 'stores/globalWrapper';
 
 const $q = useQuasar();
 const optionUnwrapped = ref();
@@ -36,10 +35,8 @@ async function createWrapper() {
       await pg_wrapper.methods
         .initialize(params as any)
         .accountsPartial({
-          group: useWrapperStore().selectedGroup.publicKey,
           signer: useWallet().publicKey.value,
-          mintUnwrapped: new PublicKey(optionUnwrapped.value.mint),
-          whitelist: null,
+          mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .rpc();
