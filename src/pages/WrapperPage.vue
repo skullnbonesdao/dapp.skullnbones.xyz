@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import ViewGroup from 'components/wrapper/ViewGroup.vue';
-import ViewWrapper from 'components/wrapper/ViewWrapper.vue';
+import { onMounted, ref } from 'vue';
+import ViewGroup from 'components/wrapper/GroupView.vue';
+import ViewWrapper from 'components/wrapper/WrapperView.vue';
+import { useWrapperStore } from 'stores/globalWrapper';
 
 const tabSelected = ref('manage');
+
+onMounted(async () => {
+  await useWrapperStore().load_groups();
+  await useWrapperStore().load_wrapper();
+});
 </script>
 
 <template>

@@ -388,32 +388,6 @@ export type WrapperFactory = {
         },
         {
           name: 'group';
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [
-                  119,
-                  114,
-                  97,
-                  112,
-                  112,
-                  101,
-                  114,
-                  95,
-                  103,
-                  114,
-                  111,
-                  117,
-                  112,
-                ];
-              },
-              {
-                kind: 'account';
-                path: 'signer';
-              },
-            ];
-          };
         },
         {
           name: 'systemProgram';
