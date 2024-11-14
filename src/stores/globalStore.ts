@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
-import { useLocalStorage } from '@vueuse/core';
 import axios from 'axios';
 import { I_TokenList, I_Tokens } from 'stores/I_TokenList';
 import { I_StarAtlasNFT } from 'stores/I_StarAtlasNFT';
@@ -17,8 +16,6 @@ export const RAFLLE_WHITELIST_NAME = 'Crew';
 
 export const useGlobalStore = defineStore('globalstore', {
   state: () => ({
-
-
     admins: import.meta.env.VITE_ADMINS?.split(',') as Array<string>,
     token_list: [] as I_Tokens[],
   }),
@@ -31,7 +28,6 @@ export const useGlobalStore = defineStore('globalstore', {
     },
   },
   actions: {
-
     async load_token_list() {
       // await axios
       //   .get(
@@ -67,3 +63,7 @@ export const useGlobalStore = defineStore('globalstore', {
     },
   },
 });
+
+export const calcAmountToTransfer = (amount: number, decimals: number) => {
+  return amount * 10 ** decimals;
+};

@@ -3,8 +3,9 @@ import { ref } from 'vue';
 import { useWrapperStore } from 'stores/globalWrapper';
 import WrapperCreateGroup from 'components/wrapper/WrapperCreateGroup.vue';
 import WrapperCloseGroup from 'components/wrapper/WrapperCloseGroup.vue';
+import WrapperGroupSelect from 'components/wrapper/WrapperGroupSelect.vue';
 
-const tabSelected = ref('create');
+const tabSelected = ref('select');
 </script>
 
 <template>
@@ -30,8 +31,8 @@ const tabSelected = ref('create');
       align="justify"
       narrow-indicator
     >
-      <q-tab name="create" label="Create" />
       <q-tab name="select" label="Select" />
+      <q-tab name="create" label="Create" />
     </q-tabs>
 
     <q-separator />
@@ -45,21 +46,17 @@ const tabSelected = ref('create');
         <q-card flat>
           <q-card-section>
             <div class="row q-gutter-x-md">
-              <q-select
-                class="col"
-                filled
-                v-model="useWrapperStore().selectedGroup"
-                :options="useWrapperStore().groups"
-                :option-label="(option) => option?.account?.name"
-              ></q-select>
+              <WrapperGroupSelect />
               <WrapperCloseGroup />
             </div>
+          </q-card-section>
+          <q-card-section>
             <div
               v-if="useWrapperStore().selectedGroup?.account"
               class="text-caption row"
             >
               <div style="width: 50px">ID:</div>
-              <div class="q-ml-sm text-orange-5">
+              <div class="col text-orange-5 text-right">
                 {{ useWrapperStore().selectedGroup?.publicKey }}
               </div>
             </div>
@@ -68,7 +65,7 @@ const tabSelected = ref('create');
               class="text-caption row"
             >
               <div style="width: 50px">Owner:</div>
-              <div class="q-ml-sm text-orange-5">
+              <div class="col text-orange-5 text-right">
                 {{ useWrapperStore().selectedGroup?.account?.owner }}
               </div>
             </div>

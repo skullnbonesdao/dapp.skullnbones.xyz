@@ -51,6 +51,11 @@
               {
                 "kind": "account",
                 "path": "wrapper"
+              },
+              {
+                "kind": "account",
+                "path": "wrapper.seed",
+                "account": "Wrapper"
               }
             ]
           }
@@ -228,6 +233,11 @@
               {
                 "kind": "account",
                 "path": "wrapper"
+              },
+              {
+                "kind": "account",
+                "path": "wrapper.seed",
+                "account": "Wrapper"
               }
             ]
           }
@@ -301,6 +311,10 @@
               {
                 "kind": "account",
                 "path": "wrapper"
+              },
+              {
+                "kind": "arg",
+                "path": "params.seed"
               }
             ]
           }
@@ -416,6 +430,11 @@
               {
                 "kind": "account",
                 "path": "wrapper"
+              },
+              {
+                "kind": "account",
+                "path": "wrapper.seed",
+                "account": "Wrapper"
               }
             ]
           }
@@ -496,6 +515,11 @@
               {
                 "kind": "account",
                 "path": "wrapper"
+              },
+              {
+                "kind": "account",
+                "path": "wrapper.seed",
+                "account": "Wrapper"
               }
             ]
           }
@@ -577,6 +601,11 @@
               {
                 "kind": "account",
                 "path": "wrapper"
+              },
+              {
+                "kind": "account",
+                "path": "wrapper.seed",
+                "account": "Wrapper"
               }
             ]
           }
@@ -664,6 +693,11 @@
               {
                 "kind": "account",
                 "path": "wrapper"
+              },
+              {
+                "kind": "account",
+                "path": "wrapper.seed",
+                "account": "Wrapper"
               }
             ]
           }
@@ -771,6 +805,11 @@
               {
                 "kind": "account",
                 "path": "wrapper"
+              },
+              {
+                "kind": "account",
+                "path": "wrapper.seed",
+                "account": "Wrapper"
               }
             ]
           }
@@ -972,6 +1011,10 @@
           {
             "name": "wrapped_decimals",
             "type": "u8"
+          },
+          {
+            "name": "seed",
+            "type": "u64"
           }
         ]
       }
@@ -1043,6 +1086,10 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "seed",
+            "type": "u64"
+          },
           {
             "name": "group",
             "type": "pubkey"

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import ViewGroup from 'components/wrapper/GroupView.vue';
+import ViewGroup from 'components/wrapper/WrapperGroupView.vue';
 import ViewWrapper from 'components/wrapper/WrapperView.vue';
 import { useWrapperStore } from 'stores/globalWrapper';
+import WrapperGroupSelect from 'components/wrapper/WrapperGroupSelect.vue';
+import WrapperTable from 'components/wrapper/WrapperTable.vue';
 
 const tabSelected = ref('manage');
 
@@ -32,13 +34,22 @@ onMounted(async () => {
 
       <q-tab-panels v-model="tabSelected" animated>
         <q-tab-panel name="wrapping">
-          <div class="text-h6">Mails</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <q-card flat>
+            <q-card-section>
+              <WrapperGroupSelect />
+            </q-card-section>
+            <q-card-section>
+              <WrapperTable />
+            </q-card-section>
+          </q-card>
         </q-tab-panel>
 
-        <q-tab-panel name="manage" class="q-gutter-y-md">
-          <ViewGroup />
-          <ViewWrapper />
+        <q-tab-panel name="manage" class="row q-gutter-x-md">
+          <ViewGroup class="col-3" />
+          <ViewWrapper
+            class="col"
+            v-if="useWrapperStore().selectedGroup?.account"
+          />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>

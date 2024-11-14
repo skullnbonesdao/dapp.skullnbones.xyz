@@ -7,17 +7,13 @@ import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey } from '@solana/web3.js';
 import { useWrapperStore } from 'stores/globalWrapper';
+import { AccountStore, useAccountStore } from 'stores/globalAccountStore';
 
 const $q = useQuasar();
 const optionUnwrapped = ref();
 const mintWrappedDecimals = ref<number>(9);
 const ratioUnwrapped = ref<number>(1);
 const ratioWrapped = ref<number>(1);
-
-const options = ref([
-  { name: 'PX4', mint: 'B8MFK4agivn1tDa2KtYZxmyPsuZepn1ZQ4KEuzZanAMV' },
-  { name: 'ATLAS', mint: 'B8MFK4agivn1tDa2KtYZxmyPsuZepn1ZQ4KEuzZanAMV' },
-]);
 
 async function createWrapper() {
   try {
@@ -30,7 +26,8 @@ async function createWrapper() {
           new anchor.BN(ratioWrapped.value),
         ],
         onlyCreatorCanUnwrap: false,
-        wrappedDecimals: mintWrappedDecimals,
+        wrappedDecimals: mintWrappedDecimals.value,
+        seed: new anchor.BN(window.crypto.getRandomValues(new Uint8Array(8))),
       };
 
       await pg_wrapper.methods
@@ -38,7 +35,7 @@ async function createWrapper() {
         .accountsPartial({
           signer: useWallet().publicKey.value,
           group: new PublicKey(
-            useWrapperStore().selectedGroup.publicKey.toString(),
+            useWrapperStore().selectedGroup?.publicKey.toString() ?? '',
           ),
           mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
           tokenProgram: TOKEN_PROGRAM_ID,
@@ -50,6 +47,7 @@ async function createWrapper() {
       message: 'Created new wrapper factory successfully',
       type: 'positive',
     });
+    await useWrapperStore().load_wrapper();
   } catch (err) {
     console.error(err);
     $q.notify({
@@ -68,8 +66,10 @@ async function createWrapper() {
         <q-select
           filled
           class="col"
-          :options="options"
-          :option-label="(option) => option.name"
+          :options="useAccountStore().getAccountsBalanceNotZero"
+          :option-label="
+            (option: AccountStore) => option.info?.name ?? option.mint
+          "
           v-model="optionUnwrapped"
           label="Mint"
           type="number"

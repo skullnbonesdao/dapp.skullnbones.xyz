@@ -70,6 +70,11 @@ export type WrapperFactory = {
                 kind: 'account';
                 path: 'wrapper';
               },
+              {
+                kind: 'account';
+                path: 'wrapper.seed';
+                account: 'wrapper';
+              },
             ];
           };
         },
@@ -295,6 +300,11 @@ export type WrapperFactory = {
                 kind: 'account';
                 path: 'wrapper';
               },
+              {
+                kind: 'account';
+                path: 'wrapper.seed';
+                account: 'wrapper';
+              },
             ];
           };
         },
@@ -379,6 +389,10 @@ export type WrapperFactory = {
               {
                 kind: 'account';
                 path: 'wrapper';
+              },
+              {
+                kind: 'arg';
+                path: 'params.seed';
               },
             ];
           };
@@ -519,6 +533,11 @@ export type WrapperFactory = {
                 kind: 'account';
                 path: 'wrapper';
               },
+              {
+                kind: 'account';
+                path: 'wrapper.seed';
+                account: 'wrapper';
+              },
             ];
           };
         },
@@ -610,6 +629,11 @@ export type WrapperFactory = {
               {
                 kind: 'account';
                 path: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.seed';
+                account: 'wrapper';
               },
             ];
           };
@@ -703,6 +727,11 @@ export type WrapperFactory = {
               {
                 kind: 'account';
                 path: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.seed';
+                account: 'wrapper';
               },
             ];
           };
@@ -814,6 +843,11 @@ export type WrapperFactory = {
               {
                 kind: 'account';
                 path: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.seed';
+                account: 'wrapper';
               },
             ];
           };
@@ -945,6 +979,11 @@ export type WrapperFactory = {
               {
                 kind: 'account';
                 path: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.seed';
+                account: 'wrapper';
               },
             ];
           };
@@ -1159,6 +1198,10 @@ export type WrapperFactory = {
             name: 'wrappedDecimals';
             type: 'u8';
           },
+          {
+            name: 'seed';
+            type: 'u64';
+          },
         ];
       };
     },
@@ -1229,6 +1272,10 @@ export type WrapperFactory = {
       type: {
         kind: 'struct';
         fields: [
+          {
+            name: 'seed';
+            type: 'u64';
+          },
           {
             name: 'group';
             type: 'pubkey';

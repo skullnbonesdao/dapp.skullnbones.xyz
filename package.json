@@ -35,7 +35,6 @@
     "@vueuse/core": "^10.6.1",
     "apexcharts": "^4.0.0",
     "axios": "^1.2.1",
-    "crypto": "^1.0.1",
     "konva": "^9.2.3",
     "minidenticons": "^4.2.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
