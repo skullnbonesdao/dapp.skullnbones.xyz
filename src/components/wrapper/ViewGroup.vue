@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import CreateGroup from 'components/wrapper/CreateGroup.vue';
+import { onMounted, ref } from 'vue';
+import { useWrapperStore } from 'stores/globalWrapper';
+import WrapperCreateGroup from 'components/wrapper/WrapperCreateGroup.vue';
+import WrapperCloseGroup from 'components/wrapper/WrapperCloseGroup.vue';
 
 const tabSelected = ref('create');
+
+onMounted(async () => {
+  await useWrapperStore().load_groups();
+});
 </script>
 
 <template>
@@ -12,6 +18,9 @@ const tabSelected = ref('create');
       <div class="text-caption text-grey">
         The group will be used to filter the wrappers - one time creation fee of
         0.5 SOL
+      </div>
+      <div class="text-caption text-orange-5">
+        Make sure u use a list where you are the owner!
       </div>
     </q-card-section>
     <q-separator></q-separator>
@@ -33,11 +42,33 @@ const tabSelected = ref('create');
 
     <q-tab-panels v-model="tabSelected" animated>
       <q-tab-panel name="create">
-        <CreateGroup />
+        <WrapperCreateGroup />
       </q-tab-panel>
 
       <q-tab-panel name="select">
-        <q-select filled model-value=""></q-select>
+        <q-card flat>
+          <q-card-section>
+            <div class="row q-gutter-x-md">
+              <q-select
+                class="col"
+                filled
+                v-model="useWrapperStore().selectedGroup"
+                :options="useWrapperStore().groups"
+                :option-label="(option) => option?.account?.name"
+              ></q-select>
+              <WrapperCloseGroup />
+            </div>
+            <div
+              v-if="useWrapperStore().selectedGroup?.account"
+              class="text-caption row"
+            >
+              Owner:
+              <div class="q-ml-sm text-orange-5">
+                {{ useWrapperStore().selectedGroup?.account?.owner }}
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
       </q-tab-panel>
     </q-tab-panels>
   </q-card>

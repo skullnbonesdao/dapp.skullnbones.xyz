@@ -12,10 +12,10 @@ import { useRPCStore } from 'stores/rpcStore';
 
 import type { Whitelist } from 'src/idls/types/whitelist';
 import { Raffle } from 'src/idls/types/raffle';
-import { Wrapper } from 'src/idls/types/wrapper';
 import { ProxyRewarder } from 'src/idls/types/proxyrewarder';
 import { LockedVoter } from 'src/idls/types/lockedvoter';
 import { Snapshot } from 'src/idls/types/snapshot';
+import { WrapperFactory } from 'src/idls/types/wrapper';
 
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
@@ -25,7 +25,7 @@ interface Workspace {
   connection: ComputedRef<Connection>;
   provider: ComputedRef<AnchorProvider>;
   pg_raffle: ComputedRef<Program<Raffle>>;
-  pg_wrapper: ComputedRef<Program<Wrapper>>;
+  pg_wrapper: ComputedRef<Program<WrapperFactory>>;
   pg_whitelist: ComputedRef<Program<Whitelist>>;
   pg_proxy_rewarder: ComputedRef<Program<ProxyRewarder>>;
   pg_locked_voter: ComputedRef<Program<LockedVoter>>;
@@ -56,7 +56,11 @@ export const initWorkspaceAdapter = () => {
   );
 
   const pg_wrapper = computed(
-    () => new Program<Wrapper>(dapp_wrapper_idl as Wrapper, provider.value),
+    () =>
+      new Program<WrapperFactory>(
+        dapp_wrapper_idl as WrapperFactory,
+        provider.value,
+      ),
   );
 
   const pg_proxy_rewarder = computed(

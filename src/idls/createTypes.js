@@ -10,8 +10,8 @@ const files = [
     fileName: 'raffle.0.30.1.json',
   },
   {
-    name: 'Wrapper',
-    fileName: 'raffle.0.30.1.json',
+    name: 'WrapperFactory',
+    fileName: 'wrapper_factory.0.30.1.json',
   },
   {
     name: 'LockedVoter',

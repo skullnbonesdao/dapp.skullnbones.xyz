@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import ViewGroup from 'components/wrapper/ViewGroup.vue';
 import ViewWrapper from 'components/wrapper/ViewWrapper.vue';
-import ViewSubscription from 'components/wrapper/ViewGroup.vue';
 
-const tabSelected = ref('wrapping');
+const tabSelected = ref('manage');
 </script>
 
 <template>
@@ -31,7 +31,7 @@ const tabSelected = ref('wrapping');
         </q-tab-panel>
 
         <q-tab-panel name="manage" class="q-gutter-y-md">
-          <ViewSubscription />
+          <ViewGroup />
           <ViewWrapper />
         </q-tab-panel>
       </q-tab-panels>

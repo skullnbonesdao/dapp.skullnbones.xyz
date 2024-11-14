@@ -1,870 +1,1284 @@
-export type Wrapper = {
-  "address": "rafxXxjw9fkAuQhCJ1A4gmX1oqgvRrSeXyRPUE9K2Yx",
-  "metadata": {
-    "name": "raffle",
-    "version": "0.1.0",
-    "spec": "0.1.0",
-    "description": "Created with Anchor"
-  },
-  "instructions": [
+/**
+ * Program IDL in camelCase format in order to be used in JS/TS.
+ *
+ * Note that this is only a type helper and is not the actual IDL. The original
+ * IDL can be found at `target/idl/wrapper_factory.json`.
+ */
+export type WrapperFactory = {
+  address: 'wrprFD8nubz7iB3pKfuMiUjcydQNoCL5eWnEPMbG1F6';
+  metadata: {
+    name: 'wrapperFactory';
+    version: '0.1.0';
+    spec: '0.1.0';
+    description: 'Created with Anchor';
+  };
+  instructions: [
     {
-      "name": "buy_tickets",
-      "discriminator": [48, 16, 122, 137, 24, 214, 198, 58],
-      "accounts": [
+      name: 'close';
+      discriminator: [98, 165, 201, 177, 108, 65, 206, 96];
+      accounts: [
         {
-          "name": "signer",
-          "writable": true,
-          "signer": true
+          name: 'signer';
+          writable: true;
+          signer: true;
         },
         {
-          "name": "entrant"
-        },
-        {
-          "name": "raffle",
-          "writable": true
-        },
-        {
-          "name": "tickets",
-          "writable": true,
-          "relations": ["raffle"]
-        },
-        {
-          "name": "tickets_ata",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'wrapper';
+          writable: true;
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [
-                  118, 97, 117, 108, 116, 84, 105, 99, 107, 101, 116, 115
-                ]
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
               },
               {
-                "kind": "account",
-                "path": "raffle"
-              }
-            ]
-          }
-        },
-        {
-          "name": "tickets_mint"
-        },
-        {
-          "name": "from",
-          "writable": true
-        },
-        {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        },
-        {
-          "name": "whitelist",
-          "docs": ["Checks"],
-          "writable": true,
-          "optional": true
-        },
-        {
-          "name": "whitelist_entry",
-          "writable": true,
-          "optional": true
-        },
-        {
-          "name": "whitelist_program",
-          "optional": true,
-          "address": "whi5uDPWK4rAE9Sus6hdxdHwsG1hjDBn6kXM6pyqwTn"
-        },
-        {
-          "name": "fee_account",
-          "writable": true,
-          "address": "feeW4D5WBZQEk6QtoSrw2KjZF45d7LBK9oCGuczKW2G"
-        }
-      ],
-      "args": [
-        {
-          "name": "ticket_amount",
-          "type": "u32"
-        }
-      ]
-    },
-    {
-      "name": "claim_prize",
-      "discriminator": [157, 233, 139, 121, 246, 62, 234, 235],
-      "accounts": [
-        {
-          "name": "raffle",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [114, 97, 102, 102, 108, 101]
+                kind: 'account';
+                path: 'mintUnwrapped';
               },
               {
-                "kind": "account",
-                "path": "raffle.name",
-                "account": "Raffle"
+                kind: 'account';
+                path: 'wrapper.admin';
+                account: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintWrapped';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                ];
               },
               {
-                "kind": "account",
-                "path": "raffle.seed",
-                "account": "Raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'wrapper';
+              },
+            ];
+          };
         },
         {
-          "name": "tickets",
-          "relations": ["raffle"]
+          name: 'mintUnwrapped';
         },
         {
-          "name": "prize_vault",
-          "writable": true
-        },
-        {
-          "name": "prize_mint"
-        },
-        {
-          "name": "to",
-          "writable": true
-        },
-        {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "claim_tickets",
-      "discriminator": [115, 177, 141, 142, 7, 255, 105, 60],
-      "accounts": [
-        {
-          "name": "creator",
-          "signer": true
-        },
-        {
-          "name": "raffle",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'vaultWrapped';
+          writable: true;
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [114, 97, 102, 102, 108, 101]
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                ];
               },
               {
-                "kind": "account",
-                "path": "raffle.name",
-                "account": "Raffle"
+                kind: 'account';
+                path: 'wrapper';
               },
               {
-                "kind": "account",
-                "path": "raffle.seed",
-                "account": "Raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+            ];
+          };
         },
         {
-          "name": "tickets_ata",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'tokenProgram';
+        },
+      ];
+      args: [];
+    },
+    {
+      name: 'closeGroup';
+      discriminator: [40, 187, 201, 187, 18, 194, 122, 232];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'group';
+          writable: true;
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [
-                  118, 97, 117, 108, 116, 84, 105, 99, 107, 101, 116, 115
-                ]
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                ];
               },
               {
-                "kind": "account",
-                "path": "raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'signer';
+              },
+            ];
+          };
         },
         {
-          "name": "tickets_mint"
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
         },
-        {
-          "name": "to",
-          "writable": true
-        },
-        {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "close",
-      "discriminator": [98, 165, 201, 177, 108, 65, 206, 96],
-      "accounts": [
+      name: 'edit';
+      discriminator: [15, 183, 33, 86, 87, 28, 151, 145];
+      accounts: [
         {
-          "name": "creator",
-          "writable": true,
-          "signer": true
+          name: 'signer';
+          writable: true;
+          signer: true;
         },
         {
-          "name": "raffle",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'wrapper';
+          writable: true;
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [114, 97, 102, 102, 108, 101]
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
               },
               {
-                "kind": "account",
-                "path": "raffle.name",
-                "account": "Raffle"
+                kind: 'account';
+                path: 'mintUnwrapped';
               },
               {
-                "kind": "account",
-                "path": "raffle.seed",
-                "account": "Raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'wrapper.admin';
+                account: 'wrapper';
+              },
+            ];
+          };
         },
         {
-          "name": "tickets",
-          "writable": true
-        },
-        {
-          "name": "tickets_vault",
-          "writable": true
-        },
-        {
-          "name": "prize_vault",
-          "writable": true,
-          "optional": true
-        },
-        {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "disable",
-      "discriminator": [185, 173, 187, 90, 216, 15, 238, 233],
-      "accounts": [
-        {
-          "name": "creator",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "raffle",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'mintWrapped';
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [114, 97, 102, 102, 108, 101]
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                ];
               },
               {
-                "kind": "account",
-                "path": "raffle.name",
-                "account": "Raffle"
+                kind: 'account';
+                path: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintUnwrapped';
+        },
+        {
+          name: 'whitelist';
+          optional: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+        },
+      ];
+      args: [
+        {
+          name: 'params';
+          type: {
+            defined: {
+              name: 'editParams';
+            };
+          };
+        },
+      ];
+    },
+    {
+      name: 'initialize';
+      discriminator: [175, 175, 109, 31, 13, 152, 155, 237];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'wrapper';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
               },
               {
-                "kind": "account",
-                "path": "raffle.seed",
-                "account": "Raffle"
-              }
-            ]
-          }
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "enable",
-      "discriminator": [159, 34, 127, 41, 193, 53, 124, 27],
-      "accounts": [
-        {
-          "name": "creator",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "raffle",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [114, 97, 102, 102, 108, 101]
+                kind: 'account';
+                path: 'mintUnwrapped';
               },
               {
-                "kind": "account",
-                "path": "raffle.name",
-                "account": "Raffle"
+                kind: 'account';
+                path: 'signer';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintWrapped';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                ];
               },
               {
-                "kind": "account",
-                "path": "raffle.seed",
-                "account": "Raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'wrapper';
+              },
+            ];
+          };
         },
         {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "initialize",
-      "discriminator": [175, 175, 109, 31, 13, 152, 155, 237],
-      "accounts": [
-        {
-          "name": "creator",
-          "writable": true,
-          "signer": true
+          name: 'mintUnwrapped';
         },
         {
-          "name": "raffle",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'vaultWrapped';
+          writable: true;
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [114, 97, 102, 102, 108, 101]
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                ];
               },
               {
-                "kind": "arg",
-                "path": "name"
+                kind: 'account';
+                path: 'wrapper';
               },
               {
-                "kind": "arg",
-                "path": "seed"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+            ];
+          };
         },
         {
-          "name": "tickets",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'group';
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [116, 105, 99, 107, 101, 116, 115]
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                ];
               },
               {
-                "kind": "account",
-                "path": "raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'signer';
+              },
+            ];
+          };
         },
         {
-          "name": "tickets_ata",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'whitelist';
+          optional: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+        },
+      ];
+      args: [
+        {
+          name: 'params';
+          type: {
+            defined: {
+              name: 'initPrams';
+            };
+          };
+        },
+      ];
+    },
+    {
+      name: 'initializeGroup';
+      discriminator: [191, 73, 34, 229, 233, 213, 189, 173];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'group';
+          writable: true;
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [
-                  118, 97, 117, 108, 116, 84, 105, 99, 107, 101, 116, 115
-                ]
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112,
+                ];
               },
               {
-                "kind": "account",
-                "path": "raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'signer';
+              },
+            ];
+          };
         },
         {
-          "name": "tickets_mint"
+          name: 'fee';
+          writable: true;
+          address: 'subA4tNLV18htV8xACaZyMMKkAm1AQS4EhiPYPV4zbH';
         },
         {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
         },
+      ];
+      args: [
         {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          name: 'name';
+          type: 'string';
         },
-        {
-          "name": "rent",
-          "address": "SysvarRent111111111111111111111111111111111"
-        },
-        {
-          "name": "whitelist",
-          "optional": true
-        }
-      ],
-      "args": [
-        {
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "name": "description",
-          "type": "string"
-        },
-        {
-          "name": "ticket_price",
-          "type": "u64"
-        },
-        {
-          "name": "ticket_amount",
-          "type": "u32"
-        },
-        {
-          "name": "seed",
-          "type": "u64"
-        }
-      ]
+      ];
     },
     {
-      "name": "prepare",
-      "discriminator": [121, 155, 156, 90, 164, 252, 220, 109],
-      "accounts": [
+      name: 'metadataCreate';
+      discriminator: [79, 112, 145, 162, 26, 151, 102, 135];
+      accounts: [
         {
-          "name": "creator",
-          "writable": true,
-          "signer": true
+          name: 'signer';
+          writable: true;
+          signer: true;
         },
         {
-          "name": "raffle",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'wrapper';
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [114, 97, 102, 102, 108, 101]
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
               },
               {
-                "kind": "account",
-                "path": "raffle.name",
-                "account": "Raffle"
+                kind: 'account';
+                path: 'mintUnwrapped';
               },
               {
-                "kind": "account",
-                "path": "raffle.seed",
-                "account": "Raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'wrapper.admin';
+                account: 'wrapper';
+              },
+            ];
+          };
         },
         {
-          "name": "from",
-          "writable": true
-        },
-        {
-          "name": "prize_vault",
-          "writable": true,
-          "pda": {
-            "seeds": [
+          name: 'mintWrapped';
+          pda: {
+            seeds: [
               {
-                "kind": "const",
-                "value": [118, 97, 117, 108, 116, 80, 114, 105, 122, 101]
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                ];
               },
               {
-                "kind": "account",
-                "path": "raffle"
-              }
-            ]
-          }
+                kind: 'account';
+                path: 'wrapper';
+              },
+            ];
+          };
         },
         {
-          "name": "prize_mint"
+          name: 'mintUnwrapped';
         },
         {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
+          name: 'metadata';
+          writable: true;
         },
         {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
         },
         {
-          "name": "rent",
-          "address": "SysvarRent111111111111111111111111111111111"
+          name: 'tokenProgram';
         },
         {
-          "name": "fee_account",
-          "writable": true,
-          "address": "feeW4D5WBZQEk6QtoSrw2KjZF45d7LBK9oCGuczKW2G"
-        }
-      ],
-      "args": [
-        {
-          "name": "tickets_amount",
-          "type": "u64"
+          name: 'tokenMetadataProgram';
+          address: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s';
         },
         {
-          "name": "image_url",
-          "type": "string"
-        }
-      ]
+          name: 'rent';
+          address: 'SysvarRent111111111111111111111111111111111';
+        },
+      ];
+      args: [
+        {
+          name: 'metadata';
+          type: {
+            defined: {
+              name: 'metadataParams';
+            };
+          };
+        },
+      ];
     },
     {
-      "name": "reveal_winners",
-      "discriminator": [24, 167, 123, 197, 91, 200, 146, 3],
-      "accounts": [
+      name: 'metadataUpdate';
+      discriminator: [227, 88, 37, 234, 30, 248, 12, 51];
+      accounts: [
         {
-          "name": "raffle",
-          "writable": true
+          name: 'signer';
+          writable: true;
+          signer: true;
         },
         {
-          "name": "tickets",
-          "writable": true
+          name: 'wrapper';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
+              },
+              {
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.admin';
+                account: 'wrapper';
+              },
+            ];
+          };
         },
         {
-          "name": "recent_block_hashes"
-        }
-      ],
-      "args": []
-    }
-  ],
-  "accounts": [
-    {
-      "name": "Raffle",
-      "discriminator": [143, 133, 63, 173, 138, 10, 142, 200]
+          name: 'mintWrapped';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintUnwrapped';
+        },
+        {
+          name: 'metadata';
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+        },
+        {
+          name: 'tokenMetadataProgram';
+          address: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s';
+        },
+        {
+          name: 'rent';
+          address: 'SysvarRent111111111111111111111111111111111';
+        },
+      ];
+      args: [
+        {
+          name: 'metadata';
+          type: {
+            defined: {
+              name: 'metadataParams';
+            };
+          };
+        },
+      ];
     },
     {
-      "name": "Tickets",
-      "discriminator": [48, 222, 91, 92, 162, 98, 123, 167]
+      name: 'transferVault';
+      discriminator: [15, 245, 182, 67, 227, 160, 170, 213];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'wrapper';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
+              },
+              {
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.admin';
+                account: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintWrapped';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintUnwrapped';
+        },
+        {
+          name: 'ataUnwrappedSigner';
+          writable: true;
+        },
+        {
+          name: 'ataUnwrappedVault';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+            ];
+          };
+        },
+        {
+          name: 'tokenProgram';
+        },
+      ];
+      args: [
+        {
+          name: 'amountUnwrapped';
+          type: 'u64';
+        },
+      ];
     },
     {
-      "name": "Whitelist",
-      "discriminator": [204, 176, 52, 79, 146, 121, 54, 247]
+      name: 'unwrap';
+      discriminator: [126, 175, 198, 14, 212, 69, 50, 44];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'wrapper';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
+              },
+              {
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.admin';
+                account: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintWrapped';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintUnwrapped';
+        },
+        {
+          name: 'signerWrapped';
+          writable: true;
+        },
+        {
+          name: 'signerUnwrapped';
+          writable: true;
+        },
+        {
+          name: 'vaultUnwrapped';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+            ];
+          };
+        },
+        {
+          name: 'tokenProgram';
+        },
+        {
+          name: 'whitelist';
+          writable: true;
+          optional: true;
+        },
+        {
+          name: 'whitelistEntry';
+          writable: true;
+          optional: true;
+        },
+        {
+          name: 'whitelistProgram';
+          optional: true;
+          address: 'whi5uDPWK4rAE9Sus6hdxdHwsG1hjDBn6kXM6pyqwTn';
+        },
+      ];
+      args: [
+        {
+          name: 'amountUnwrapped';
+          type: 'u64';
+        },
+      ];
     },
     {
-      "name": "WhitelistEntry",
-      "discriminator": [51, 70, 173, 81, 219, 192, 234, 62]
-    }
-  ],
-  "errors": [
+      name: 'wrap';
+      discriminator: [178, 40, 10, 189, 228, 129, 186, 140];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'wrapper';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [119, 114, 97, 112, 112, 101, 114];
+              },
+              {
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+              {
+                kind: 'account';
+                path: 'wrapper.admin';
+                account: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintWrapped';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper';
+              },
+            ];
+          };
+        },
+        {
+          name: 'mintUnwrapped';
+        },
+        {
+          name: 'signerUnwrapped';
+          writable: true;
+        },
+        {
+          name: 'signerWrapped';
+          writable: true;
+        },
+        {
+          name: 'vaultUnwrapped';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [
+                  119,
+                  114,
+                  97,
+                  112,
+                  112,
+                  101,
+                  114,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'wrapper';
+              },
+              {
+                kind: 'account';
+                path: 'mintUnwrapped';
+              },
+            ];
+          };
+        },
+        {
+          name: 'tokenProgram';
+        },
+        {
+          name: 'whitelist';
+          writable: true;
+          optional: true;
+        },
+        {
+          name: 'whitelistEntry';
+          writable: true;
+          optional: true;
+        },
+        {
+          name: 'whitelistProgram';
+          optional: true;
+          address: 'whi5uDPWK4rAE9Sus6hdxdHwsG1hjDBn6kXM6pyqwTn';
+        },
+      ];
+      args: [
+        {
+          name: 'amountUnwrapped';
+          type: 'u64';
+        },
+      ];
+    },
+  ];
+  accounts: [
     {
-      "code": 6000,
-      "name": "InsufficientFundsForTransaction",
-      "msg": "You have not enough sol !"
+      name: 'group';
+      discriminator: [209, 249, 208, 63, 182, 89, 186, 254];
     },
     {
-      "code": 6001,
-      "name": "ActionNotAllowed",
-      "msg": "You are not allowed to create a Raffle!"
+      name: 'whitelist';
+      discriminator: [204, 176, 52, 79, 146, 121, 54, 247];
     },
     {
-      "code": 6002,
-      "name": "SignerIsNotCreator",
-      "msg": "The Signer is not the creator!"
+      name: 'whitelistEntry';
+      discriminator: [51, 70, 173, 81, 219, 192, 234, 62];
     },
     {
-      "code": 6003,
-      "name": "NoRandomness",
-      "msg": "Error no randomness!"
+      name: 'wrapper';
+      discriminator: [161, 11, 109, 119, 86, 61, 163, 136];
+    },
+  ];
+  errors: [
+    {
+      code: 6000;
+      name: 'zeroError';
+      msg: 'Input is zero';
     },
     {
-      "code": 6004,
-      "name": "EntrantsAccountTooSmallForMaxEntrants",
-      "msg": "Entrants account too small for max entrants"
+      code: 6001;
+      name: 'signerError';
+      msg: 'Invalid Signer';
     },
     {
-      "code": 6005,
-      "name": "InvalidPrizeIndex",
-      "msg": "Invalid prize index"
+      code: 6002;
+      name: 'amountMismatch';
+      msg: 'Incorrect amounts for unwrapped/wrapped';
     },
     {
-      "code": 6006,
-      "name": "NotClaimed",
-      "msg": "Raffle is not Claimed"
+      code: 6003;
+      name: 'permissionIncorrect';
+      msg: 'Permission incorrect';
     },
     {
-      "code": 6007,
-      "name": "InvalidTicketCount",
-      "msg": "Amount of sold tickets is not fulfilled"
+      code: 6004;
+      name: 'limitReached';
+      msg: 'Wrap limit reached';
     },
     {
-      "code": 6008,
-      "name": "NoPrize",
-      "msg": "Error ticket count invalid!"
+      code: 6005;
+      name: 'noGroupMatch';
+      msg: 'No group match';
     },
+  ];
+  types: [
     {
-      "code": 6009,
-      "name": "RaffleIsNotRunning",
-      "msg": "Error raffle is not running"
-    },
-    {
-      "code": 6010,
-      "name": "RaffleIsRunning",
-      "msg": "Error raffle is still running"
-    },
-    {
-      "code": 6011,
-      "name": "InvalidCalculation",
-      "msg": "Invalid calculation"
-    },
-    {
-      "code": 6012,
-      "name": "NotEnoughTicketsLeft",
-      "msg": "Not enough tickets left"
-    },
-    {
-      "code": 6013,
-      "name": "RaffleStillRunning",
-      "msg": "Raffle is still running"
-    },
-    {
-      "code": 6014,
-      "name": "WinnersAlreadyDrawn",
-      "msg": "Winner already drawn"
-    },
-    {
-      "code": 6015,
-      "name": "WinnerNotDrawn",
-      "msg": "Winner not drawn"
-    },
-    {
-      "code": 6016,
-      "name": "InvalidRevealedData",
-      "msg": "Invalid revealed data"
-    },
-    {
-      "code": 6017,
-      "name": "TokenAccountNotOwnedByWinner",
-      "msg": "Ticket account not owned by winner"
-    },
-    {
-      "code": 6018,
-      "name": "TicketHasNotWon",
-      "msg": "Ticket has not won"
-    },
-    {
-      "code": 6019,
-      "name": "UnclaimedPrizes",
-      "msg": "Unclaimed prizes"
-    },
-    {
-      "code": 6020,
-      "name": "InvalidRecentBlockhashes",
-      "msg": "Invalid recent blockhashes"
-    },
-    {
-      "code": 6021,
-      "name": "OnlyCreatorCanClaimNoEntrantRafflePrizes",
-      "msg": "Only the creator can calin no entrant raffle prizes"
-    },
-    {
-      "code": 6022,
-      "name": "InvalidTreasuryTokenAccountOwner",
-      "msg": "Invalid treasury token account owner"
-    },
-    {
-      "code": 6023,
-      "name": "AccountMismatch",
-      "msg": "AccountMismatch"
-    },
-    {
-      "code": 6024,
-      "name": "StateMismatch",
-      "msg": "StateMismatch"
-    }
-  ],
-  "types": [
-    {
-      "name": "Raffle",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: 'editParams';
+      type: {
+        kind: 'struct';
+        fields: [
           {
-            "name": "seed",
-            "type": "u64"
+            name: 'allowWrap';
+            type: 'bool';
           },
           {
-            "name": "bump",
-            "type": "u8"
+            name: 'allowUnwrap';
+            type: 'bool';
           },
           {
-            "name": "creator",
-            "type": "pubkey"
+            name: 'useLimit';
+            type: 'bool';
           },
           {
-            "name": "state",
-            "type": {
-              "defined": {
-                "name": "RaffleState"
-              }
-            }
+            name: 'amountAbleToWrap';
+            type: {
+              option: 'u64';
+            };
           },
           {
-            "name": "name",
-            "type": "string"
+            name: 'onlyCreatorCanUnwrap';
+            type: {
+              option: 'bool';
+            };
           },
           {
-            "name": "description",
-            "type": "string"
+            name: 'useWhitelist';
+            type: {
+              option: 'bool';
+            };
           },
           {
-            "name": "url",
-            "type": "string"
+            name: 'admin';
+            type: {
+              option: 'pubkey';
+            };
           },
           {
-            "name": "ticket_mint",
-            "type": "pubkey"
+            name: 'ratio';
+            type: {
+              option: {
+                array: ['u64', 2];
+              };
+            };
           },
-          {
-            "name": "ticket_price",
-            "type": "u64"
-          },
-          {
-            "name": "ticket_decimals",
-            "type": "u8"
-          },
-          {
-            "name": "prize_mint",
-            "type": "pubkey"
-          },
-          {
-            "name": "prize_vault_count",
-            "type": "u64"
-          },
-          {
-            "name": "prize_decimals",
-            "type": "u8"
-          },
-          {
-            "name": "tickets",
-            "type": "pubkey"
-          },
-          {
-            "name": "winner",
-            "type": "pubkey"
-          },
-          {
-            "name": "randomness",
-            "type": {
-              "option": {
-                "array": ["u8", 32]
-              }
-            }
-          },
-          {
-            "name": "use_whitelist",
-            "type": "bool"
-          },
-          {
-            "name": "whitelist",
-            "type": "pubkey"
-          }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "RaffleState",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: 'group';
+      type: {
+        kind: 'struct';
+        fields: [
           {
-            "name": "CREATED"
+            name: 'name';
+            type: 'string';
           },
           {
-            "name": "READY"
+            name: 'owner';
+            type: 'pubkey';
           },
-          {
-            "name": "RUNNING"
-          },
-          {
-            "name": "PAUSED"
-          },
-          {
-            "name": "FULL"
-          },
-          {
-            "name": "CLAIMPRIZE"
-          },
-          {
-            "name": "CLAIMTICKETS"
-          },
-          {
-            "name": "DONE"
-          }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "Tickets",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: 'initPrams';
+      type: {
+        kind: 'struct';
+        fields: [
           {
-            "name": "sold",
-            "type": "u32"
+            name: 'ratio';
+            type: {
+              array: ['u64', 2];
+            };
           },
           {
-            "name": "total",
-            "type": "u32"
-          }
-        ]
-      }
+            name: 'onlyCreatorCanUnwrap';
+            type: 'bool';
+          },
+          {
+            name: 'wrappedDecimals';
+            type: 'u8';
+          },
+        ];
+      };
     },
     {
-      "name": "Whitelist",
-      "docs": ["Account: Whitelist"],
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: 'metadataParams';
+      type: {
+        kind: 'struct';
+        fields: [
           {
-            "name": "authority",
-            "type": "pubkey"
+            name: 'name';
+            type: 'string';
           },
           {
-            "name": "name",
-            "type": "string"
+            name: 'symbol';
+            type: 'string';
           },
           {
-            "name": "has_childs",
-            "type": "bool"
+            name: 'uri';
+            type: 'string';
           },
-          {
-            "name": "access_count",
-            "type": "u32"
-          }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "WhitelistEntry",
-      "docs": ["Account: WhitelistEntry"],
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: 'whitelist';
+      docs: ['Account: Whitelist'];
+      type: {
+        kind: 'struct';
+        fields: [
           {
-            "name": "parent",
-            "type": "pubkey"
+            name: 'authority';
+            type: 'pubkey';
           },
           {
-            "name": "whitelisted",
-            "type": "pubkey"
-          }
-        ]
-      }
-    }
-  ],
-  "constants": [
+            name: 'name';
+            type: 'string';
+          },
+          {
+            name: 'hasChilds';
+            type: 'bool';
+          },
+          {
+            name: 'accessCount';
+            type: 'u32';
+          },
+        ];
+      };
+    },
     {
-      "name": "RAFFLE",
-      "type": "bytes",
-      "value": "[114, 97, 102, 102, 108, 101]"
-    }
-  ]
-}
+      name: 'whitelistEntry';
+      docs: ['Account: WhitelistEntry'];
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'parent';
+            type: 'pubkey';
+          },
+          {
+            name: 'whitelisted';
+            type: 'pubkey';
+          },
+        ];
+      };
+    },
+    {
+      name: 'wrapper';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'group';
+            type: 'pubkey';
+          },
+          {
+            name: 'admin';
+            type: 'pubkey';
+          },
+          {
+            name: 'onlyCreatorCanUnwrap';
+            type: 'bool';
+          },
+          {
+            name: 'mintUnwrapped';
+            type: 'pubkey';
+          },
+          {
+            name: 'mintWrapped';
+            type: 'pubkey';
+          },
+          {
+            name: 'wrappedDecimals';
+            type: 'u8';
+          },
+          {
+            name: 'allowWrap';
+            type: 'bool';
+          },
+          {
+            name: 'allowUnwrap';
+            type: 'bool';
+          },
+          {
+            name: 'useLimit';
+            type: 'bool';
+          },
+          {
+            name: 'amountAbleToWrap';
+            type: 'u64';
+          },
+          {
+            name: 'ratio';
+            type: {
+              array: ['u64', 2];
+            };
+          },
+          {
+            name: 'useWhitelist';
+            type: 'bool';
+          },
+          {
+            name: 'whitelist';
+            type: 'pubkey';
+          },
+        ];
+      };
+    },
+  ];
+  constants: [
+    {
+      name: 'feeAccount';
+      type: 'pubkey';
+      value: 'subA4tNLV18htV8xACaZyMMKkAm1AQS4EhiPYPV4zbH';
+    },
+  ];
+};
