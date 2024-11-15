@@ -60,30 +60,15 @@ async function loadAccountInfo() {
   <div class="q-pa-md">
     <q-table
       grid
-      title="Wrapper"
       :rows="useWrapperStore().getFactoriesByGroup"
       row-key="name"
       :filter="filter"
       hide-header
       v-model:pagination="pagination"
-      :rows-per-page-options="rowsPerPageOptions"
+      :rows-per-page-options="[0]"
     >
-      <template v-slot:top-right>
-        <q-input
-          borderless
-          dense
-          debounce="300"
-          v-model="filter"
-          placeholder="Search"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
-
       <template v-slot:item="props">
-        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
+        <div class="q-pa-xs col-xs-12 col-sm-6 col-md-3">
           <q-card flat bordered>
             <q-card-section class="text-center">
               <q-img
@@ -98,7 +83,7 @@ async function loadAccountInfo() {
             </q-card-section>
             <q-card-section>
               <div class="row items-center">
-                <div class="col text-subtitle1">Group</div>
+                <div class="col text-h6 text-weight-light">Group</div>
                 <div class="text-subtitle1">
                   {{
                     useWrapperStore().groups.find(
@@ -110,7 +95,7 @@ async function loadAccountInfo() {
                 </div>
               </div>
               <div class="row items-center">
-                <div class="col text-subtitle1">Pair</div>
+                <div class="col text-h6 text-weight-light">Pair</div>
                 <div class="text-subtitle1 row q-gutter-x-xs">
                   <div>
                     {{
@@ -134,7 +119,7 @@ async function loadAccountInfo() {
                 </div>
               </div>
               <div class="row items-center">
-                <div class="col text-subtitle1">Address</div>
+                <div class="col text-h6 text-weight-light">Address</div>
                 <div class="text-subtitle1">
                   {{ props.row.publicKey }}
                 </div>
@@ -143,16 +128,39 @@ async function loadAccountInfo() {
 
             <q-separator />
 
-            <q-card-actions class="justify-between">
-              <WrapperWrap :wrapper="props.row" />
-              <WrapperVaultDonut
-                :mintWrapped="props.row.account.mintWrapped.toString()"
-                :mintUnwrapped="props.row.account.mintUnwrapped.toString()"
-                :wrapper="props.row"
-              />
-              <WrapperUnwrap :wrapper="props.row" />
+            <q-card-actions class="row text-h4">
+              <div class="col text-center">
+                {{ props.row.account.ratio[0] }}
+              </div>
+              <q-icon size="md" name="swap_horiz" />
+              <div class="col text-center">
+                {{ props.row.account.ratio[1] }}
+              </div>
             </q-card-actions>
-            <q-separator />
+
+            <q-card-actions class="row">
+              <q-card class="col q-mx-sm" flat bordered>
+                <q-card-section>
+                  <div class="text-center text-subtitle2">Status</div>
+                </q-card-section>
+                <q-separator />
+                <div></div>
+
+                <q-card-section>
+                  <WrapperVaultDonut
+                    :mintWrapped="props.row.account.mintWrapped.toString()"
+                    :mintUnwrapped="props.row.account.mintUnwrapped.toString()"
+                    :wrapper="props.row"
+                  />
+                </q-card-section>
+              </q-card>
+            </q-card-actions>
+
+            <q-card-section class="row q-gutter-x-md">
+              <WrapperWrap class="col" :wrapper="props.row" />
+
+              <WrapperUnwrap class="col" :wrapper="props.row" />
+            </q-card-section>
           </q-card>
         </div>
       </template>

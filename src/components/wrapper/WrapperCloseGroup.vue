@@ -4,6 +4,11 @@ import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { useWallet } from 'solana-wallets-vue';
 import { useWrapperStore } from 'stores/globalWrapper';
 
+const props = defineProps({
+  disabled: {
+    default: true,
+  },
+});
 const $q = useQuasar();
 
 async function closeGroup() {
@@ -34,7 +39,13 @@ async function closeGroup() {
 </script>
 
 <template>
-  <q-btn color="primary" label="Close" @click.prevent="closeGroup()" />
+  <q-btn
+    :disable="disabled"
+    square
+    color="primary"
+    label="Close"
+    @click.prevent="closeGroup()"
+  />
 </template>
 
 <style scoped lang="sass"></style>

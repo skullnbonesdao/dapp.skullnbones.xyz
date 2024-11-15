@@ -72,8 +72,13 @@ async function buildTX(label: string) {
 
 <template>
   <div>
-    <q-input filled v-model="amountToWrap" />
+    <q-input
+      :disable="!wrapper.account.allowUnwrap"
+      filled
+      v-model="amountToWrap"
+    />
     <q-btn
+      :disable="!wrapper.account.allowUnwrap"
       class="full-width"
       color="primary"
       label="Unwrap"

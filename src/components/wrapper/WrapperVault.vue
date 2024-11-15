@@ -5,6 +5,8 @@ import { useWrapperStore } from '../../stores/globalWrapper';
 import { useRPCStore } from 'stores/rpcStore';
 import { ref, watch } from 'vue';
 import { ParsedAccountData } from '@solana/web3.js';
+import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
+import WrapperTransferVaultOut from 'components/wrapper/WrapperTransferVaultOut.vue';
 import { useAccountStore } from '../../stores/globalAccountStore';
 
 const $q = useQuasar();
@@ -38,30 +40,50 @@ async function loadAccountInfo() {
     </q-card-section>
     <q-separator />
 
-    <q-card-section class="row items-center">
-      <div class="col text-subtitle1">Mint</div>
-      <div>{{ useWrapperStore().selectedFactory.account?.mintUnwrapped }}</div>
-    </q-card-section>
-    <q-card-section class="row items-center">
-      <div class="col text-subtitle1">Name</div>
+    <q-card-section class="col">
       <div>
-        {{
-          useAccountStore().tokenList.find(
-            (t) =>
-              t.address ==
-              useWrapperStore().selectedFactory.account?.mintUnwrapped.toString(),
-          )?.name
-        }}
+        <div class="col text-subtitle1 text-weight-thin">Address:</div>
+        <div class="text-subtitle2">
+          {{ useWrapperStore().getVault }}
+        </div>
+      </div>
+      <div>
+        <div class="col text-subtitle1 text-weight-thin">Mint:</div>
+        <div class="text-subtitle2">
+          {{ useWrapperStore().selectedFactory.account?.mintUnwrapped }}
+        </div>
+      </div>
+
+      <div>
+        <div class="col text-subtitle1 text-weight-thin">Unwrapped:</div>
+        <div class="text-subtitle2">
+          {{
+            useAccountStore().tokenList.find(
+              (t) =>
+                t.address ==
+                useWrapperStore().selectedFactory.account?.mintUnwrapped.toString(),
+            )?.name
+          }}
+        </div>
+      </div>
+
+      <div>
+        <div class="col text-subtitle1 text-weight-thin">Balance</div>
+        <div class="text-subtitle2">
+          {{ accountInfo?.parsed.info.tokenAmount.uiAmount }}
+        </div>
       </div>
     </q-card-section>
 
-    <q-card-section class="row items-center">
-      <div class="col text-subtitle1">Balance</div>
-      <div>{{ accountInfo?.parsed.info.tokenAmount.uiAmount }}</div>
+    <q-card-section>
+      <WrapperVaultDonut :wrapper="useWrapperStore().selectedFactory" />
     </q-card-section>
-    <q-card-actions class="">
+
+    <q-card-section class="q-gutter-y-md">
       <WrapperCreateVault v-if="!vaultExists" class="full-width" />
-    </q-card-actions>
+
+      <WrapperTransferVaultOut />
+    </q-card-section>
   </q-card>
 </template>
 

@@ -7,8 +7,11 @@ import WrapperClose from 'components/wrapper/WrapperClose.vue';
 import { useAccountStore } from 'stores/globalAccountStore';
 import WrapperEdit from 'components/wrapper/WrapperEdit.vue';
 import WrapperVault from 'components/wrapper/WrapperVault.vue';
+import WrapperMetadata from 'components/wrapper/WrapperMetadata.vue';
 
 const tabSelected = ref('select');
+
+const confirmClose = ref(false);
 </script>
 
 <template>
@@ -30,8 +33,9 @@ const tabSelected = ref('select');
       align="justify"
       narrow-indicator
     >
-      <q-tab name="select" label="Select" />
       <q-tab name="create" label="Create" />
+      <q-tab name="select" label="Edit" />
+      <q-tab name="close" label="Close" />
     </q-tabs>
 
     <q-separator />
@@ -46,6 +50,7 @@ const tabSelected = ref('select');
           <q-card-section>
             <div class="row q-gutter-x-md">
               <q-select
+                label="Select a wrapper"
                 class="col"
                 filled
                 v-model="useWrapperStore().selectedFactory"
@@ -58,7 +63,9 @@ const tabSelected = ref('select');
                         (t) =>
                           t.address ==
                           option.account?.mintUnwrapped?.toString(),
-                      )?.name ?? option.account?.mintUnwrapped.toString())
+                      )?.name ??
+                        option.account?.mintUnwrapped.toString() ??
+                        '')
                     );
                   }
                 "
@@ -72,15 +79,56 @@ const tabSelected = ref('select');
             v-if="useWrapperStore().selectedFactory?.account"
             class="row justify-between"
           >
-            <WrapperInfo class="" />
-            <WrapperEdit class="" />
-            <WrapperVault class="" />
+            <WrapperInfo />
+            <div class="q-gutter-y-md">
+              <WrapperVault />
+              <WrapperMetadata />
+            </div>
+            <WrapperEdit />
           </q-card-section>
-
-          <q-card-actions class="justify-end">
-            <WrapperClose />
-          </q-card-actions>
         </q-card>
+      </q-tab-panel>
+
+      <q-tab-panel name="close">
+        <q-card flat>
+          <q-card-section>
+            <div class="row">
+              <q-select
+                label="Select a wrapper"
+                class="col"
+                filled
+                v-model="useWrapperStore().selectedFactory"
+                :options="useWrapperStore().factories"
+                :option-label="
+                  (option: WrapperFactory) => {
+                    return (
+                      '[Wrapped] ' +
+                      (useAccountStore().tokenList.find(
+                        (t) =>
+                          t.address ==
+                          option.account?.mintUnwrapped?.toString(),
+                      )?.name ??
+                        option.account?.mintUnwrapped.toString() ??
+                        '')
+                    );
+                  }
+                "
+              ></q-select>
+              <WrapperClose :disabled="!confirmClose" />
+            </div>
+          </q-card-section>
+          <q-card-section
+            v-if="useWrapperStore().selectedFactory?.account"
+            class="row justify-between"
+          >
+          </q-card-section>
+        </q-card>
+        <q-card-section class="row items-center">
+          <div class="text-h6 text-red-6 col">
+            I know what im doing i want to close a wrapper
+          </div>
+          <q-checkbox color="red" v-model="confirmClose" />
+        </q-card-section>
       </q-tab-panel>
     </q-tab-panels>
   </q-card>

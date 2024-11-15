@@ -7,7 +7,7 @@ import { useWrapperStore } from 'stores/globalWrapper';
     v-if="useWrapperStore().selectedFactory?.account"
     flat
     bordered
-    style="max-width: 1000px"
+    style="width: 500px"
   >
     <q-card-section class="">
       <div class="text-h4">Info</div>
@@ -15,17 +15,25 @@ import { useWrapperStore } from 'stores/globalWrapper';
     <q-separator />
 
     <q-card-section>
-      <div class="row">
-        <div class="col">Publickey</div>
+      <div class="col">
+        <div class="col text-subtitle1 text-weight-thin">Publickey</div>
         <div>{{ useWrapperStore().selectedFactory.publicKey }}</div>
       </div>
       <div
         v-for="info in Object.keys(useWrapperStore().selectedFactory?.account)"
         :key="info"
-        class="row"
+        class="col"
       >
-        <div class="col">{{ info.toUpperCase() }}</div>
-        <div>{{ useWrapperStore().selectedFactory.account[info] }}</div>
+        <div class="col text-subtitle1 text-weight-thin">
+          {{ info.toUpperCase() }}
+        </div>
+        <div class="text-subtitle2" v-if="info == 'ratio'">
+          {{ useWrapperStore().selectedFactory.account[info][0] }} :
+          {{ useWrapperStore().selectedFactory.account[info][1] }}
+        </div>
+        <div class="text-subtitle2" v-else>
+          {{ useWrapperStore().selectedFactory.account[info] }}
+        </div>
       </div>
     </q-card-section>
   </q-card>

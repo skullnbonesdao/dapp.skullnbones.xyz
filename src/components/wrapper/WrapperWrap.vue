@@ -111,8 +111,13 @@ async function buildTX(label: string) {
 
 <template>
   <div>
-    <q-input filled v-model="amountToWrap" />
+    <q-input
+      :disable="!wrapper.account.allowWrap"
+      filled
+      v-model="amountToWrap"
+    />
     <q-btn
+      :disable="!wrapper.account.allowWrap"
       class="full-width"
       color="primary"
       label="Wrap"

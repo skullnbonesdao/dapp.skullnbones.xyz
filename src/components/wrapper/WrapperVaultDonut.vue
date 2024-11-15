@@ -53,6 +53,9 @@ const options = ref({
     enabled: false,
   },
   legend: {
+    labels: {
+      colors: 'white',
+    },
     show: true,
     position: 'bottom',
   },

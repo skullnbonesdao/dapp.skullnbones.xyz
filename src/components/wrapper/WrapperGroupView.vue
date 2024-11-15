@@ -2,10 +2,11 @@
 import { ref } from 'vue';
 import { useWrapperStore } from 'stores/globalWrapper';
 import WrapperCreateGroup from 'components/wrapper/WrapperCreateGroup.vue';
-import WrapperCloseGroup from 'components/wrapper/WrapperCloseGroup.vue';
 import WrapperGroupSelect from 'components/wrapper/WrapperGroupSelect.vue';
+import WrapperCloseGroup from 'components/wrapper/WrapperCloseGroup.vue';
 
 const tabSelected = ref('select');
+const confirmClose = ref(false);
 </script>
 
 <template>
@@ -33,6 +34,7 @@ const tabSelected = ref('select');
     >
       <q-tab name="select" label="Select" />
       <q-tab name="create" label="Create" />
+      <q-tab name="close" label="Close" />
     </q-tabs>
 
     <q-separator />
@@ -43,34 +45,61 @@ const tabSelected = ref('select');
       </q-tab-panel>
 
       <q-tab-panel name="select">
-        <q-card flat>
-          <q-card-section>
-            <div class="row q-gutter-x-md">
-              <WrapperGroupSelect />
-              <WrapperCloseGroup />
+        <WrapperGroupSelect class="" />
+        <q-card-section>
+          <div
+            v-if="useWrapperStore().selectedGroup?.account"
+            class="text-caption row"
+          >
+            <div style="width: 50px">ID</div>
+            <div class="col text-right">
+              {{ useWrapperStore().selectedGroup?.publicKey }}
             </div>
-          </q-card-section>
-          <q-card-section>
-            <div
-              v-if="useWrapperStore().selectedGroup?.account"
-              class="text-caption row"
-            >
-              <div style="width: 50px">ID:</div>
-              <div class="col text-orange-5 text-right">
-                {{ useWrapperStore().selectedGroup?.publicKey }}
-              </div>
+          </div>
+          <div
+            v-if="useWrapperStore().selectedGroup?.account"
+            class="text-caption row"
+          >
+            <div style="width: 50px">Owner</div>
+            <div class="col text-orange-5 text-right">
+              {{ useWrapperStore().selectedGroup?.account?.owner }}
             </div>
-            <div
-              v-if="useWrapperStore().selectedGroup?.account"
-              class="text-caption row"
-            >
-              <div style="width: 50px">Owner:</div>
-              <div class="col text-orange-5 text-right">
-                {{ useWrapperStore().selectedGroup?.account?.owner }}
-              </div>
+          </div></q-card-section
+        >
+      </q-tab-panel>
+
+      <q-tab-panel name="close">
+        <div class="row">
+          <WrapperGroupSelect class="col" />
+          <WrapperCloseGroup :disabled="!confirmClose" />
+        </div>
+
+        <q-card-section>
+          <div
+            v-if="useWrapperStore().selectedGroup?.account"
+            class="text-caption row"
+          >
+            <div style="width: 50px">ID:</div>
+            <div class="col text-orange-5 text-right">
+              {{ useWrapperStore().selectedGroup?.publicKey }}
             </div>
-          </q-card-section>
-        </q-card>
+          </div>
+          <div
+            v-if="useWrapperStore().selectedGroup?.account"
+            class="text-caption row"
+          >
+            <div style="width: 50px">Owner:</div>
+            <div class="col text-orange-5 text-right">
+              {{ useWrapperStore().selectedGroup?.account?.owner }}
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section class="row items-center">
+          <div class="text-h6 text-red-6 col">
+            I know what im doing i want to close the group
+          </div>
+          <q-checkbox color="red" v-model="confirmClose" />
+        </q-card-section>
       </q-tab-panel>
     </q-tab-panels>
   </q-card>

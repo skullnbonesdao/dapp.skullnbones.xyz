@@ -5,6 +5,7 @@ import * as anchor from '@coral-xyz/anchor';
 import { ProgramAccount } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
+import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
 export const WRAPPER_FEE_ACCOUNT = new PublicKey(
   'subA4tNLV18htV8xACaZyMMKkAm1AQS4EhiPYPV4zbH',
@@ -53,6 +54,21 @@ export const useWrapperStore = defineStore('wrapperStore', {
         useWorkspaceAdapter()!.pg_wrapper.value.programId!,
       );
       return vault;
+    },
+
+    getMetadata(state) {
+      const [metadataAddress, metadata_bump] =
+        anchor.web3.PublicKey.findProgramAddressSync(
+          [
+            Buffer.from('metadata'),
+            new anchor.web3.PublicKey(
+              MPL_TOKEN_METADATA_PROGRAM_ID.toString(),
+            ).toBuffer(),
+            useWrapperStore().selectedFactory?.account.mintWrapped.toBytes(),
+          ],
+          new anchor.web3.PublicKey(MPL_TOKEN_METADATA_PROGRAM_ID.toString()),
+        );
+      return metadataAddress;
     },
 
     getFactoriesByGroup(state) {

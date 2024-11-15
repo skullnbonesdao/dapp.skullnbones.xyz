@@ -4,7 +4,8 @@ import { useWrapperStore } from 'stores/globalWrapper';
 
 <template>
   <q-select
-    class="col"
+    label="Select a group"
+    square
     filled
     v-model="useWrapperStore().selectedGroup"
     :options="useWrapperStore().groups"

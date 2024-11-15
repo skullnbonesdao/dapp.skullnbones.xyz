@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
@@ -7,10 +6,12 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWrapperStore } from 'stores/globalWrapper';
 
 const $q = useQuasar();
-const optionUnwrapped = ref();
-const mintWrappedDecimals = ref<number>(9);
-const ratioUnwrapped = ref<number>(1);
-const ratioWrapped = ref<number>(1);
+
+const props = defineProps({
+  disabled: {
+    default: true,
+  },
+});
 
 async function closeWrapper() {
   try {
@@ -46,7 +47,13 @@ async function closeWrapper() {
 </script>
 
 <template>
-  <q-btn color="primary" label="Close Wrapper" @click="closeWrapper()"></q-btn>
+  <q-btn
+    :disable="disabled"
+    square
+    color="primary"
+    label="Close Wrapper"
+    @click="closeWrapper()"
+  ></q-btn>
 </template>
 
 <style scoped lang="sass"></style>

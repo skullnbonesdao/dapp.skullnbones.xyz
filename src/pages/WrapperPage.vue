@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import ViewGroup from 'components/wrapper/WrapperGroupView.vue';
-import ViewWrapper from 'components/wrapper/WrapperView.vue';
+import WrapperGroupView from 'components/wrapper/WrapperGroupView.vue';
+import WrapperManage from 'components/wrapper/WrapperManage.vue';
 import { useWrapperStore } from 'stores/globalWrapper';
 import WrapperGroupSelect from 'components/wrapper/WrapperGroupSelect.vue';
 import WrapperTable from 'components/wrapper/WrapperTable.vue';
@@ -34,10 +34,20 @@ onMounted(async () => {
 
       <q-tab-panels v-model="tabSelected" animated>
         <q-tab-panel name="wrapping">
+          <div class="row">
+            <WrapperGroupSelect class="col" />
+            <q-btn
+              square
+              color="primary"
+              label="reload"
+              @click="
+                () => {
+                  useWrapperStore().load_wrapper();
+                }
+              "
+            />
+          </div>
           <q-card flat>
-            <q-card-section>
-              <WrapperGroupSelect />
-            </q-card-section>
             <q-card-section>
               <WrapperTable />
             </q-card-section>
@@ -45,8 +55,8 @@ onMounted(async () => {
         </q-tab-panel>
 
         <q-tab-panel name="manage" class="row q-gutter-x-md">
-          <ViewGroup class="col-3" />
-          <ViewWrapper
+          <WrapperGroupView class="col-3" />
+          <WrapperManage
             class="col"
             v-if="useWrapperStore().selectedGroup?.account"
           />

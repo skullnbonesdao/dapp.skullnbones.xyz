@@ -1,30 +1,32 @@
 <script setup lang="ts">
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { PublicKey } from '@solana/web3.js';
+import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { useWrapperStore } from 'stores/globalWrapper';
-import { ref } from 'vue';
+import { useWallet } from 'solana-wallets-vue';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+
+const props = defineProps(['name', 'symbol', 'uri']);
 
 const $q = useQuasar();
-const vaultFound = ref<boolean>(false);
 
 async function buildTX(label: string) {
   try {
     if (useWorkspaceAdapter()) {
       const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
+      const metadata = {
+        name: props.name,
+        symbol: props.symbol,
+        uri: props.uri,
+      } as any;
       await pg_wrapper.methods
-        .createVault()
+        .metadataCreate(metadata)
         .accountsPartial({
-          wrapper: new PublicKey(
-            useWrapperStore().selectedFactory.publicKey.toString(),
-          ),
+          wrapper: useWrapperStore().selectedFactory?.publicKey,
           signer: useWallet().publicKey.value,
-          mintUnwrapped: new PublicKey(
-            useWrapperStore().selectedFactory.account.mintUnwrapped.toString(),
-          ),
+          metadata: useWrapperStore().getMetadata,
+          mintUnwrapped:
+            useWrapperStore().selectedFactory?.account.mintUnwrapped,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .rpc();
@@ -47,10 +49,9 @@ async function buildTX(label: string) {
 <template>
   <q-btn
     square
-    v-if="!vaultFound && useWrapperStore().selectedFactory?.publicKey"
     color="primary"
-    label="Create Vault"
-    @click="buildTX('Created vault')"
+    label="Create Metadata"
+    @click="buildTX('Create Metadata')"
   />
 </template>
 
