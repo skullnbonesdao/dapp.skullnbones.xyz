@@ -80,11 +80,9 @@ const confirmClose = ref(false);
             class="row justify-between"
           >
             <WrapperInfo />
-            <div class="q-gutter-y-md">
-              <WrapperVault />
-              <WrapperMetadata />
-            </div>
             <WrapperEdit />
+            <WrapperMetadata />
+            <WrapperVault />
           </q-card-section>
         </q-card>
       </q-tab-panel>
