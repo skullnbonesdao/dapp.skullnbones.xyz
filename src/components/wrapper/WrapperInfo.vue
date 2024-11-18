@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useWrapperStore } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 </script>
 
 <template>
   <q-card
-    v-if="useWrapperStore().selectedFactory?.account"
+    v-if="useWrapperStore().wrapperSelected?.account"
     flat
     bordered
-    style="width: 500px"
+    style="width: 450px"
   >
     <q-card-section class="">
       <div class="text-h4">Info</div>
@@ -17,10 +17,12 @@ import { useWrapperStore } from 'stores/globalWrapper';
     <q-card-section>
       <div class="col">
         <div class="col text-subtitle1 text-weight-thin">Publickey</div>
-        <div>{{ useWrapperStore().selectedFactory.publicKey }}</div>
+        <div class="text-subtitle2">
+          {{ useWrapperStore().wrapperSelected.publicKey }}
+        </div>
       </div>
       <div
-        v-for="info in Object.keys(useWrapperStore().selectedFactory?.account)"
+        v-for="info in Object.keys(useWrapperStore().wrapperSelected?.account)"
         :key="info"
         class="col"
       >
@@ -28,11 +30,11 @@ import { useWrapperStore } from 'stores/globalWrapper';
           {{ info.toUpperCase() }}
         </div>
         <div class="text-subtitle2" v-if="info == 'ratio'">
-          {{ useWrapperStore().selectedFactory.account[info][0] }} :
-          {{ useWrapperStore().selectedFactory.account[info][1] }}
+          {{ useWrapperStore().wrapperSelected.account[info][0] }} :
+          {{ useWrapperStore().wrapperSelected.account[info][1] }}
         </div>
         <div class="text-subtitle2" v-else>
-          {{ useWrapperStore().selectedFactory.account[info] }}
+          {{ useWrapperStore().wrapperSelected.account[info] }}
         </div>
       </div>
     </q-card-section>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { computed, ref, watch } from 'vue';
-import { useWrapperStore } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { useAccountStore } from 'stores/globalAccountStore';
 import { UNKNOWN_IMAGE } from 'stores/constants';
 import WrapperWrap from 'components/wrapper/WrapperWrap.vue';
@@ -60,7 +60,7 @@ async function loadAccountInfo() {
   <div class="q-pa-md">
     <q-table
       grid
-      :rows="useWrapperStore().getFactoriesByGroup"
+      :rows="useWrapperStore().wrapper"
       row-key="name"
       :filter="filter"
       hide-header

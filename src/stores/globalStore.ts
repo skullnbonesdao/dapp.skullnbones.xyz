@@ -6,7 +6,7 @@ import { I_TokenList, I_Tokens } from 'stores/I_TokenList';
 import { I_StarAtlasNFT } from 'stores/I_StarAtlasNFT';
 
 export const STARATLASAPI_URL = 'https://galaxy.staratlas.com/nfts';
-export const NULL_WALLET = '11111111111111111111111111111111';
+
 export const WHITELIST_CREATOR_WALLET = new PublicKey(
   'adm1rpWxyo8u9y2Q2wxxfqaVDLE2gD1N9PbZbbhokTP',
 );

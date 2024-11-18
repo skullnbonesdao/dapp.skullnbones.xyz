@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useWrapperStore } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 </script>
 
 <template>
@@ -7,7 +7,7 @@ import { useWrapperStore } from 'stores/globalWrapper';
     label="Select a group"
     square
     filled
-    v-model="useWrapperStore().selectedGroup"
+    v-model="useWrapperStore().groupSelected"
     :options="useWrapperStore().groups"
     :option-label="(option) => option?.account?.name"
   ></q-select>

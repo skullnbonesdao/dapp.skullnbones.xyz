@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import WrapperCreateVault from 'components/wrapper/WrapperCreateVault.vue';
-import { useWrapperStore } from '../../stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { useRPCStore } from 'stores/rpcStore';
 import { ref, watch } from 'vue';
 import { ParsedAccountData } from '@solana/web3.js';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 import WrapperTransferVaultOut from 'components/wrapper/WrapperTransferVaultOut.vue';
 import { useAccountStore } from '../../stores/globalAccountStore';
+import { findVaultAddress } from 'src/solana/wrapper/WrapperBuilder';
 
 const $q = useQuasar();
 
@@ -16,7 +17,7 @@ const vaultExists = ref(false);
 loadAccountInfo();
 
 watch(
-  () => useWrapperStore()?.selectedFactory?.account,
+  () => useWrapperStore()?.wrapperSelected?.account,
   async () => {
     await loadAccountInfo();
   },
@@ -25,7 +26,10 @@ watch(
 async function loadAccountInfo() {
   accountInfo.value = (
     await useRPCStore().connection.getParsedAccountInfo(
-      useWrapperStore().getVault,
+      findVaultAddress(
+        useWrapperStore().wrapperSelected.publicKey,
+        useWrapperStore().wrapperSelected.account.mintUnwrapped,
+      ),
     )
   ).value?.data as ParsedAccountData;
 
@@ -50,7 +54,7 @@ async function loadAccountInfo() {
       <div>
         <div class="col text-subtitle1 text-weight-thin">Mint:</div>
         <div class="text-subtitle2">
-          {{ useWrapperStore().selectedFactory.account?.mintUnwrapped }}
+          {{ useWrapperStore().wrapperSelected.account?.mintUnwrapped }}
         </div>
       </div>
 
@@ -61,7 +65,7 @@ async function loadAccountInfo() {
             useAccountStore().tokenList.find(
               (t) =>
                 t.address ==
-                useWrapperStore().selectedFactory.account?.mintUnwrapped.toString(),
+                useWrapperStore().wrapperSelected.account?.mintUnwrapped.toString(),
             )?.name
           }}
         </div>
@@ -76,7 +80,7 @@ async function loadAccountInfo() {
     </q-card-section>
 
     <q-card-section>
-      <WrapperVaultDonut :wrapper="useWrapperStore().selectedFactory" />
+      <WrapperVaultDonut :wrapper="useWrapperStore().wrapperSelected" />
     </q-card-section>
 
     <q-card-section class="q-gutter-y-md">

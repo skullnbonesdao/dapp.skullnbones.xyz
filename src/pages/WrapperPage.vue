@@ -2,15 +2,21 @@
 import { onMounted, ref } from 'vue';
 import WrapperGroupView from 'components/wrapper/WrapperGroupView.vue';
 import WrapperManage from 'components/wrapper/WrapperManage.vue';
-import { useWrapperStore } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import WrapperGroupSelect from 'components/wrapper/WrapperGroupSelect.vue';
 import WrapperTable from 'components/wrapper/WrapperTable.vue';
+import {
+  initWorkspaceAdapter,
+  useWorkspaceAdapter,
+} from 'src/solana/connector';
 
 const tabSelected = ref('manage');
 
+useWrapperStore();
+
 onMounted(async () => {
-  await useWrapperStore().load_groups();
-  await useWrapperStore().load_wrapper();
+  if (!useWorkspaceAdapter()) initWorkspaceAdapter();
+  await useWrapperStore().updateStore();
 });
 </script>
 
@@ -42,7 +48,7 @@ onMounted(async () => {
               label="reload"
               @click="
                 () => {
-                  useWrapperStore().load_wrapper();
+                  useWrapperStore().updateStore();
                 }
               "
             />
@@ -56,9 +62,10 @@ onMounted(async () => {
 
         <q-tab-panel name="manage" class="row q-gutter-x-md">
           <WrapperGroupView class="col-3" />
+
           <WrapperManage
             class="col"
-            v-if="useWrapperStore().selectedGroup?.account"
+            v-if="useWrapperStore().groupSelected?.account"
           />
         </q-tab-panel>
       </q-tab-panels>

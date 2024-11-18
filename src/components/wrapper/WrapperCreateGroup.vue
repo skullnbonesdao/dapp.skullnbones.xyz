@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { useWallet } from 'solana-wallets-vue';
-import { useWrapperStore, WRAPPER_FEE_ACCOUNT } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 
 const $q = useQuasar();
 

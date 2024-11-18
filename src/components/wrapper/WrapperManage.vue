@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import CreateWrapper from 'components/wrapper/WrapperCreate.vue';
-import { useWrapperStore, WrapperFactory } from 'stores/globalWrapper';
+import {
+  useWrapperStore,
+  WrapperAccount,
+} from 'src/solana/wrapper/WrapperStore';
 import WrapperInfo from 'components/wrapper/WrapperInfo.vue';
 import WrapperClose from 'components/wrapper/WrapperClose.vue';
 import { useAccountStore } from 'stores/globalAccountStore';
-import WrapperEdit from 'components/wrapper/WrapperEdit.vue';
+import WrapperSettings from 'components/wrapper/WrapperSettings.vue';
 import WrapperVault from 'components/wrapper/WrapperVault.vue';
 import WrapperMetadata from 'components/wrapper/WrapperMetadata.vue';
 
@@ -53,10 +56,10 @@ const confirmClose = ref(false);
                 label="Select a wrapper"
                 class="col"
                 filled
-                v-model="useWrapperStore().selectedFactory"
-                :options="useWrapperStore().factories"
+                v-model="useWrapperStore().wrapperSelected"
+                :options="useWrapperStore().wrapper"
                 :option-label="
-                  (option: WrapperFactory) => {
+                  (option: WrapperAccount) => {
                     return (
                       '[Wrapped] ' +
                       (useAccountStore().tokenList.find(
@@ -72,15 +75,15 @@ const confirmClose = ref(false);
               ></q-select>
             </div>
             <div class="text-caption text-grey text-right">
-              Total Found: {{ useWrapperStore().factories.length }}
+              Total Found: {{ useWrapperStore().wrapper.length }}
             </div>
           </q-card-section>
           <q-card-section
-            v-if="useWrapperStore().selectedFactory?.account"
+            v-if="useWrapperStore().wrapperSelected?.account"
             class="row justify-between"
           >
             <WrapperInfo />
-            <WrapperEdit />
+            <WrapperSettings />
             <WrapperMetadata />
             <WrapperVault />
           </q-card-section>
@@ -95,10 +98,10 @@ const confirmClose = ref(false);
                 label="Select a wrapper"
                 class="col"
                 filled
-                v-model="useWrapperStore().selectedFactory"
-                :options="useWrapperStore().factories"
+                v-model="useWrapperStore().wrapperSelected"
+                :options="useWrapperStore().wrapper"
                 :option-label="
-                  (option: WrapperFactory) => {
+                  (option: WrapperAccount) => {
                     return (
                       '[Wrapped] ' +
                       (useAccountStore().tokenList.find(
@@ -116,7 +119,7 @@ const confirmClose = ref(false);
             </div>
           </q-card-section>
           <q-card-section
-            v-if="useWrapperStore().selectedFactory?.account"
+            v-if="useWrapperStore().wrapperSelected?.account"
             class="row justify-between"
           >
           </q-card-section>

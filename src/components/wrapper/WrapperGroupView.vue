@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useWrapperStore } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import WrapperCreateGroup from 'components/wrapper/WrapperCreateGroup.vue';
 import WrapperGroupSelect from 'components/wrapper/WrapperGroupSelect.vue';
 import WrapperCloseGroup from 'components/wrapper/WrapperCloseGroup.vue';
@@ -48,21 +48,21 @@ const confirmClose = ref(false);
         <WrapperGroupSelect class="" />
         <q-card-section>
           <div
-            v-if="useWrapperStore().selectedGroup?.account"
+            v-if="useWrapperStore().groupSelected?.account"
             class="text-caption row"
           >
             <div style="width: 50px">ID</div>
             <div class="col text-right">
-              {{ useWrapperStore().selectedGroup?.publicKey }}
+              {{ useWrapperStore().groupSelected?.publicKey }}
             </div>
           </div>
           <div
-            v-if="useWrapperStore().selectedGroup?.account"
+            v-if="useWrapperStore().groupSelected?.account"
             class="text-caption row"
           >
             <div style="width: 50px">Owner</div>
             <div class="col text-orange-5 text-right">
-              {{ useWrapperStore().selectedGroup?.account?.owner }}
+              {{ useWrapperStore().groupSelected?.account?.owner }}
             </div>
           </div></q-card-section
         >
@@ -76,21 +76,21 @@ const confirmClose = ref(false);
 
         <q-card-section>
           <div
-            v-if="useWrapperStore().selectedGroup?.account"
+            v-if="useWrapperStore().groupSelected?.account"
             class="text-caption row"
           >
             <div style="width: 50px">ID:</div>
             <div class="col text-orange-5 text-right">
-              {{ useWrapperStore().selectedGroup?.publicKey }}
+              {{ useWrapperStore().groupSelected?.publicKey }}
             </div>
           </div>
           <div
-            v-if="useWrapperStore().selectedGroup?.account"
+            v-if="useWrapperStore().groupSelected?.account"
             class="text-caption row"
           >
             <div style="width: 50px">Owner:</div>
             <div class="col text-orange-5 text-right">
-              {{ useWrapperStore().selectedGroup?.account?.owner }}
+              {{ useWrapperStore().groupSelected?.account?.owner }}
             </div>
           </div>
         </q-card-section>

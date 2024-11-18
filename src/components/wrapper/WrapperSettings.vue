@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { useWrapperStore } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { useWallet } from 'solana-wallets-vue';
 import { useAccountStore } from 'stores/globalAccountStore';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
+import { handleTransaction } from 'src/solana/handleTransaction';
 
 const $q = useQuasar();
 
-const wrapper = useWrapperStore().selectedFactory?.account;
+const wrapper = useWrapperStore().wrapperSelected?.account;
 const allowWrap = ref();
 const allowUnwrap = ref();
 const onlyCreatorCanUnwrap = ref();
@@ -27,16 +28,16 @@ const ratio_b = ref();
 mapCurrentWrapperToParams();
 
 watch(
-  () => useWrapperStore()?.selectedFactory?.account,
+  () => useWrapperStore()?.wrapperSelected?.account,
   () => {
     mapCurrentWrapperToParams();
   },
 );
 
 function mapCurrentWrapperToParams() {
-  if (!useWrapperStore().selectedFactory?.account) return;
+  if (!useWrapperStore().wrapperSelected?.account) return;
 
-  const wrapper = useWrapperStore().selectedFactory?.account;
+  const wrapper = useWrapperStore().wrapperSelected?.account;
 
   allowWrap.value = wrapper!.allowWrap;
   allowUnwrap.value = wrapper?.allowUnwrap;
@@ -52,7 +53,8 @@ function mapCurrentWrapperToParams() {
 async function updateWrapper() {
   try {
     if (useWorkspaceAdapter()) {
-      const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
+      const tx = new Transaction();
+
       const params = {
         allowWrap: allowWrap.value,
         allowUnwrap: allowUnwrap.value,
@@ -65,7 +67,7 @@ async function updateWrapper() {
               useAccountStore().tokenList.find(
                 (t) =>
                   t.address ==
-                  useWrapperStore().selectedFactory?.account?.mintUnwrapped.toString(),
+                  useWrapperStore().wrapperSelected?.account?.mintUnwrapped.toString(),
               )?.decimals
           : null,
         admin: changeAdmin.value ? new PublicKey(admin.value) : null,
@@ -74,24 +76,23 @@ async function updateWrapper() {
           : null,
       } as any;
 
-      await pg_wrapper.methods
-        .edit(params)
-        .accountsPartial({
-          wrapper: useWrapperStore().selectedFactory?.publicKey,
-          signer: useWallet().publicKey.value,
-          mintUnwrapped:
-            useWrapperStore().selectedFactory?.account.mintUnwrapped,
-          whitelist: null,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .rpc();
+      tx.add(
+        await useWorkspaceAdapter()
+          ?.pg_wrapper.value.methods.edit(params)
+          .accountsPartial({
+            wrapper: useWrapperStore().wrapperSelected?.publicKey,
+            signer: useWallet().publicKey.value,
+            mintUnwrapped:
+              useWrapperStore().wrapperSelected?.account.mintUnwrapped,
+            whitelist: null,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .instruction(),
+      );
+      await handleTransaction(tx);
     }
 
-    $q.notify({
-      message: 'Created new wrapper factory successfully',
-      type: 'positive',
-    });
-    await useWrapperStore().load_wrapper();
+    await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);
     $q.notify({

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { useWrapperStore } from '../../stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { useRPCStore } from 'stores/rpcStore';
 import { ref, watch } from 'vue';
 import WrapperMetadataUpdate from 'components/wrapper/WrapperMetadataUpdate.vue';
 import * as Metadata from '@metaplex-foundation/mpl-token-metadata';
 import WrapperMetadataCreate from 'components/wrapper/WrapperMetadataCreate.vue';
+import { findMetadataAddress } from 'src/solana/wrapper/WrapperBuilder';
 
 const $q = useQuasar();
 
@@ -19,7 +20,7 @@ const metadataExists = ref(false);
 loadAccountInfo();
 
 watch(
-  () => useWrapperStore()?.selectedFactory?.account,
+  () => useWrapperStore()?.wrapperSelected?.account,
   async () => {
     await loadAccountInfo();
   },
@@ -27,7 +28,7 @@ watch(
 
 async function loadAccountInfo() {
   accountInfo.value = await useRPCStore().connection.getAccountInfo(
-    useWrapperStore().getMetadata,
+    findMetadataAddress(useWrapperStore().wrapperSelected.account.mintWrapped),
   );
 
   metadata.value = Metadata.deserializeMetadata(accountInfo.value);

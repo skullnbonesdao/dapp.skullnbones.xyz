@@ -2,7 +2,7 @@
 import { useQuasar } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { useWallet } from 'solana-wallets-vue';
-import { useWrapperStore } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 
 const props = defineProps({
   disabled: {
@@ -19,7 +19,7 @@ async function closeGroup() {
       await pg_wrapper.methods
         .closeGroup()
         .accountsPartial({
-          group: useWrapperStore().selectedGroup.publicKey,
+          group: useWrapperStore().groupSelected.publicKey,
           signer: useWallet().publicKey.value,
         })
         .rpc();
