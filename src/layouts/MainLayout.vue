@@ -71,7 +71,6 @@
         <q-select
           class="col"
           square
-          @update:model-value="() => update_selection()"
           v-model="useRPCStore().rpc_stored_name"
           :options="RPC_NETWORKS.map((rpc) => rpc.name)"
           label="RPC"
@@ -96,7 +95,7 @@ import { computed, ref, watch } from 'vue';
 import { RPC_NETWORKS } from 'stores/interfaces/RPC_Networks';
 import { useGlobalStore } from 'stores/globalStore';
 import { version } from 'src/../package.json';
-import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
+import { WalletMultiButton } from 'solana-wallets-vue';
 import { useWhitelist } from '../stores/globalWhitelist';
 import { useRPCStore } from 'stores/rpcStore';
 import { useQuasar } from 'quasar';
@@ -112,43 +111,43 @@ function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 
-function update_selection() {
-  useRPCStore().update_connection();
-  $q.notify({
-    type: 'default',
-    icon: 'info',
-    message: `RPC has been updated to: ${useRPCStore().rpc_stored_name}`,
-    timeout: 5000,
-  });
-}
-
 watch(
-  () => useWallet().publicKey.value,
-  async () => {
-    if (useWallet().publicKey.value) await useWhitelist().update_whitelist();
+  () => useRPCStore().rpc_stored_name,
+  () => {
+    useRPCStore().update_connection();
+
+    $q.notify({
+      timeout: 5000,
+      message: `Updated RPC to: ${useRPCStore().rpc_selected.name}`,
+      position: 'bottom-right',
+    });
   },
 );
 
 const links1 = computed(() => {
-  let data = [
-    { icon: 'home', text: 'Home', to: '/' },
-    { icon: 'diversity_3', text: 'Squads.so', to: '/squads' },
-    { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
-    { icon: 'lock_clock', text: 'StarAtlasLocker', to: '/staratlaslocker' },
-    { icon: 'inventory_2', text: 'Wrapper', to: '/wrapper' },
-  ];
-  if (useGlobalStore().is_admin || import.meta.env.DEV) {
-    data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
+  let data = [];
+  data.push({ icon: 'home', text: 'Home', to: '/' });
+
+  if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
+    data.push({ icon: 'work', text: 'Jobs', to: '/jobs' });
   }
 
   if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
     data.push({ icon: 'local_activity', text: 'Raffle', to: '/raffle' });
   }
 
-  if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
-    data.push({ icon: 'work', text: 'Jobs', to: '/jobs' });
-  }
+  data.push({ icon: 'inventory_2', text: 'Wrapper', to: '/wrapper' });
 
+  data.push({
+    icon: 'lock_clock',
+    text: 'StarAtlasLocker',
+    to: '/staratlaslocker',
+  });
+
+  data.push({ icon: 'diversity_3', text: 'Squads.so', to: '/squads' });
+  if (useGlobalStore().is_admin || import.meta.env.DEV) {
+    data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
+  }
   return data;
 });
 </script>

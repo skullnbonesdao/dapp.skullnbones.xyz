@@ -34,7 +34,7 @@ async function closeWrapper() {
           .instruction(),
       );
 
-      await handleTransaction(tx, 'Close Wrapper');
+      await handleTransaction(tx, 'Close WrapperInterface');
     }
 
     await useWrapperStore().updateStore();
@@ -53,7 +53,7 @@ async function closeWrapper() {
     :disable="disabled"
     square
     color="primary"
-    label="Close Wrapper"
+    label="Close WrapperInterface"
     @click="closeWrapper()"
   ></q-btn>
 </template>

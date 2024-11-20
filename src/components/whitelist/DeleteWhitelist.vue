@@ -55,8 +55,9 @@ async function remove_address_from_whitelist() {
 </script>
 
 <template>
-  <div class="row q-gutter-x-md">
+  <div class="row">
     <q-btn-dropdown
+      square
       color="primary"
       :label="whitelist_selected?.account.name ?? 'please select a whitelist'"
     >
@@ -75,7 +76,7 @@ async function remove_address_from_whitelist() {
       </q-list>
     </q-btn-dropdown>
 
-    <q-btn color="primary" @click="remove_address_from_whitelist()"
+    <q-btn square color="primary" @click="remove_address_from_whitelist()"
       >Delete</q-btn
     >
   </div>

@@ -58,9 +58,10 @@ async function remove_address_from_whitelist() {
 </script>
 
 <template>
-  <div class="row q-gutter-x-md">
+  <div class="row">
     <q-btn-dropdown
       color="primary"
+      square
       :label="whitelist_selected?.account.name ?? 'please select a whitelist'"
     >
       <q-list>
@@ -79,11 +80,15 @@ async function remove_address_from_whitelist() {
     </q-btn-dropdown>
     <q-input
       class="col"
-      outlined
+      filled
       v-model="input_address"
       label="Address to be removed"
     />
-    <q-btn color="primary" @click="remove_address_from_whitelist()"
+    <q-btn
+      :disable="input_address.length == 0"
+      square
+      color="primary"
+      @click="remove_address_from_whitelist()"
       >Remove</q-btn
     >
   </div>

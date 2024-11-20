@@ -14,6 +14,7 @@ import { useRPCStore } from 'stores/rpcStore';
 import { onMounted, ref, watch } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
 import { useAccountStore } from 'stores/globalAccountStore';
+import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
 
 const init = ref(false);
 
@@ -28,6 +29,7 @@ initWorkspaceAdapter();
 
 useQuasar().dark.set(true);
 onMounted(async () => {
+  await useWhitelistStore().updateStore();
   await useAccountStore().updateStore();
 
   init.value = true;

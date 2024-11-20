@@ -14,7 +14,7 @@ export interface Group {
   owner: PublicKey;
 }
 
-export interface Wrapper {
+export interface WrapperInterface {
   seed: BN;
   group: PublicKey;
   admin: PublicKey;

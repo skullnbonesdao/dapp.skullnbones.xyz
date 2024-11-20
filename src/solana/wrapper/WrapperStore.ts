@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useWorkspaceAdapter } from 'src/solana/connector';
-import { Group, Wrapper } from 'src/solana/wrapper/WrapperFinders';
+import { Group, WrapperInterface } from 'src/solana/wrapper/WrapperInterface';
 import { PublicKey } from '@solana/web3.js';
 
 export const RAFLLE_WHITELIST_NAME = 'Crew';
@@ -12,7 +12,7 @@ export interface GroupAccount {
 
 export interface WrapperAccount {
   publicKey: PublicKey;
-  account: Wrapper;
+  account: WrapperInterface;
 }
 
 export const useWrapperStore = defineStore('wrapperStore', {

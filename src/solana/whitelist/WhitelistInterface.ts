@@ -11,9 +11,3 @@ export interface WhitelistEntry {
   parent: PublicKey;
   whitelisted: PublicKey;
 }
-
-export class WhitelistBuilder {
-  constructor() {
-    return this;
-  }
-}

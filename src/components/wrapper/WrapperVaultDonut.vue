@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRPCStore } from 'stores/rpcStore';
 import { PublicKey } from '@solana/web3.js';
-import { findVaultAddress } from 'src/solana/wrapper/WrapperFinders';
+import { findVaultAddress } from 'src/solana/wrapper/WrapperInterface';
 
 const props = defineProps(['wrapper']);
 

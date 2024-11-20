@@ -20,7 +20,7 @@ const confirmClose = ref(false);
 <template>
   <q-card flat bordered>
     <q-card-section>
-      <div class="text-h5">Wrapper Factory</div>
+      <div class="text-h5">WrapperInterface Factory</div>
       <div class="text-caption text-grey">
         Small plates, salads & sandwiches in an intimate setting.
       </div>

@@ -8,7 +8,7 @@ import { ParsedAccountData } from '@solana/web3.js';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 import WrapperTransferVaultOut from 'components/wrapper/WrapperTransferVaultOut.vue';
 import { useAccountStore } from '../../stores/globalAccountStore';
-import { findVaultAddress } from 'src/solana/wrapper/WrapperFinders';
+import { findVaultAddress } from 'src/solana/wrapper/WrapperInterface';
 
 const $q = useQuasar();
 

@@ -8,7 +8,7 @@ import { useWorkspaceAdapter } from 'src/solana/connector';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { handle_wallet_connected } from 'components/messages/handle_wallet_connected';
 
-const whitelist_name = ref('My new whitelist');
+const whitelist_name = ref('');
 
 async function create_whitelist() {
   handle_wallet_connected();
@@ -47,9 +47,20 @@ async function create_whitelist() {
 </script>
 
 <template>
-  <div class="row q-gutter-x-md">
-    <q-input class="col" v-model="whitelist_name"></q-input>
-    <q-btn color="primary" @click="create_whitelist()">Create</q-btn>
+  <div class="row">
+    <q-input
+      label="New whitelist name"
+      filled
+      class="col"
+      v-model="whitelist_name"
+    ></q-input>
+    <q-btn
+      :disable="whitelist_name.length == 0"
+      square
+      color="primary"
+      @click="create_whitelist()"
+      >Create</q-btn
+    >
   </div>
 </template>
 

@@ -7,10 +7,10 @@ import { useRPCStore } from 'stores/rpcStore';
 
 import whitelistIDL from './whitelist/whitelist.0.30.1.json';
 import wrapperIDL from './wrapper/wrapper_factory.0.30.1.json';
-import raffleIDL from './wrapper/wrapper_factory.0.30.1.json';
+import raffleIDL from './raffle/raffle.0.30.1.json';
 
 import { Whitelist } from './whitelist/whitelist';
-import { Raffle } from './types/raffle';
+import { Raffle } from './raffle/raffle';
 import { WrapperFactory } from './wrapper/wrapper_factory';
 
 const preflightCommitment = 'processed';

@@ -3,7 +3,7 @@ import { useQuasar } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { findMetadataAddress } from 'src/solana/wrapper/WrapperFinders';
+import { findMetadataAddress } from 'src/solana/wrapper/WrapperInterface';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const props = defineProps(['name', 'symbol', 'uri']);

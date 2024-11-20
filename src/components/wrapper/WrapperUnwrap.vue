@@ -10,7 +10,7 @@ import { calcAmountToTransfer } from 'stores/globalStore';
 import { useAccountStore } from 'stores/globalAccountStore';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
-import { findATA } from 'src/solana/wrapper/WrapperFinders';
+import { findATA } from 'src/solana/wrapper/WrapperInterface';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 

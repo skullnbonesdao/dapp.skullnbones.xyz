@@ -4,7 +4,7 @@ import { useWorkspaceAdapter } from 'src/solana/connector';
 import {
   Whitelist,
   WhitelistEntry,
-} from 'src/solana/whitelist/WhitelistBuilder';
+} from 'src/solana/whitelist/WhitelistInterface';
 
 export const RAFLLE_WHITELIST_NAME = 'Crew';
 
@@ -25,7 +25,7 @@ export const useWhitelistStore = defineStore('whitelistStore', {
   },
   actions: {
     async updateStore() {
-      const pg_whitelist = useWorkspaceAdapter()?.programs.pg_whitelist.value;
+      const pg_whitelist = useWorkspaceAdapter()!.pg_whitelist.value;
 
       this.whitelists = pg_whitelist?.account.whitelist.all() as never;
       this.whitelistEntries =

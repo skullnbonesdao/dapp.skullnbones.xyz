@@ -37,7 +37,7 @@ async function createNewGroup() {
           .instruction(),
       );
 
-      if ((await handleTransaction(tx, '[Wrapper] group create')) == 0)
+      if ((await handleTransaction(tx, '[WrapperInterface] group create')) == 0)
         await useWrapperStore().updateStore();
     }
   } catch (err) {

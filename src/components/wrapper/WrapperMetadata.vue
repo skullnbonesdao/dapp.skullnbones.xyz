@@ -6,7 +6,7 @@ import { ref, watch } from 'vue';
 import WrapperMetadataUpdate from 'components/wrapper/WrapperMetadataUpdate.vue';
 import * as Metadata from '@metaplex-foundation/mpl-token-metadata';
 import WrapperMetadataCreate from 'components/wrapper/WrapperMetadataCreate.vue';
-import { findMetadataAddress } from 'src/solana/wrapper/WrapperFinders';
+import { findMetadataAddress } from 'src/solana/wrapper/WrapperInterface';
 
 const $q = useQuasar();
 

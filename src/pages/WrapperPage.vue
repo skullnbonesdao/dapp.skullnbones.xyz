@@ -25,7 +25,7 @@ onMounted(async () => {
     <q-card>
       <q-card-section class="row items-center q-gutter-x-md">
         <q-icon name="inventory_2" size="md" />
-        <div class="col text-h6">Wrapper</div>
+        <div class="col text-h6">WrapperInterface</div>
       </q-card-section>
       <q-separator />
       <q-tabs
