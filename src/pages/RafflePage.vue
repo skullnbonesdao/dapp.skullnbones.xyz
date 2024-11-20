@@ -1,57 +1,17 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { useGlobalStore } from 'stores/globalStore';
 import RaffleGrid from 'components/raffle/RaffleGrid.vue';
 import RaffleCreateRaffle from 'components/raffle/RaffleCreateRaffle.vue';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
-import { useRaffleStore } from 'stores/globalRaffle';
-import { useGlobalWalletStore } from 'stores/globalWallet';
+import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 
 const tab_selected = ref('raffle');
 
 onMounted(async () => {
-  await useGlobalWalletStore().update_accounts();
-  if (!useRaffleStore().raffles.length) await useRaffleStore().update_raffles();
+  await useRaffleStore().updateStore();
 });
-
-onBeforeUnmount(() => {
-  clearInterval(task_id.value);
-});
-
-watch(
-  () => useWallet().publicKey.value,
-  async () => {
-    await useGlobalWalletStore().update_accounts();
-    await useRaffleStore().update_raffles();
-  },
-);
-
-const task_id = ref();
-
-async function asyncRaffleUpdateJob() {
-  await useRaffleStore().update_raffles();
-  console.log('Raffles updated!');
-}
-
-function scheduleRaffleUpdateJob(interval: number) {
-  task_id.value = setInterval(async () => {
-    await asyncRaffleUpdateJob();
-  }, interval);
-}
-
-//scheduleRaffleUpdateJob(60000);
-
-// watch(
-//   () => tab_selected.value,
-//   () => {
-//     if (tab_selected.value == 'raffle') {
-//       scheduleRaffleUpdateJob(60000);
-//     } else {
-//       clearInterval(task_id.value);
-//     }
-//   },
-// );
 </script>
 
 <template>
@@ -78,25 +38,18 @@ function scheduleRaffleUpdateJob(interval: number) {
         flat
         class="bg-dark"
         icon="refresh"
-        @click="
-          useRaffleStore()
-            .update_raffles()
-            .then(() => {})
-        "
+        @click="useRaffleStore().updateStore()"
       />
     </div>
 
-    <div v-if="useRaffleStore().is_loading" class="row">
+    <div v-if="useRaffleStore().raffles.length == 0" class="row">
       <q-space />
       <q-spinner-cube class="row" color="primary" size="10rem" />
       <q-space />
     </div>
-    <div
-      v-if="useRaffleStore().raffles && !useRaffleStore().is_loading"
-      class="q-mx-md"
-    >
+    <div v-if="useRaffleStore().raffles.length > 0" class="q-mx-md">
       <RaffleGrid
-        :raffles="useRaffleStore().get_running_raffles"
+        :raffles="useRaffleStore().getRunningRaffles"
         :is_admin="false"
         v-if="tab_selected === 'raffle'"
       />

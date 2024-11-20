@@ -25,13 +25,17 @@ export const useWhitelistStore = defineStore('whitelistStore', {
   },
   actions: {
     async updateStore() {
-      const pg_whitelist = useWorkspaceAdapter()!.pg_whitelist.value;
-
-      this.whitelists = pg_whitelist?.account.whitelist.all() as never;
-      this.whitelistEntries =
-        (await pg_whitelist?.account.whitelistEntry.all()) as never;
-
-      console.log('[Updated] WhitelistStore');
+      if (useWorkspaceAdapter())
+        try {
+          const pg_whitelist = useWorkspaceAdapter()?.pg_whitelist.value;
+          this.whitelists =
+            (await pg_whitelist?.account.whitelist.all()) as any;
+          this.whitelistEntries =
+            (await pg_whitelist?.account.whitelistEntry.all()) as any;
+          console.log('[Updated] WhitelistStore');
+        } catch (err) {
+          console.error(err);
+        }
     },
   },
 });

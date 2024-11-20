@@ -37,10 +37,8 @@ const pagination = ref({
 <template>
   <q-table
     grid
-    :card-container-class="cardContainerClass"
     :rows="props.raffles"
     row-key="name"
-    :filter="filter"
     hide-header
     v-model:pagination="pagination"
     :rows-per-page-options="rowsPerPageOptions"

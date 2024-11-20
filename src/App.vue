@@ -18,19 +18,19 @@ import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
 
 const init = ref(false);
 
-useRPCStore();
-useRPCStore().update_connection();
-
 useGlobalStore();
-
-//New implementation
+useRPCStore();
+useWhitelistStore();
+useAccountStore();
 useWorkspaceAdapter();
-initWorkspaceAdapter();
+
+useRPCStore().update_connection();
 
 useQuasar().dark.set(true);
 onMounted(async () => {
-  await useWhitelistStore().updateStore();
+  initWorkspaceAdapter();
   await useAccountStore().updateStore();
+  await useWhitelistStore().updateStore();
 
   init.value = true;
 });
