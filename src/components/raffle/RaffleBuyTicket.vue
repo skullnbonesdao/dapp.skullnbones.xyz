@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import {
-  RAFLLE_WHITELIST_NAME,
-  WHITELIST_CREATOR_WALLET,
-} from 'stores/globalStore';
 import { ref } from 'vue';
 import * as anchor from '@coral-xyz/anchor';
-import { useWallet } from 'solana-wallets-vue';
 import { Notify } from 'quasar';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { handle_confirmation } from 'components/messages/handle_confirmation';
-
-import { useRaffleStore } from 'stores/globalRaffle';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useGlobalWalletStore } from 'stores/globalWallet';
 import { useRPCStore } from 'stores/rpcStore';
+import { Transaction } from '@solana/web3.js';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
+import { useAccountStore } from '../../stores/globalAccountStore';
+import { findWhitelistAddress } from 'src/solana/whitelist/WhitelistInterface';
 
 const input_raffle_ticket_amount = ref();
 
 const props = defineProps(['raffle', 'tickets']);
 
 async function buy_raffle_ticket() {
-  //await useRaffleStore().update_raffles();
+  const tx = new Transaction();
   await useGlobalWalletStore().update_accounts();
 
   const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
@@ -30,74 +28,39 @@ async function buy_raffle_ticket() {
   );
 
   const ata = (
-    await useRPCStore().connection.getParsedTokenAccountsByOwner(
-      useWallet().publicKey.value!,
-      { mint: ticketMint },
-    )
+    await useRPCStore().connection.getParsedTokenAccountsByOwner(getSigner(), {
+      mint: ticketMint,
+    })
   ).value[0].pubkey;
 
   const raffle = new anchor.web3.PublicKey(props.raffle.publicKey.toString());
-
-  let [entrants, entrants_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('entrants'), raffle.toBytes()],
-    pg_raffle?.programId,
-  );
-
-  let [proceeds, proceeds_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('proceeds'), raffle.toBytes()],
-    pg_raffle?.programId,
-  );
-
-  let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      WHITELIST_CREATOR_WALLET.toBuffer(),
-      anchor.utils.bytes.utf8.encode(RAFLLE_WHITELIST_NAME),
-    ],
-    pg_whitelist?.programId,
-  );
-
-  const [whitelistEntry, entryBump] =
-    anchor.web3.PublicKey.findProgramAddressSync(
-      [useWallet().publicKey.value!.toBytes(), whitelist.toBytes()],
-      pg_whitelist?.programId,
-    );
+  let whitelist = findWhitelistAddress();
 
   try {
-    const signature = await pg_raffle?.methods
-      .buyTickets(new anchor.BN(input_raffle_ticket_amount.value))
-      .accountsPartial({
-        signer: useWallet().publicKey.value,
-        raffle: raffle,
-        entrant: useWallet().publicKey.value,
-        ticketsMint: ticketMint,
-        from: ata,
+    tx.add(
+      await pg_raffle?.methods
+        .buyTickets(new anchor.BN(input_raffle_ticket_amount.value))
+        .accountsPartial({
+          signer: getSigner(),
+          raffle: raffle,
+          entrant: getSigner(),
+          ticketsMint: ticketMint,
+          from: ata,
+          whitelist: whitelist,
+          whitelistEntry: anchor.web3.PublicKey.findProgramAddressSync(
+            [getSigner()?.toBytes(), whitelist.toBytes()],
+            pg_whitelist?.programId,
+          )[0],
+          whitelistProgram: pg_whitelist?.programId,
+        })
+        .instruction(),
+    );
 
-        whitelist: whitelist,
-        whitelistEntry: anchor.web3.PublicKey.findProgramAddressSync(
-          [useWallet().publicKey.value!.toBytes(), whitelist.toBytes()],
-          pg_whitelist?.programId,
-        )[0],
-        whitelistProgram: pg_whitelist?.programId,
-      })
-      .rpc();
-    console.log(signature);
-
-    if (await handle_confirmation(signature)) {
-      await useRaffleStore().send_buy_message_discord(
-        props.raffle.account.name.toString(),
-        `${
-          parseInt(props.tickets.sold.toString()) +
-          parseInt(input_raffle_ticket_amount.value.toString())
-        }/${props.tickets?.total}`,
-        input_raffle_ticket_amount.value,
-      );
-
-      await useRaffleStore().update_raffles();
-      await useGlobalWalletStore().update_accounts();
-    }
+    await handleTransaction(tx, '[Raffle] buy ticket');
+    await useRaffleStore().updateStore();
   } catch (err) {
     Notify.create({
-      color: 'red',
+      color: 'danger',
       message: `${err}`,
       timeout: 5000,
     });
@@ -121,6 +84,7 @@ async function buy_raffle_ticket() {
       </q-input>
       <q-btn
         square
+        :disable="!input_raffle_ticket_amount"
         color="primary"
         icon="send"
         @click="
@@ -130,12 +94,31 @@ async function buy_raffle_ticket() {
         "
       />
     </div>
-    <p class="text-caption text-right text-weight-thin">
-      0.001◎ fee
-      <q-tooltip anchor="bottom right" self="top middle">
-        cover deployment costs
-      </q-tooltip>
-    </p>
+    <div class="row">
+      <div class="col row q-gutter-x-xs">
+        <p class="text-weight-light">Available:</p>
+        <p>
+          {{
+            useAccountStore().accounts?.find(
+              (acc) => acc.mint == raffle.account.ticketMint.toString(),
+            )?.uiAmount
+          }}
+        </p>
+        <p>
+          {{
+            useAccountStore().accounts?.find(
+              (acc) => acc.mint == raffle.account.ticketMint.toString(),
+            )?.info.symbol
+          }}
+        </p>
+      </div>
+      <p class="text-caption text-right text-weight-thin">
+        0.001◎ fee
+        <q-tooltip anchor="bottom right" self="top middle">
+          cover deployment costs
+        </q-tooltip>
+      </p>
+    </div>
   </div>
 </template>
 

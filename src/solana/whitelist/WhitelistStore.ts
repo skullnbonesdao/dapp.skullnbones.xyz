@@ -27,9 +27,9 @@ export const useWhitelistStore = defineStore('whitelistStore', {
     async updateStore() {
       if (useWorkspaceAdapter())
         try {
-          const pg_whitelist = useWorkspaceAdapter()?.pg_whitelist.value;
-          this.whitelists =
-            (await pg_whitelist?.account.whitelist.all()) as any;
+          const pg_whitelist = useWorkspaceAdapter()!.pg_whitelist.value;
+          this.whitelists = (await pg_whitelist.account.whitelist.all()) as any;
+
           this.whitelistEntries =
             (await pg_whitelist?.account.whitelistEntry.all()) as any;
           console.log('[Updated] WhitelistStore');

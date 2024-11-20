@@ -20,7 +20,7 @@ export const handleTransaction = async (
 
   try {
     notif({
-      caption: `Waiting for user to sign...`,
+      caption: 'Waiting for user to sign...',
     });
 
     const signature = await sendTransaction(

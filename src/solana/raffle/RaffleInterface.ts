@@ -1,5 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
+import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
+import raffleIDL from 'src/solana/raffle/raffle.0.30.1.json';
+
+const ID = new PublicKey(raffleIDL.address);
 
 export interface IRaffle {
   seed: BN;
@@ -20,4 +24,20 @@ export interface IRaffle {
   randomness: any;
   use_whitelist: any;
   whitelist: any;
+}
+
+export function findEntransAddress(raffle: PublicKey) {
+  const entrants = anchor.web3.PublicKey.findProgramAddressSync(
+    [anchor.utils.bytes.utf8.encode('entrants'), raffle.toBytes()],
+    ID,
+  );
+  return entrants[0];
+}
+
+export function findProceedsAddress(raffle: PublicKey) {
+  const proceeds = anchor.web3.PublicKey.findProgramAddressSync(
+    [anchor.utils.bytes.utf8.encode('proceeds'), raffle.toBytes()],
+    ID,
+  );
+  return proceeds[0];
 }
