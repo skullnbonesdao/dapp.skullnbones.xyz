@@ -6,7 +6,7 @@ import { ref, watch } from 'vue';
 import WrapperMetadataUpdate from 'components/wrapper/WrapperMetadataUpdate.vue';
 import * as Metadata from '@metaplex-foundation/mpl-token-metadata';
 import WrapperMetadataCreate from 'components/wrapper/WrapperMetadataCreate.vue';
-import { findMetadataAddress } from 'src/solana/wrapper/WrapperBuilder';
+import { findMetadataAddress } from 'src/solana/wrapper/WrapperFinders';
 
 const $q = useQuasar();
 
@@ -42,44 +42,40 @@ async function loadAccountInfo() {
 </script>
 
 <template>
-  <q-card bordered flat style="max-width: 500px">
-    <q-card-section class="">
-      <div class="text-h4">Metadata</div>
-    </q-card-section>
-    <q-separator />
-
+  <q-card flat>
     <q-card-section>
-      <div>
-        <div class="col text-subtitle1 text-weight-thin">Address:</div>
+      <div class="row items-center">
+        <div class="col text-subtitle1 text-weight-thin">Address</div>
         <div class="text-subtitle2">
-          {{ useWrapperStore().getMetadata }}
+          {{ findMetadataAddress(useWrapperStore().wrapperSelected.publicKey) }}
         </div>
       </div>
     </q-card-section>
 
-    <q-card-section class="col q-gutter-y-md">
-      <div>
-        <q-input label="Name" filled v-model="metadataName" />
-      </div>
-      <div>
-        <q-input label="Symbol" filled v-model="metadataSymbol" />
-      </div>
-      <div>
-        <q-input label="Image URI" filled v-model="metadataURI" />
+    <q-card-section class="col" v-if="metadataExists">
+      <div class="row">
+        <q-input square label="Name" filled v-model="metadataName" />
+        <q-separator vertical />
+        <q-input square label="Symbol" filled v-model="metadataSymbol" />
+        <q-separator vertical />
+        <q-input
+          square
+          label="Image URI"
+          class="col"
+          filled
+          v-model="metadataURI"
+        />
+
+        <WrapperMetadataUpdate
+          :name="metadataName"
+          :symbol="metadataSymbol"
+          :uri="metadataURI"
+        />
       </div>
     </q-card-section>
 
-    <q-card-section class="row q-gutter-y-md">
-      <WrapperMetadataUpdate
-        v-if="metadataExists"
-        class="col"
-        :name="metadataName"
-        :symbol="metadataSymbol"
-        :uri="metadataURI"
-      />
+    <q-card-section class="row justify-end" v-else>
       <WrapperMetadataCreate
-        v-else
-        class="col"
         :name="metadataName"
         :symbol="metadataSymbol"
         :uri="metadataURI"

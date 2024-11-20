@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { useWallet } from 'solana-wallets-vue';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
+import { Transaction } from '@solana/web3.js';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const props = defineProps({
   disabled: {
@@ -14,21 +16,21 @@ const $q = useQuasar();
 async function closeGroup() {
   try {
     if (useWorkspaceAdapter()) {
+      const tx = new Transaction();
       const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
-      await pg_wrapper.methods
-        .closeGroup()
-        .accountsPartial({
-          group: useWrapperStore().groupSelected.publicKey,
-          signer: useWallet().publicKey.value,
-        })
-        .rpc();
-    }
+      tx.add(
+        await pg_wrapper.methods
+          .closeGroup()
+          .accountsPartial({
+            group: useWrapperStore().groupSelected.publicKey,
+            signer: getSigner(),
+          })
+          .instruction(),
+      );
 
-    $q.notify({
-      message: 'Group closed successfully',
-      type: 'positive',
-    });
+      await handleTransaction(tx, 'Close Group');
+    }
   } catch (err) {
     $q.notify({
       message: err.message,

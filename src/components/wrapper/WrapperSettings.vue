@@ -4,11 +4,11 @@ import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { useWallet } from 'solana-wallets-vue';
 import { useAccountStore } from 'stores/globalAccountStore';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 import { handleTransaction } from 'src/solana/handleTransaction';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const $q = useQuasar();
 
@@ -81,7 +81,7 @@ async function updateWrapper() {
           ?.pg_wrapper.value.methods.edit(params)
           .accountsPartial({
             wrapper: useWrapperStore().wrapperSelected?.publicKey,
-            signer: useWallet().publicKey.value,
+            signer: getSigner(),
             mintUnwrapped:
               useWrapperStore().wrapperSelected?.account.mintUnwrapped,
             whitelist: null,
@@ -104,70 +104,66 @@ async function updateWrapper() {
 </script>
 
 <template>
-  <q-card bordered flat style="width: 500px">
-    <q-card-section class="">
-      <div class="text-h4">Settings</div>
-    </q-card-section>
-    <q-separator />
-
-    <q-card-section class="row items-center">
-      <div class="col text-subtitle1">Allow wrap</div>
-      <q-checkbox v-model="allowWrap" />
-    </q-card-section>
-    <q-card-section class="row items-center">
-      <div class="col text-subtitle1">Allow unwrap</div>
-      <q-checkbox v-model="allowUnwrap" />
-    </q-card-section>
-    <q-card-section class="row items-center">
-      <div class="col text-subtitle1">Only creator can unwrap</div>
-      <q-checkbox v-model="onlyCreatorCanUnwrap" />
-    </q-card-section>
-
-    <q-card-section class="row items-center">
-      <div class="col text-subtitle1">Use whitelist</div>
-      <q-checkbox v-model="useWhitelist" />
-    </q-card-section>
-
+  <q-card flat>
     <q-card-section>
       <div class="row items-center">
-        <div class="col text-subtitle1">Use Limit</div>
-        <q-checkbox v-model="useLimit" />
+        <div class="col text-subtitle1">Allow wrap</div>
+        <q-checkbox v-model="allowWrap" />
       </div>
-      <div v-if="useLimit">
-        <q-input filled square v-model="amountAbleToWrap" />
-      </div>
-    </q-card-section>
-    <q-card-section>
       <div class="row items-center">
-        <div class="col text-subtitle1">Change Admin</div>
-        <q-checkbox v-model="changeAdmin" />
+        <div class="col text-subtitle1">Allow unwrap</div>
+        <q-checkbox v-model="allowUnwrap" />
       </div>
-      <div v-if="changeAdmin">
-        <q-input filled square v-model="admin" />
-      </div>
-    </q-card-section>
-    <q-card-section>
       <div class="row items-center">
-        <div class="col text-subtitle1">Change Ratio</div>
-        <q-checkbox v-model="changeRatio" />
+        <div class="col text-subtitle1">Only creator can unwrap</div>
+        <q-checkbox v-model="onlyCreatorCanUnwrap" />
       </div>
-      <div v-if="changeRatio" class="row items-center">
-        <q-input filled square v-model="ratio_a" type="number" />
-        <q-icon size="md" name="swap_horiz" />
-        <q-input filled square v-model="ratio_b" type="number" />
-      </div>
-    </q-card-section>
-    <q-separator />
 
-    <q-card-actions class="absolute-bottom">
+      <div class="row items-center">
+        <div class="col text-subtitle1">Use whitelist</div>
+        <q-checkbox v-model="useWhitelist" />
+      </div>
+
+      <div>
+        <div class="row items-center">
+          <div class="col text-subtitle1">Use Limit</div>
+          <q-checkbox v-model="useLimit" />
+        </div>
+        <div v-if="useLimit">
+          <q-input filled square v-model="amountAbleToWrap" />
+        </div>
+      </div>
+      <div>
+        <div class="row items-center">
+          <div class="col text-subtitle1">Change Admin</div>
+          <q-checkbox v-model="changeAdmin" />
+        </div>
+        <div v-if="changeAdmin">
+          <q-input filled square v-model="admin" />
+        </div>
+      </div>
+      <div>
+        <div class="row items-center">
+          <div class="col text-subtitle1">Change Ratio</div>
+          <q-checkbox v-model="changeRatio" />
+        </div>
+        <div v-if="changeRatio" class="row items-center">
+          <q-input filled square v-model="ratio_a" type="number" />
+          <q-icon size="md" name="swap_horiz" />
+          <q-input filled square v-model="ratio_b" type="number" />
+        </div>
+      </div>
+    </q-card-section>
+
+    <q-card-section class="row justify-end">
       <q-btn
         square
-        class="full-width"
+        class=""
         color="primary"
-        label="Update"
+        label="Update settings"
         @click="updateWrapper()"
       ></q-btn>
-    </q-card-actions>
+    </q-card-section>
   </q-card>
 </template>
 

@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRPCStore } from 'stores/rpcStore';
 import { PublicKey } from '@solana/web3.js';
-import { findVaultAddress } from 'src/solana/wrapper/WrapperBuilder';
+import { findVaultAddress } from 'src/solana/wrapper/WrapperFinders';
 
 const props = defineProps(['wrapper']);
 
@@ -10,8 +10,8 @@ const total = ref(0);
 const vault = ref(0);
 
 async function load() {
-  total.value = (await getTotalSupply()) ?? 0;
-  vault.value = (await getBalance()) ?? 0;
+  total.value = (await getTotalSupply()) * props.wrapper.account.ratio[0] ?? 0;
+  vault.value = (await getBalance()) * props.wrapper.account.ratio[1] ?? 0;
 }
 
 async function getTotalSupply() {

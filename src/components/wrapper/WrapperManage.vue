@@ -80,12 +80,43 @@ const confirmClose = ref(false);
           </q-card-section>
           <q-card-section
             v-if="useWrapperStore().wrapperSelected?.account"
-            class="row justify-between"
+            class="row full-width"
           >
-            <WrapperInfo />
-            <WrapperSettings />
-            <WrapperMetadata />
-            <WrapperVault />
+            <q-list bordered class="rounded-borders full-width">
+              <q-expansion-item
+                expand-separator
+                class="text-h5"
+                icon="info"
+                label="Info"
+              >
+                <WrapperInfo />
+              </q-expansion-item>
+              <q-expansion-item
+                expand-separator
+                class="text-h5"
+                icon="settings"
+                label="Settings"
+              >
+                <WrapperSettings />
+              </q-expansion-item>
+              <q-expansion-item
+                expand-separator
+                class="text-h5"
+                icon="note_add"
+                label="Metadata"
+              >
+                <WrapperMetadata />
+              </q-expansion-item>
+              <q-expansion-item
+                default-opened
+                expand-separator
+                class="text-h5"
+                icon="inventory_2"
+                label="Vault"
+              >
+                <WrapperVault />
+              </q-expansion-item>
+            </q-list>
           </q-card-section>
         </q-card>
       </q-tab-panel>
@@ -125,10 +156,10 @@ const confirmClose = ref(false);
           </q-card-section>
         </q-card>
         <q-card-section class="row items-center">
+          <q-checkbox color="red" v-model="confirmClose" />
           <div class="text-h6 text-red-6 col">
             I know what im doing i want to close a wrapper
           </div>
-          <q-checkbox color="red" v-model="confirmClose" />
         </q-card-section>
       </q-tab-panel>
     </q-tab-panels>

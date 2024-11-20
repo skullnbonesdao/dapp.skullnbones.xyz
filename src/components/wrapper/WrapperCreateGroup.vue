@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { useWallet } from 'solana-wallets-vue';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
+import { WRAPPER_FEE_ACCOUNT } from 'src/solana/wrapper/constants';
+import { Transaction } from '@solana/web3.js';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const $q = useQuasar();
 
@@ -12,27 +15,31 @@ const groupName = ref<string>('');
 async function createNewGroup() {
   try {
     if (useWorkspaceAdapter()) {
+      const tx = new Transaction();
       const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
       if (groupName.value == '') {
-        $q.notify('Invalid group name');
+        $q.notify({
+          message: 'Invalid group name',
+          color: 'info',
+          position: 'bottom-right',
+        });
         return;
       }
-      await pg_wrapper.methods
-        .initializeGroup(groupName.value as any)
-        .accountsPartial({
-          signer: useWallet().publicKey.value,
-          fee: WRAPPER_FEE_ACCOUNT,
-        })
-        .rpc();
+
+      tx.add(
+        await pg_wrapper.methods
+          .initializeGroup(groupName.value as any)
+          .accountsPartial({
+            signer: getSigner(),
+            fee: WRAPPER_FEE_ACCOUNT,
+          })
+          .instruction(),
+      );
+
+      if ((await handleTransaction(tx, '[Wrapper] group create')) == 0)
+        await useWrapperStore().updateStore();
     }
-
-    $q.notify({
-      message: 'Group created successfully',
-      type: 'positive',
-    });
-
-    await useWrapperStore().load_groups();
   } catch (err) {
     $q.notify({
       message: err.message,

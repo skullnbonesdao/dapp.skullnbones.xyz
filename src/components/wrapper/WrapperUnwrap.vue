@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { getATA, useWrapperStore } from 'stores/globalWrapper';
+
 import { calcAmountToTransfer } from 'stores/globalStore';
 import { useAccountStore } from 'stores/globalAccountStore';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { findATA } from 'src/solana/wrapper/WrapperFinders';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const $q = useQuasar();
 const amountToWrap = ref(1);
@@ -18,7 +22,9 @@ const props = defineProps(['wrapper']);
 async function buildTX(label: string) {
   try {
     if (useWorkspaceAdapter()) {
+      const tx = new Transaction();
       const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
+
       const wrapper = props.wrapper;
 
       const amount_to_transfer = new anchor.BN(
@@ -31,35 +37,35 @@ async function buildTX(label: string) {
         ),
       );
 
-      await pg_wrapper.methods
-        .unwrap(amount_to_transfer)
-        .accountsPartial({
-          signer: useWallet().publicKey.value,
-          wrapper: wrapper.publicKey,
-          mintUnwrapped: wrapper.account.mintUnwrapped,
-          signerUnwrapped: new PublicKey(
-            useAccountStore().accounts.find(
-              (acc) =>
-                acc.mint.toString() == wrapper.account.mintUnwrapped.toString(),
-            )?.pubkey ?? '',
-          ),
-          signerWrapped: getATA(
-            useWallet().publicKey.value!.toString(),
-            props.wrapper.account.mintWrapped.toString(),
-          ),
+      tx.add(
+        await pg_wrapper.methods
+          .unwrap(amount_to_transfer)
+          .accountsPartial({
+            signer: getSigner(),
+            wrapper: wrapper.publicKey,
+            mintUnwrapped: wrapper.account.mintUnwrapped,
+            signerUnwrapped: new PublicKey(
+              useAccountStore().accounts.find(
+                (acc) =>
+                  acc.mint.toString() ==
+                  wrapper.account.mintUnwrapped.toString(),
+              )?.pubkey ?? '',
+            ),
+            signerWrapped: findATA(
+              useWallet().publicKey.value!.toString(),
+              props.wrapper.account.mintWrapped.toString(),
+            ),
 
-          tokenProgram: TOKEN_PROGRAM_ID,
-          whitelist: null,
-          whitelistEntry: null,
-        })
-        .rpc();
+            tokenProgram: TOKEN_PROGRAM_ID,
+            whitelist: null,
+            whitelistEntry: null,
+          })
+          .instruction(),
+      );
+      await handleTransaction(tx, 'Unwrap tokens');
     }
 
-    $q.notify({
-      message: `${label} successful!`,
-      type: 'positive',
-    });
-    await useWrapperStore().load_wrapper();
+    await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);
     $q.notify({

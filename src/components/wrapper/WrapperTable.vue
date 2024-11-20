@@ -6,8 +6,6 @@ import { useAccountStore } from 'stores/globalAccountStore';
 import { UNKNOWN_IMAGE } from 'stores/constants';
 import WrapperWrap from 'components/wrapper/WrapperWrap.vue';
 import WrapperUnwrap from 'components/wrapper/WrapperUnwrap.vue';
-import { useRPCStore } from 'stores/rpcStore';
-import { ParsedAccountData } from '@solana/web3.js';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 
 const rows = [];
@@ -42,18 +40,6 @@ watch(
 const rowsPerPageOptions = computed(() => {
   return $q.screen.gt.xs ? ($q.screen.gt.sm ? [3, 6, 9] : [3, 6]) : [3];
 });
-
-const accountInfo = ref();
-
-loadAccountInfo();
-
-async function loadAccountInfo() {
-  accountInfo.value = (
-    await useRPCStore().connection.getParsedAccountInfo(
-      useWrapperStore().getVault,
-    )
-  ).value?.data as ParsedAccountData;
-}
 </script>
 
 <template>

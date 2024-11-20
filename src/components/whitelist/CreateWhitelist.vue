@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Connection, SystemProgram } from '@solana/web3.js';
+import { SystemProgram } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
 import * as anchor from '@coral-xyz/anchor';
 import { Notify } from 'quasar';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
 import { handle_wallet_connected } from 'components/messages/handle_wallet_connected';
 

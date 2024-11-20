@@ -8,7 +8,7 @@ import { ParsedAccountData } from '@solana/web3.js';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 import WrapperTransferVaultOut from 'components/wrapper/WrapperTransferVaultOut.vue';
 import { useAccountStore } from '../../stores/globalAccountStore';
-import { findVaultAddress } from 'src/solana/wrapper/WrapperBuilder';
+import { findVaultAddress } from 'src/solana/wrapper/WrapperFinders';
 
 const $q = useQuasar();
 
@@ -38,28 +38,30 @@ async function loadAccountInfo() {
 </script>
 
 <template>
-  <q-card bordered flat style="max-width: 500px">
-    <q-card-section class="">
-      <div class="text-h4">Vault</div>
-    </q-card-section>
+  <q-card flat>
     <q-separator />
 
     <q-card-section class="col">
-      <div>
-        <div class="col text-subtitle1 text-weight-thin">Address:</div>
+      <div class="row items-center">
+        <div class="col text-subtitle1 text-weight-thin">Address</div>
         <div class="text-subtitle2">
-          {{ useWrapperStore().getVault }}
+          {{
+            findVaultAddress(
+              useWrapperStore().wrapperSelected.publicKey,
+              useWrapperStore().wrapperSelected.account.mintUnwrapped,
+            )
+          }}
         </div>
       </div>
-      <div>
-        <div class="col text-subtitle1 text-weight-thin">Mint:</div>
+      <div class="row items-center">
+        <div class="col text-subtitle1 text-weight-thin">Mint</div>
         <div class="text-subtitle2">
           {{ useWrapperStore().wrapperSelected.account?.mintUnwrapped }}
         </div>
       </div>
 
-      <div>
-        <div class="col text-subtitle1 text-weight-thin">Unwrapped:</div>
+      <div class="row items-center">
+        <div class="col text-subtitle1 text-weight-thin">Unwrapped</div>
         <div class="text-subtitle2">
           {{
             useAccountStore().tokenList.find(
@@ -71,7 +73,7 @@ async function loadAccountInfo() {
         </div>
       </div>
 
-      <div>
+      <div class="row items-center">
         <div class="col text-subtitle1 text-weight-thin">Balance</div>
         <div class="text-subtitle2">
           {{ accountInfo?.parsed.info.tokenAmount.uiAmount }}
@@ -85,7 +87,6 @@ async function loadAccountInfo() {
 
     <q-card-section class="q-gutter-y-md">
       <WrapperCreateVault v-if="!vaultExists" class="full-width" />
-
       <WrapperTransferVaultOut />
     </q-card-section>
   </q-card>

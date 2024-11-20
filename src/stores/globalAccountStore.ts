@@ -28,7 +28,7 @@ export const useAccountStore = defineStore('accountStore', {
     },
   },
   actions: {
-    async loadAccounts() {
+    async updateStore() {
       if (!useWallet().publicKey.value) return;
       const accounts =
         await useRPCStore().connection.getParsedTokenAccountsByOwner(
@@ -53,7 +53,7 @@ export const useAccountStore = defineStore('accountStore', {
         });
       });
 
-      console.log(this.accounts);
+      console.log('[Updated] AccountStore');
       return;
     },
   },

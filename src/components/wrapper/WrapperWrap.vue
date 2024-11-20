@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
@@ -9,11 +9,14 @@ import {
   createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
-import { getATA, useWrapperStore } from 'stores/globalWrapper';
 import { calcAmountToTransfer } from 'stores/globalStore';
 import { useAccountStore } from 'stores/globalAccountStore';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { getATA } from 'stores/globalWrapper_old';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const $q = useQuasar();
 const amountToWrap = ref(1);
@@ -48,12 +51,12 @@ async function buildTX(label: string) {
       if (!ataInfo) {
         tx.add(
           createAssociatedTokenAccountInstruction(
-            useWallet().publicKey.value!,
+            getSigner()!,
             getATA(
-              useWallet().publicKey.value!.toString(),
+              getSigner()!.toString(),
               props.wrapper.account.mintWrapped.toString(),
             ),
-            useWallet().publicKey.value!,
+            getSigner()!,
             props.wrapper.account.mintWrapped,
             TOKEN_PROGRAM_ID,
             ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -87,18 +90,10 @@ async function buildTX(label: string) {
           .instruction(),
       );
 
-      await useWallet().sendTransaction(
-        tx,
-        useRPCStore().connection as Connection,
-      );
+      await handleTransaction(tx, 'Wrap tokens');
     }
 
-    $q.notify({
-      message: `${label} successful!`,
-      type: 'positive',
-    });
-
-    await useWrapperStore().load_wrapper();
+    await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);
     $q.notify({

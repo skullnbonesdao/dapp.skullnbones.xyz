@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { useWallet } from 'solana-wallets-vue';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { useWrapperStore } from 'stores/globalWrapper';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { Transaction } from '@solana/web3.js';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const $q = useQuasar();
 
@@ -16,26 +18,26 @@ const props = defineProps({
 async function closeWrapper() {
   try {
     if (useWorkspaceAdapter()) {
+      const tx = new Transaction();
       const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
-      await pg_wrapper.methods
-        .close()
-        .accountsPartial({
-          wrapper: useWrapperStore().selectedFactory?.publicKey,
-          signer: useWallet().publicKey.value,
-          mintUnwrapped:
-            useWrapperStore().selectedFactory?.account.mintUnwrapped,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .rpc();
+      tx.add(
+        await pg_wrapper.methods
+          .close()
+          .accountsPartial({
+            wrapper: useWrapperStore().wrapperSelected?.publicKey,
+            signer: getSigner(),
+            mintUnwrapped:
+              useWrapperStore().wrapperSelected?.account.mintUnwrapped,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .instruction(),
+      );
+
+      await handleTransaction(tx, 'Close Wrapper');
     }
 
-    $q.notify({
-      message: 'Closed  wrapper factory successfully',
-      type: 'positive',
-    });
-
-    await useWrapperStore().load_wrapper();
+    await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);
     $q.notify({

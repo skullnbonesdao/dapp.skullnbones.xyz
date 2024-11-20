@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey } from '@solana/web3.js';
-import { useWrapperStore } from 'stores/globalWrapper';
+
 import { ref } from 'vue';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const $q = useQuasar();
 const vaultFound = ref<boolean>(false);
@@ -19,11 +20,11 @@ async function buildTX(label: string) {
         .createVault()
         .accountsPartial({
           wrapper: new PublicKey(
-            useWrapperStore().selectedFactory.publicKey.toString(),
+            useWrapperStore().wrapperSelected.publicKey.toString(),
           ),
-          signer: useWallet().publicKey.value,
+          signer: getSigner(),
           mintUnwrapped: new PublicKey(
-            useWrapperStore().selectedFactory.account.mintUnwrapped.toString(),
+            useWrapperStore().wrapperSelected.account.mintUnwrapped.toString(),
           ),
           tokenProgram: TOKEN_PROGRAM_ID,
         })
@@ -47,7 +48,7 @@ async function buildTX(label: string) {
 <template>
   <q-btn
     square
-    v-if="!vaultFound && useWrapperStore().selectedFactory?.publicKey"
+    v-if="!vaultFound && useWrapperStore().wrapperSelected?.publicKey"
     color="primary"
     label="Create Vault"
     @click="buildTX('Created vault')"

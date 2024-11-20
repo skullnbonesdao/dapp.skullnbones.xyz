@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { useWrapperStore } from 'stores/globalWrapper';
-import { useWallet } from 'solana-wallets-vue';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
+import { findMetadataAddress } from 'src/solana/wrapper/WrapperFinders';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const props = defineProps(['name', 'symbol', 'uri']);
 
@@ -22,11 +23,13 @@ async function buildTX(label: string) {
       await pg_wrapper.methods
         .metadataCreate(metadata)
         .accountsPartial({
-          wrapper: useWrapperStore().selectedFactory?.publicKey,
-          signer: useWallet().publicKey.value,
-          metadata: useWrapperStore().getMetadata,
+          wrapper: useWrapperStore().wrapperSelected?.publicKey,
+          signer: getSigner(),
+          metadata: findMetadataAddress(
+            useWrapperStore().wrapperSelected.account.mintWrapped,
+          ),
           mintUnwrapped:
-            useWrapperStore().selectedFactory?.account.mintUnwrapped,
+            useWrapperStore().wrapperSelected?.account.mintUnwrapped,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .rpc();

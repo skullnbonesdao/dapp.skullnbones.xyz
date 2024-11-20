@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { useWallet } from 'solana-wallets-vue';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { PublicKey } from '@solana/web3.js';
-import { useWrapperStore } from 'stores/globalWrapper';
+import { PublicKey, Transaction } from '@solana/web3.js';
+import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { AccountStore, useAccountStore } from 'stores/globalAccountStore';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const $q = useQuasar();
 const optionUnwrapped = ref();
@@ -18,6 +19,7 @@ const ratioWrapped = ref<number>(1);
 async function createWrapper() {
   try {
     if (useWorkspaceAdapter()) {
+      const tx = new Transaction();
       const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
       const params = {
@@ -30,24 +32,24 @@ async function createWrapper() {
         seed: new anchor.BN(window.crypto.getRandomValues(new Uint8Array(8))),
       };
 
-      await pg_wrapper.methods
-        .initialize(params as any)
-        .accountsPartial({
-          signer: useWallet().publicKey.value,
-          group: new PublicKey(
-            useWrapperStore().selectedGroup?.publicKey.toString() ?? '',
-          ),
-          mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
-          tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .rpc();
-    }
+      tx.add(
+        await pg_wrapper.methods
+          .initialize(params as any)
+          .accountsPartial({
+            signer: getSigner(),
+            group: new PublicKey(
+              useWrapperStore().groupSelected?.publicKey.toString() ?? '',
+            ),
+            mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .instruction(),
+      );
 
-    $q.notify({
-      message: 'Created new wrapper factory successfully',
-      type: 'positive',
-    });
-    await useWrapperStore().load_wrapper();
+      await handleTransaction(tx);
+
+      await useWrapperStore().updateStore();
+    }
   } catch (err) {
     console.error(err);
     $q.notify({
@@ -71,7 +73,7 @@ async function createWrapper() {
             (option: AccountStore) => option.info?.name ?? option.mint
           "
           v-model="optionUnwrapped"
-          label="Mint"
+          label="Token to Wrap"
           type="number"
         />
       </div>
@@ -109,14 +111,14 @@ async function createWrapper() {
       </div>
     </q-card-section>
 
-    <q-card-actions>
+    <q-card-section class="row justify-end">
       <q-btn
-        class="full-width"
+        square
         color="primary"
-        label="Create"
+        label="Create new wrapper"
         @click="createWrapper()"
       ></q-btn>
-    </q-card-actions>
+    </q-card-section>
   </q-card>
 </template>
 

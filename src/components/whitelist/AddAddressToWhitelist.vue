@@ -5,7 +5,7 @@ import * as anchor from '@coral-xyz/anchor';
 import { Notify } from 'quasar';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { handle_wallet_connected } from 'components/messages/handle_wallet_connected';
 
 const { pg_whitelist } = useWorkspaceAdapter();

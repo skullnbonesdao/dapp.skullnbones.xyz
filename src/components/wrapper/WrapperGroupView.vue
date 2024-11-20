@@ -17,7 +17,7 @@ const confirmClose = ref(false);
         The group will be used to filter and create the wrappers - one time
         creation fee of 0.5 SOL
       </div>
-      <div class="text-caption text-orange-5">
+      <div class="text-caption text-accent">
         Make sure u use a list where you are the owner!
       </div>
     </q-card-section>
@@ -61,7 +61,7 @@ const confirmClose = ref(false);
             class="text-caption row"
           >
             <div style="width: 50px">Owner</div>
-            <div class="col text-orange-5 text-right">
+            <div class="col text-accent text-right">
               {{ useWrapperStore().groupSelected?.account?.owner }}
             </div>
           </div></q-card-section
@@ -80,7 +80,7 @@ const confirmClose = ref(false);
             class="text-caption row"
           >
             <div style="width: 50px">ID:</div>
-            <div class="col text-orange-5 text-right">
+            <div class="col text-accent text-right">
               {{ useWrapperStore().groupSelected?.publicKey }}
             </div>
           </div>
@@ -89,16 +89,16 @@ const confirmClose = ref(false);
             class="text-caption row"
           >
             <div style="width: 50px">Owner:</div>
-            <div class="col text-orange-5 text-right">
+            <div class="col text-accent text-right">
               {{ useWrapperStore().groupSelected?.account?.owner }}
             </div>
           </div>
         </q-card-section>
         <q-card-section class="row items-center">
+          <q-checkbox color="red" v-model="confirmClose" />
           <div class="text-h6 text-red-6 col">
             I know what im doing i want to close the group
           </div>
-          <q-checkbox color="red" v-model="confirmClose" />
         </q-card-section>
       </q-tab-panel>
     </q-tab-panels>

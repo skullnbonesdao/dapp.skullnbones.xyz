@@ -23,6 +23,11 @@ onMounted(async () => {
 <template>
   <q-page class="bg-black">
     <q-card>
+      <q-card-section class="row items-center q-gutter-x-md">
+        <q-icon name="inventory_2" size="md" />
+        <div class="col text-h6">Wrapper</div>
+      </q-card-section>
+      <q-separator />
       <q-tabs
         v-model="tabSelected"
         dense
@@ -32,7 +37,7 @@ onMounted(async () => {
         align="justify"
         narrow-indicator
       >
-        <q-tab name="wrapping" label="Wrapping" />
+        <q-tab name="wrapping" label="Wrap / Unwrap" />
         <q-tab name="manage" label="Manage" />
       </q-tabs>
 

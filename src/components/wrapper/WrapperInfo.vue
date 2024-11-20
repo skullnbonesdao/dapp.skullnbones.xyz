@@ -3,19 +3,11 @@ import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 </script>
 
 <template>
-  <q-card
-    v-if="useWrapperStore().wrapperSelected?.account"
-    flat
-    bordered
-    style="width: 450px"
-  >
-    <q-card-section class="">
-      <div class="text-h4">Info</div>
-    </q-card-section>
+  <q-card v-if="useWrapperStore().wrapperSelected?.account" flat>
     <q-separator />
 
     <q-card-section>
-      <div class="col">
+      <div class="row items-center">
         <div class="col text-subtitle1 text-weight-thin">Publickey</div>
         <div class="text-subtitle2">
           {{ useWrapperStore().wrapperSelected.publicKey }}
@@ -24,7 +16,7 @@ import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
       <div
         v-for="info in Object.keys(useWrapperStore().wrapperSelected?.account)"
         :key="info"
-        class="col"
+        class="row items-center"
       >
         <div class="col text-subtitle1 text-weight-thin">
           {{ info.toUpperCase() }}

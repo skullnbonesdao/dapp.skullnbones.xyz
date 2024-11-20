@@ -21,9 +21,6 @@
           <q-toolbar-title shrink>for educational purposes</q-toolbar-title>
         </q-btn>
         <q-space />
-        <!--        <div class="q-my-sm">-->
-        <!--          <WalletMultiButton dark class="items-center"></WalletMultiButton>-->
-        <!--        </div>-->
       </q-toolbar>
       <q-separator class="bg-white"></q-separator>
     </q-header>
@@ -35,10 +32,17 @@
       :width="230"
       :breakpoint="300"
     >
-      <div class="row q-mt-md">
-        <q-space />
-        <WalletMultiButton dark class="items-center"></WalletMultiButton>
-        <q-space />
+      <div class="col q-mt-md">
+        <div class="row">
+          <q-space />
+          <WalletMultiButton dark />
+          <q-space />
+        </div>
+        <div class="row">
+          <q-space />
+          <SquadsButton />
+          <q-space />
+        </div>
       </div>
       <q-scroll-area style="height: calc(100% - 150px); margin-top: 0px">
         <q-list padding class="">
@@ -67,10 +71,10 @@
         <q-select
           class="col"
           square
-          @newValue="update_selection()"
+          @update:model-value="() => update_selection()"
           v-model="useRPCStore().rpc_stored_name"
           :options="RPC_NETWORKS.map((rpc) => rpc.name)"
-          label="Select an RPC to use:"
+          label="RPC"
         />
 
         <div class="row">
@@ -96,10 +100,11 @@ import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useWhitelist } from '../stores/globalWhitelist';
 import { useRPCStore } from 'stores/rpcStore';
 import { useQuasar } from 'quasar';
+import SquadsButton from 'components/squads/SquadsButton.vue';
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
-const q = useQuasar();
+const $q = useQuasar();
 
 const display_version = ref(version);
 
@@ -108,10 +113,9 @@ function toggleLeftDrawer() {
 }
 
 function update_selection() {
-  useRPCStore().show_rpc_select = false;
   useRPCStore().update_connection();
-  q.notify({
-    type: 'positive',
+  $q.notify({
+    type: 'default',
     icon: 'info',
     message: `RPC has been updated to: ${useRPCStore().rpc_stored_name}`,
     timeout: 5000,
@@ -128,9 +132,10 @@ watch(
 const links1 = computed(() => {
   let data = [
     { icon: 'home', text: 'Home', to: '/' },
+    { icon: 'diversity_3', text: 'Squads.so', to: '/squads' },
     { icon: 'contact_mail', text: 'Accounts', to: '/accounts' },
     { icon: 'lock_clock', text: 'StarAtlasLocker', to: '/staratlaslocker' },
-    { icon: 'lock_clock', text: 'Wrapper', to: '/wrapper' },
+    { icon: 'inventory_2', text: 'Wrapper', to: '/wrapper' },
   ];
   if (useGlobalStore().is_admin || import.meta.env.DEV) {
     data.push({ icon: 'contrast', text: 'Whitelist', to: '/whitelist' });
