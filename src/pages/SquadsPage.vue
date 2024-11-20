@@ -23,7 +23,7 @@ import { useSquadsStore } from 'src/solana/squads/SquadsStore';
           Please enter the required information so send instructions to your
           Squads Account
         </div>
-        <div class="text-subtitle2 text-yellow-5">
+        <div class="text-subtitle2 text-accent">
           You will still need to approve the transaction in you squads account!
         </div>
       </q-card-section>

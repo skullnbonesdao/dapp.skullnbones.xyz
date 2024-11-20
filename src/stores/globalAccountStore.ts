@@ -4,9 +4,7 @@ import { useWallet } from 'solana-wallets-vue';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { AccountInfo, ParsedAccountData } from '@solana/web3.js';
 import { IToken } from 'stores/tokenlists/solana.tokenlist/src/types/ITokenList';
-import * as staratlasCurrencies from 'src/stores/tokenlists/solana.tokenlist/lists/staratlasCurrencies.json';
-import * as staratlasTokens from 'src/stores/tokenlists/solana.tokenlist/lists/staratlasTokens.json';
-import * as devTokens from 'src/stores/tokenlist-dev.json';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 
 export interface AccountStore {
   pubkey: string;
@@ -20,7 +18,6 @@ export interface AccountStore {
 export const useAccountStore = defineStore('accountStore', {
   state: () => ({
     accounts: [] as AccountStore[],
-    tokenList: mergeTokenLists(),
   }),
   getters: {
     getAccountsBalanceNotZero(state) {
@@ -46,7 +43,7 @@ export const useAccountStore = defineStore('accountStore', {
           account: account.account,
           uiAmount: account.account.data.parsed.info.tokenAmount.uiAmount,
           decimals: account.account.data.parsed.info.tokenAmount.decimals,
-          info: this.tokenList.find(
+          info: useTokenListStore().tokenList.find(
             (t) =>
               t.address === account.account.data.parsed.info.mint.toString(),
           ),
@@ -58,19 +55,3 @@ export const useAccountStore = defineStore('accountStore', {
     },
   },
 });
-
-function mergeTokenLists() {
-  const tokenList: IToken[] = [];
-
-  staratlasCurrencies.tokens.forEach((token) => {
-    tokenList.push(token);
-  });
-  staratlasTokens.tokens.forEach((token) => {
-    tokenList.push(token);
-  });
-  devTokens.tokens.forEach((token) => {
-    tokenList.push(token);
-  });
-
-  return tokenList;
-}

@@ -15,9 +15,11 @@ import { onMounted, ref, watch } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
 import { useAccountStore } from 'stores/globalAccountStore';
 import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 
 const init = ref(false);
 
+useTokenListStore();
 useGlobalStore();
 useRPCStore();
 useWhitelistStore();

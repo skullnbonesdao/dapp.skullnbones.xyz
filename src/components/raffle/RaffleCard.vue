@@ -19,6 +19,7 @@ import RaffleToggleMode from 'components/raffle/RaffleToggleMode.vue';
 import { useGlobalStore } from '../../stores/globalStore';
 import { format_address } from '../../functions/format_address';
 import { retryFunction } from 'src/solana/retryFunction';
+import { useTokenListStore } from '../../solana/tokens/TokenListStore';
 
 const props = defineProps(['raffle', 'is_admin']);
 const ticketsAccount = ref();
@@ -137,7 +138,7 @@ function dummy() {
             <q-item-label class="text-h6">
               {{ ticketsAccount?.total }}</q-item-label
             >
-            <q-item-label class="text-orange-9" caption
+            <q-item-label class="text-accent" caption
               >Total tickets</q-item-label
             >
           </q-item-section>
@@ -155,7 +156,7 @@ function dummy() {
                 Math.pow(10, -raffle.account.ticketDecimals)
               ).toFixed(2)
             }}</q-item-label>
-            <q-item-label class="text-orange-9" caption
+            <q-item-label class="text-accent" caption
               >Price per ticket</q-item-label
             >
           </q-item-section>
@@ -166,41 +167,32 @@ function dummy() {
             <q-icon color="amber" name="local_movies" />
           </q-item-section>
 
-          <q-item-section>
-            <q-item-label class="text-overline">
-              {{
-                useGlobalStore().token_list.find(
-                  (t) => t.address == raffle.account.ticketMint,
-                )
-                  ? useGlobalStore().token_list.find(
-                      (t) => t.address == raffle.account.ticketMint,
-                    ).symbol
-                  : raffle.account.ticketMint
-              }}
-            </q-item-label>
-            <q-item-label class="text-orange-9" caption
-              >Ticket-Mint</q-item-label
-            >
+          <q-item-section class="q-gutter-y-md">
+            <div>
+              <q-item-label class="q-pt-md text-overline">
+                {{
+                  useTokenListStore().tokenList.find(
+                    (t) => t.address == raffle.account.prizeMint.toString(),
+                  )?.name ?? raffle.account.ticketMint.toString()
+                }}
+              </q-item-label>
+              <q-item-label class="text-accent" caption
+                >Prize-Mint</q-item-label
+              >
+            </div>
 
-            <q-item-label class="q-pt-md text-overline">
-              {{
-                useGlobalStore().token_list.find(
-                  (t) => t.address == raffle.account.prizeMint,
-                )?.name
-              }}
-              {{
-                useGlobalStore().token_list.find(
-                  (t) => t.address == raffle.account.prizeMint,
-                )
-                  ? useGlobalStore().token_list.find(
-                      (t) => t.address == raffle.account.prizeMint,
-                    ).symbol
-                  : raffle.account.prizeMint
-              }}
-            </q-item-label>
-            <q-item-label class="text-orange-9" caption
-              >Prize-Mint</q-item-label
-            >
+            <div>
+              <q-item-label class="text-overline">
+                {{
+                  useTokenListStore().tokenList.find(
+                    (t) => t.address == raffle.account.ticketMint.toString(),
+                  )?.name ?? raffle.account.ticketMint.toString()
+                }}
+              </q-item-label>
+              <q-item-label class="text-accent" caption
+                >Ticket-Mint</q-item-label
+              >
+            </div>
           </q-item-section>
         </q-item>
 

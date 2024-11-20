@@ -242,6 +242,7 @@ stringOptions.value.forEach((o) => {
     <q-card-section class="row justify-end">
       <q-btn
         icon="send"
+        square
         class="row"
         color="primary"
         @click="create_new_raffle()"
