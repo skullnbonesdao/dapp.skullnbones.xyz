@@ -3,13 +3,19 @@ import { IToken } from 'stores/tokenlists/solana.tokenlist/src/types/ITokenList'
 import * as staratlasCurrencies from 'src/solana/tokens/lists/staratlasCurrencies.json';
 import * as staratlasTokens from 'src/solana/tokens/lists/staratlasTokens.json';
 import * as devTokens from 'src/solana/tokens/lists/devTokens.json';
+import { PublicKey } from '@solana/web3.js';
 
 export const useTokenListStore = defineStore('tokenListStore', {
   state: () => ({
     tokenList: mergeTokenLists(),
   }),
 
-  getters: {},
+  getters: {
+    getTokenByMintPublicKey: (state) => {
+      return (mint: PublicKey) =>
+        state.tokenList.find((token) => token.address === mint.toString());
+    },
+  },
   actions: {
     async updateStore() {
       return;

@@ -4,7 +4,6 @@ import { onMounted, ref } from 'vue';
 import { useGlobalStore } from 'stores/globalStore';
 import RaffleGrid from 'components/raffle/RaffleGrid.vue';
 import RaffleCreateRaffle from 'components/raffle/RaffleCreateRaffle.vue';
-import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 
 const tab_selected = ref('raffle');
@@ -15,13 +14,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <q-page
-    v-if="!useWallet().publicKey.value"
-    class="row items-center justify-center bg-image"
-  >
-    <WalletMultiButton dark />
-  </q-page>
-  <q-page v-else class="col">
+  <q-page class="col bg-black">
     <div class="row shadow-2">
       <q-tabs
         v-model="tab_selected"
@@ -47,7 +40,7 @@ onMounted(async () => {
       <q-spinner-cube class="row" color="primary" size="10rem" />
       <q-space />
     </div>
-    <div v-if="useRaffleStore().raffles.length > 0" class="q-mx-md">
+    <div v-if="useRaffleStore().raffles.length > 0" class="">
       <RaffleGrid
         :raffles="useRaffleStore().getRunningRaffles"
         :is_admin="false"

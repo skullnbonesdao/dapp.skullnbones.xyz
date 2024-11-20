@@ -136,7 +136,7 @@ function dummy() {
 
           <q-item-section>
             <q-item-label class="text-h6">
-              {{ ticketsAccount?.total }}</q-item-label
+              {{ ticketsAccount?.total }} Tickets</q-item-label
             >
             <q-item-label class="text-accent" caption
               >Total tickets</q-item-label
@@ -150,12 +150,19 @@ function dummy() {
           </q-item-section>
 
           <q-item-section>
-            <q-item-label class="text-h6">{{
-              (
-                raffle.account.ticketPrice.toNumber() *
-                Math.pow(10, -raffle.account.ticketDecimals)
-              ).toFixed(2)
-            }}</q-item-label>
+            <q-item-label class="text-h6"
+              >{{
+                (
+                  raffle.account.ticketPrice.toNumber() *
+                  Math.pow(10, -raffle.account.ticketDecimals)
+                ).toFixed(2)
+              }}
+              {{
+                useTokenListStore().tokenList.find(
+                  (t) => t.address == raffle.account.ticketMint.toString(),
+                )?.symbol
+              }}
+            </q-item-label>
             <q-item-label class="text-accent" caption
               >Price per ticket</q-item-label
             >

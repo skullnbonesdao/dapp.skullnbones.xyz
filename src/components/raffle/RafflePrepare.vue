@@ -3,13 +3,14 @@ import { useGlobalStore } from 'stores/globalStore';
 import { ref } from 'vue';
 import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
-import { useWallet } from 'solana-wallets-vue';
 import { Notify } from 'quasar';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useGlobalWalletStore } from 'stores/globalWallet';
 import { useRPCStore } from 'stores/rpcStore';
-import { useRaffleStore } from 'stores/globalRaffle';
+import { Transaction } from '@solana/web3.js';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const input_prize_count = ref(1);
 const input_prize_url = ref('');
@@ -40,51 +41,53 @@ stringOptions.value.forEach((o) =>
 );
 
 async function add_prize_to_raffle() {
-  const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
-
-  const prize_mint = new anchor.web3.PublicKey(
-    prize_account_selected.value.value,
-  );
-
-  const ata = (
-    await useRPCStore().connection.getParsedTokenAccountsByOwner(
-      useWallet().publicKey.value!,
-      { mint: prize_mint },
-    )
-  ).value[0].pubkey;
-
-  const raffle = new anchor.web3.PublicKey(props.raffle.publicKey.toString());
-
-  const account_info =
-    await useRPCStore().connection.getParsedAccountInfo(prize_mint);
-
-  console.log(account_info.value?.data.parsed.info.decimals);
-
-  input_prize_url.value =
-    useGlobalStore().token_list.find((token) => token.address == prize_mint)
-      ?.logoURI ?? '';
-
   try {
-    const signature = await pg_raffle?.methods
-      .prepare(
-        new BN(
-          input_prize_count.value *
-            Math.pow(10, account_info.value?.data.parsed.info.decimals),
-        ),
-        input_prize_url.value,
+    const tx = new Transaction();
+
+    const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
+
+    const prize_mint = new anchor.web3.PublicKey(
+      prize_account_selected.value.value,
+    );
+
+    const ata = (
+      await useRPCStore().connection.getParsedTokenAccountsByOwner(
+        getSigner(),
+        { mint: prize_mint },
       )
-      .accountsPartial({
-        creator: useWallet().publicKey.value,
-        raffle: raffle,
-        from: ata,
-        prizeMint: prize_mint,
-      })
-      .rpc();
+    ).value[0].pubkey;
 
-    console.log(signature);
+    const raffle = new anchor.web3.PublicKey(props.raffle.publicKey.toString());
 
-    await handle_confirmation(signature);
-    await useRaffleStore().update_raffles();
+    const account_info =
+      await useRPCStore().connection.getParsedAccountInfo(prize_mint);
+
+    console.log(account_info.value?.data.parsed.info.decimals);
+
+    input_prize_url.value =
+      useGlobalStore().token_list.find((token) => token.address == prize_mint)
+        ?.logoURI ?? '';
+
+    tx.add(
+      await pg_raffle?.methods
+        .prepare(
+          new BN(
+            input_prize_count.value *
+              Math.pow(10, account_info.value?.data.parsed.info.decimals),
+          ),
+          input_prize_url.value,
+        )
+        .accountsPartial({
+          creator: getSigner(),
+          raffle: raffle,
+          from: ata,
+          prizeMint: prize_mint,
+        })
+        .instruction(),
+    );
+
+    await handleTransaction(tx, '[Raffle] prepare');
+    await useRaffleStore().updateStore();
   } catch (err) {
     Notify.create({
       color: 'red',

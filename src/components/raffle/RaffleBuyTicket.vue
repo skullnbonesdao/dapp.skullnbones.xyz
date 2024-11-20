@@ -87,11 +87,7 @@ async function buy_raffle_ticket() {
         :disable="!input_raffle_ticket_amount"
         color="primary"
         icon="send"
-        @click="
-          buy_raffle_ticket().then(() => {
-            console.log('done sending!');
-          })
-        "
+        @click="buy_raffle_ticket()"
       />
     </div>
     <div class="row">

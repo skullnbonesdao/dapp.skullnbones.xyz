@@ -2,24 +2,23 @@
 import { onMounted, ref, watch } from 'vue';
 import { Notify } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
-import { BN } from '@coral-xyz/anchor';
-import {
-  useGlobalStore,
-  WHITELIST_CREATOR_WALLET,
-} from '../../stores/globalStore';
-import { useWallet } from 'solana-wallets-vue';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { useGlobalStore } from '../../stores/globalStore';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useGlobalWalletStore } from '../../stores/globalWallet';
-
-import { DiscordMessageType, useRaffleStore } from 'stores/globalRaffle';
+import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 import { useRPCStore } from 'stores/rpcStore';
 import { useWhitelist } from 'stores/globalWhitelist';
+import { findRaffleAddress } from 'src/solana/raffle/RaffleInterface';
+import { findWhitelistAddress } from 'src/solana/whitelist/WhitelistInterface';
+import { Transaction } from '@solana/web3.js';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
-const input_raffle_name = ref();
+const inputRaffleName = ref();
 const input_raffle_description = ref();
 const input_raffle_ticket_count = ref();
-const input_raffle_ticket_price = ref();
+const inputRaffleTicketPrice = ref();
 const input_account_selected = ref();
 const whitelist_selected = ref<{ label: string; value: string | null }>();
 const whitelist_options = ref<{ label: string; value: string | null }[]>([]);
@@ -44,69 +43,45 @@ function update_whitelists() {
 }
 
 async function create_new_raffle() {
-  const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
-  const pg_whitelist = useWorkspaceAdapter()?.pg_whitelist.value;
-
-  const raffleSeed = new anchor.BN(
-    window.crypto.getRandomValues(new Uint8Array(8)),
-  );
-
-  //Accounts
-  let [raffle, raffle_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      anchor.utils.bytes.utf8.encode('raffle'),
-      anchor.utils.bytes.utf8.encode(input_raffle_name.value),
-      raffleSeed.toArrayLike(Buffer).reverse(),
-    ],
-    pg_raffle?.programId,
-  );
-
-  let [whitelist, whitelistBump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      WHITELIST_CREATOR_WALLET.toBuffer(),
-      anchor.utils.bytes.utf8.encode(whitelist_selected.value?.label),
-    ],
-    pg_whitelist?.programId,
-  );
-
-  const account_info = await useRPCStore().connection.getParsedAccountInfo(
-    new anchor.web3.PublicKey(input_account_selected.value.value),
-  );
-
   try {
-    const signature = await pg_raffle?.methods
-      .initialize(
-        input_raffle_name.value,
-        input_raffle_description.value,
-        new BN(
-          input_raffle_ticket_price.value *
-            Math.pow(10, account_info.value?.data.parsed.info.decimals),
-        ),
-        input_raffle_ticket_count.value,
-        raffleSeed,
-      )
-      .accountsPartial({
-        creator: useWallet().publicKey.value,
-        raffle: raffle,
-        ticketsMint: new anchor.web3.PublicKey(
-          input_account_selected.value.value,
-        ),
-        whitelist: whitelist,
-      })
-      .rpc();
+    const tx = new Transaction();
+    const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
 
-    console.log(signature);
+    const raffleSeed = new anchor.BN(
+      window.crypto.getRandomValues(new Uint8Array(8)),
+    );
+    const raffle = findRaffleAddress(inputRaffleName.value, raffleSeed);
+    const whitelist = findWhitelistAddress();
 
-    if (await handle_confirmation(signature)) {
-      await useRaffleStore().update_raffles();
-      await useRaffleStore().send_discord_webhook(
-        DiscordMessageType.RAFFLE_CREATE,
-        input_raffle_name.value,
-        input_raffle_description.value,
-        input_raffle_ticket_count.value,
-        input_raffle_ticket_price.value,
-      );
-    }
+    const account_info = await useRPCStore().connection.getParsedAccountInfo(
+      new anchor.web3.PublicKey(input_account_selected.value.value),
+    );
+
+    tx.add(
+      await pg_raffle?.methods
+        .initialize(
+          inputRaffleName.value,
+          input_raffle_description.value,
+          calcAmountToTransfer(
+            inputRaffleTicketPrice.value,
+            account_info.value?.data.parsed.info.decimals,
+          ) as any,
+          input_raffle_ticket_count.value,
+          raffleSeed,
+        )
+        .accountsPartial({
+          creator: getSigner(),
+          raffle: raffle,
+          ticketsMint: new anchor.web3.PublicKey(
+            input_account_selected.value.value,
+          ),
+          whitelist: whitelist,
+        })
+        .instruction(),
+    );
+
+    await handleTransaction(tx, '[Raffle] Create');
+    await useRaffleStore().updateStore();
   } catch (err) {
     Notify.create({
       color: 'red',
@@ -148,7 +123,7 @@ stringOptions.value.forEach((o) => {
       <q-input
         filled
         square
-        v-model="input_raffle_name"
+        v-model="inputRaffleName"
         type="text"
         label="Name"
       />
@@ -207,7 +182,7 @@ stringOptions.value.forEach((o) => {
         filled
         square
         type="number"
-        v-model="input_raffle_ticket_price"
+        v-model="inputRaffleTicketPrice"
         label="Ticket Price"
       />
     </q-card-section>
