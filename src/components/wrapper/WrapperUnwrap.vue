@@ -3,10 +3,9 @@ import { ref } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
-import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
-import { calcAmountToTransfer } from 'stores/globalStore';
+import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
@@ -26,14 +25,12 @@ async function buildTX(label: string) {
 
     const wrapper = props.wrapper;
 
-    const amount_to_transfer = new anchor.BN(
-      calcAmountToTransfer(
-        amountToWrap.value,
-        useAccountStore().accounts.find(
-          (acc) =>
-            acc.mint.toString() == wrapper?.account.mintUnwrapped.toString(),
-        )?.decimals ?? 0,
-      ),
+    const amount_to_transfer = calcAmountToTransfer(
+      amountToWrap.value,
+      useAccountStore().accounts.find(
+        (acc) =>
+          acc.mint.toString() == wrapper?.account.mintUnwrapped.toString(),
+      )!.decimals,
     );
 
     tx.add(

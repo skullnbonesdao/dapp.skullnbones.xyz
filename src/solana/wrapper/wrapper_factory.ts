@@ -240,10 +240,7 @@ export type WrapperFactory = {
           }
         },
         {
-          "name": "mintUnwrapped"
-        },
-        {
-          "name": "vaultWrapped",
+          "name": "vaultUnwrapped",
           "writable": true,
           "pda": {
             "seeds": [
@@ -276,6 +273,9 @@ export type WrapperFactory = {
               }
             ]
           }
+        },
+        {
+          "name": "mintUnwrapped"
         },
         {
           "name": "systemProgram",
@@ -945,6 +945,7 @@ export type WrapperFactory = {
         },
         {
           "name": "wrapper",
+          "writable": true,
           "pda": {
             "seeds": [
               {

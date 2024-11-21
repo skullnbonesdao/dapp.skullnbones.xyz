@@ -155,10 +155,7 @@
           }
         },
         {
-          "name": "mint_unwrapped"
-        },
-        {
-          "name": "vault_wrapped",
+          "name": "vault_unwrapped",
           "writable": true,
           "pda": {
             "seeds": [
@@ -179,6 +176,9 @@
               }
             ]
           }
+        },
+        {
+          "name": "mint_unwrapped"
         },
         {
           "name": "system_program",
@@ -661,6 +661,7 @@
         },
         {
           "name": "wrapper",
+          "writable": true,
           "pda": {
             "seeds": [
               {

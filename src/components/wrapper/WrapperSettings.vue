@@ -4,11 +4,13 @@ import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { useAccountStore } from 'src/solana/accounts/AccountStore';
+
 import { PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { getSigner } from 'src/solana/squads/SignerFinder';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
+import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 
 const $q = useQuasar();
 
@@ -53,6 +55,7 @@ function mapCurrentWrapperToParams() {
 async function updateWrapper() {
   try {
     const tx = new Transaction();
+    const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
     const params = {
       allowWrap: allowWrap.value,
@@ -61,13 +64,14 @@ async function updateWrapper() {
       useWhitelist: useWhitelist.value,
       useLimit: useLimit.value,
       amountAbleToWrap: useLimit.value
-        ? amountAbleToWrap.value *
-          10 **
-            useAccountStore().tokenList.find(
+        ? calcAmountToTransfer(
+            amountAbleToWrap.value,
+            useTokenListStore().tokenList.find(
               (t) =>
                 t.address ==
                 useWrapperStore().wrapperSelected?.account?.mintUnwrapped.toString(),
-            )?.decimals
+            )!.decimals,
+          )
         : null,
       admin: changeAdmin.value ? new PublicKey(admin.value) : null,
       ratio: changeRatio.value
@@ -76,8 +80,8 @@ async function updateWrapper() {
     } as any;
 
     tx.add(
-      await useWorkspaceAdapter()
-        ?.pg_wrapper.value.methods.edit(params)
+      await pg_wrapper.methods
+        .edit(params)
         .accountsPartial({
           wrapper: useWrapperStore().wrapperSelected?.publicKey,
           signer: getSigner(),

@@ -2,11 +2,12 @@
 import { useQuasar } from 'quasar';
 import { computed, ref, watch } from 'vue';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { UNKNOWN_IMAGE } from 'stores/constants';
 import WrapperWrap from 'components/wrapper/WrapperWrap.vue';
 import WrapperUnwrap from 'components/wrapper/WrapperUnwrap.vue';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
+import { format_address } from '../../functions/format_address';
 
 const rows = [];
 
@@ -58,9 +59,9 @@ const rowsPerPageOptions = computed(() => {
           <q-card flat bordered>
             <q-card-section class="text-center">
               <q-img
-                height="300px"
+                height="200px"
                 :src="
-                  useAccountStore().tokenList.find(
+                  useTokenListStore().tokenList.find(
                     (t) =>
                       t.address == props.row.account?.mintUnwrapped.toString(),
                   )?.logoURI ?? UNKNOWN_IMAGE
@@ -69,8 +70,8 @@ const rowsPerPageOptions = computed(() => {
             </q-card-section>
             <q-card-section>
               <div class="row items-center">
-                <div class="col text-h6 text-weight-light">Group</div>
-                <div class="text-subtitle1">
+                <div class="col text-subtitle1 text-weight-thin">Group</div>
+                <div class="text-subtitle2">
                   {{
                     useWrapperStore().groups.find(
                       (g) =>
@@ -81,11 +82,11 @@ const rowsPerPageOptions = computed(() => {
                 </div>
               </div>
               <div class="row items-center">
-                <div class="col text-h6 text-weight-light">Pair</div>
-                <div class="text-subtitle1 row q-gutter-x-xs">
+                <div class="col text-subtitle1 text-weight-thin">Pair</div>
+                <div class="text-subtitle2 row q-gutter-x-xs">
                   <div>
                     {{
-                      useAccountStore().tokenList.find(
+                      useTokenListStore().tokenList.find(
                         (t) =>
                           t.address ==
                           props.row.account.mintUnwrapped.toString(),
@@ -95,7 +96,7 @@ const rowsPerPageOptions = computed(() => {
                   <div>/</div>
                   <div>
                     W{{
-                      useAccountStore().tokenList.find(
+                      useTokenListStore().tokenList.find(
                         (t) =>
                           t.address ==
                           props.row.account.mintUnwrapped.toString(),
@@ -105,9 +106,19 @@ const rowsPerPageOptions = computed(() => {
                 </div>
               </div>
               <div class="row items-center">
-                <div class="col text-h6 text-weight-light">Address</div>
-                <div class="text-subtitle1">
-                  {{ props.row.publicKey }}
+                <div class="col text-subtitle1 text-weight-thin">Available</div>
+                <div class="text-subtitle2">
+                  {{
+                    props.row?.account.useLimit
+                      ? props.row?.account.amountAbleToWrap
+                      : '∞'
+                  }}
+                </div>
+              </div>
+              <div class="row items-center">
+                <div class="col text-subtitle1 text-weight-thin">Address</div>
+                <div class="text-subtitle2">
+                  {{ format_address(props.row?.publicKey?.toString()) }}
                 </div>
               </div>
             </q-card-section>

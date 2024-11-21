@@ -7,7 +7,6 @@ import {
 } from 'src/solana/wrapper/WrapperStore';
 import WrapperInfo from 'components/wrapper/WrapperInfo.vue';
 import WrapperClose from 'components/wrapper/WrapperClose.vue';
-import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import WrapperSettings from 'components/wrapper/WrapperSettings.vue';
 import WrapperVault from 'components/wrapper/WrapperVault.vue';
 import WrapperMetadata from 'components/wrapper/WrapperMetadata.vue';
@@ -136,7 +135,7 @@ const confirmClose = ref(false);
                   (option: WrapperAccount) => {
                     return (
                       '[Wrapped] ' +
-                      (useAccountStore().tokenList.find(
+                      (useTokenListStore().tokenList.find(
                         (t) =>
                           t.address ==
                           option.account?.mintUnwrapped?.toString(),

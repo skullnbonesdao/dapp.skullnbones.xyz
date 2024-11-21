@@ -31,6 +31,18 @@ export interface IWrapper {
   whitelist: PublicKey;
 }
 
+export function findWrapperAddress(mintUnwrapped: PublicKey, admin: PublicKey) {
+  const wrapper = PublicKey.findProgramAddressSync(
+    [
+      anchor.utils.bytes.utf8.encode('wrapper'),
+      mintUnwrapped.toBytes(),
+      admin.toBytes(),
+    ],
+    ID,
+  );
+  return wrapper[0];
+}
+
 export function findVaultAddress(wrapper: PublicKey, mintUnwrapped: PublicKey) {
   const [vault, bump] = PublicKey.findProgramAddressSync(
     [

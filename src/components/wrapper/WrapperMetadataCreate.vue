@@ -14,7 +14,7 @@ const $q = useQuasar();
 
 async function buildTX(label: string) {
   try {
-    const tx = new Transaction()();
+    const tx = new Transaction();
     const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
     const metadata = {

@@ -12,6 +12,10 @@ import {
 } from 'src/solana/accounts/AccountStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { getSigner } from 'src/solana/squads/SignerFinder';
+import {
+  findVaultAddress,
+  findWrapperAddress,
+} from 'src/solana/wrapper/WrapperInterface';
 
 const $q = useQuasar();
 const optionUnwrapped = ref();
@@ -34,6 +38,7 @@ async function createWrapper() {
       seed: new anchor.BN(window.crypto.getRandomValues(new Uint8Array(8))),
     };
 
+    //Create Wrapper
     tx.add(
       await pg_wrapper.methods
         .initialize(params as any)
@@ -48,7 +53,37 @@ async function createWrapper() {
         .instruction(),
     );
 
-    await handleTransaction(tx, '[Wrapper] create');
+    console.log(
+      findWrapperAddress(
+        new PublicKey(optionUnwrapped.value.mint.toString()),
+        getSigner(),
+      ),
+    );
+
+    //Create Vault
+    tx.add(
+      await pg_wrapper.methods
+        .createVault()
+        .accountsPartial({
+          signer: getSigner(),
+          wrapper: findWrapperAddress(
+            new PublicKey(optionUnwrapped.value.mint.toString()),
+            getSigner(),
+          ),
+          vaultWrapped: findVaultAddress(
+            findWrapperAddress(
+              new PublicKey(optionUnwrapped.value.mint.toString()),
+              getSigner(),
+            ),
+            new PublicKey(optionUnwrapped.value.mint.toString()),
+          ),
+          mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .instruction(),
+    );
+
+    await handleTransaction(tx, '[Wrapper] create + vault');
     await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);
