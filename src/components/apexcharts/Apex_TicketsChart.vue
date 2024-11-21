@@ -1,5 +1,11 @@
 <template>
-  <apexchart height="200px" type="donut" :options="options" :series="data" />
+  <apexchart
+    v-if="data_value && data_label"
+    height="200px"
+    type="donut"
+    :options="options"
+    :series="data"
+  />
 </template>
 
 <script setup lang="ts">

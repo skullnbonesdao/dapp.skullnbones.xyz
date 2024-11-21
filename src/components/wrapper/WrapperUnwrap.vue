@@ -27,15 +27,13 @@ async function buildTX(label: string) {
 
     const amount_to_transfer = calcAmountToTransfer(
       amountToWrap.value,
-      useAccountStore().accounts.find(
-        (acc) =>
-          acc.mint.toString() == wrapper?.account.mintUnwrapped.toString(),
-      )!.decimals,
+      useAccountStore().getAccountByMintPublicKey(wrapper?.account.mintWrapped)
+        ?.decimals,
     );
 
     tx.add(
       await pg_wrapper.methods
-        .unwrap(amount_to_transfer)
+        .unwrap(amount_to_transfer as any)
         .accountsPartial({
           signer: getSigner(),
           wrapper: wrapper.publicKey,

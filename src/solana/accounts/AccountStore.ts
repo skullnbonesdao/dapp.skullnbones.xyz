@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { useRPCStore } from 'stores/rpcStore';
 import { useWallet } from 'solana-wallets-vue';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { AccountInfo, ParsedAccountData } from '@solana/web3.js';
+import { AccountInfo, ParsedAccountData, PublicKey } from '@solana/web3.js';
 import { IToken } from 'stores/tokenlists/solana.tokenlist/src/types/ITokenList';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 
@@ -20,8 +20,14 @@ export const useAccountStore = defineStore('accountStore', {
     accounts: [] as AccountStore[],
   }),
   getters: {
+    getAccountByMintPublicKey: (state) => {
+      return (mint: PublicKey) =>
+        state.accounts.find((acc) => acc.mint === mint.toString());
+    },
     getAccountsBalanceNotZero(state) {
-      return state.accounts.filter((account) => account.uiAmount > 0);
+      return state.accounts.find(
+        (account) => account.uiAmount > 0,
+      ) as AccountStore;
     },
   },
   actions: {
