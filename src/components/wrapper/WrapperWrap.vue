@@ -32,10 +32,9 @@ async function buildTX(label: string) {
 
     const amount_to_transfer = calcAmountToTransfer(
       amountToWrap.value,
-      useAccountStore().accounts.find(
-        (acc) =>
-          acc.mint.toString() == wrapper?.account.mintUnwrapped.toString(),
-      )?.decimals ?? 0,
+      useAccountStore().getAccountByMintPublicKey(
+        wrapper?.account.mintUnwrapped,
+      )?.decimals,
     );
 
     let ataInfo = await useRPCStore().connection.getAccountInfo(

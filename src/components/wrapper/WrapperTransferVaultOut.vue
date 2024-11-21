@@ -8,8 +8,8 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { useQuasar } from 'quasar';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
-import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
 
 const $q = useQuasar();
 const amountToTransfer = ref(1);
@@ -28,7 +28,7 @@ async function transfer() {
           .transferVault(
             calcAmountToTransfer(
               amountToTransfer.value,
-              useTokenListStore().getTokenByMintPublicKey(
+              useAccountStore().getAccountByMintPublicKey(
                 useWrapperStore().wrapperSelected.account.mintUnwrapped,
               ).decimals,
             ) as any,
