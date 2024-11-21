@@ -9,7 +9,7 @@ import { handleTransaction } from 'src/solana/handleTransaction';
 import { useQuasar } from 'quasar';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
-import { getATA } from 'stores/globalWrapper_old';
+import { findATA } from 'src/solana/wrapper/WrapperInterface';
 
 const $q = useQuasar();
 const amountToTransfer = ref(1);
@@ -38,7 +38,7 @@ async function transfer() {
             wrapper: useWrapperStore().wrapperSelected.publicKey,
             mintUnwrapped:
               useWrapperStore().wrapperSelected.account.mintUnwrapped,
-            ataUnwrappedSigner: getATA(
+            ataUnwrappedSigner: findATA(
               new PublicKey(recipient.value).toString(),
               useWrapperStore().wrapperSelected.account.mintUnwrapped.toString(),
             ),

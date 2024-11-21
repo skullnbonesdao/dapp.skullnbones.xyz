@@ -13,9 +13,10 @@ import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
-import { getATA } from 'stores/globalWrapper_old';
+
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
+import { findATA } from 'src/solana/wrapper/WrapperInterface';
 
 const $q = useQuasar();
 const amountToWrap = ref(1);
@@ -38,7 +39,7 @@ async function buildTX(label: string) {
     );
 
     let ataInfo = await useRPCStore().connection.getAccountInfo(
-      getATA(
+      findATA(
         useWallet().publicKey.value!.toString(),
         props.wrapper.account.mintWrapped.toString(),
       ),
@@ -48,7 +49,7 @@ async function buildTX(label: string) {
       tx.add(
         createAssociatedTokenAccountInstruction(
           getSigner()!,
-          getATA(
+          findATA(
             getSigner()!.toString(),
             props.wrapper.account.mintWrapped.toString(),
           ),
