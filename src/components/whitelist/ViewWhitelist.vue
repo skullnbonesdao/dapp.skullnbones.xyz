@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 
-import {
-  initWorkspaceAdapter,
-  useWorkspaceAdapter,
-} from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 
 const whilelists = ref();
 const whilelist_entries = ref();
@@ -12,7 +9,7 @@ const whilelist_entries = ref();
 onMounted(async () => {
   const { pg_whitelist } = useWorkspaceAdapter();
 
-  whilelists.value = await pg_whitelist.value.account.whitelist.all();
+  whilelists.value = (await pg_whitelist.value.account.whitelist.all()) as any;
 
   whilelist_entries.value =
     await pg_whitelist.value.account.whitelistEntry.all();

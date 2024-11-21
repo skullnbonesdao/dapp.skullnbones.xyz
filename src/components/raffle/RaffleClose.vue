@@ -1,53 +1,47 @@
 <script setup lang="ts">
-import * as anchor from '@coral-xyz/anchor';
-import { useWallet } from 'solana-wallets-vue';
 import { Notify } from 'quasar';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { checkAccountExists } from 'src/functions/checkAccountExists';
-import { useRaffleStore } from 'stores/globalRaffle';
+import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
+import { Transaction } from '@solana/web3.js';
+import {
+  findPrizeVaultAddress,
+  findTicketsAddress,
+  findTicketsVaultAddress,
+} from 'src/solana/raffle/RaffleInterface';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const props = defineProps(['raffle']);
 
 async function close_raffle() {
-  const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
-
-  let raffle = props.raffle.publicKey;
-
-  let [tickets, tickets_bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [anchor.utils.bytes.utf8.encode('tickets'), raffle.toBytes()],
-    pg_raffle?.programId,
-  );
-
-  let [ticketsVault, proceeds_bump] =
-    anchor.web3.PublicKey.findProgramAddressSync(
-      [anchor.utils.bytes.utf8.encode('vaultTickets'), raffle.toBytes()],
-      pg_raffle?.programId,
-    );
-
-  let [prizeVault, prize_vault_bump] =
-    anchor.web3.PublicKey.findProgramAddressSync(
-      [anchor.utils.bytes.utf8.encode('vaultPrize'), raffle.toBytes()],
-      pg_raffle?.programId,
-    );
-
-  if (!(await checkAccountExists(prizeVault))) prizeVault = null;
-
   try {
-    const signature = await pg_raffle?.methods
-      .close()
-      .accountsPartial({
-        creator: useWallet().publicKey.value,
-        raffle: raffle,
-        tickets: tickets,
-        ticketsVault: ticketsVault,
-        prizeVault: prizeVault,
-      })
-      .rpc();
+    const tx = new Transaction();
+    const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
 
-    console.log(signature);
-    await handle_confirmation(signature);
-    await useRaffleStore().update_raffles();
+    let raffle = props.raffle.publicKey;
+
+    const tickets = findTicketsAddress(raffle);
+    const ticketsVault = findTicketsVaultAddress(raffle);
+    let prizeVault = findPrizeVaultAddress(raffle);
+
+    if (!(await checkAccountExists(prizeVault))) prizeVault = null;
+
+    tx.add(
+      await pg_raffle?.methods
+        .close()
+        .accountsPartial({
+          creator: getSigner(),
+          raffle: raffle,
+          tickets: tickets,
+          ticketsVault: ticketsVault,
+          prizeVault: prizeVault,
+        })
+        .instruction(),
+    );
+
+    await handleTransaction(tx, '[Raffle] close');
+    await useRaffleStore().updateStore();
   } catch (err) {
     Notify.create({
       color: 'red',

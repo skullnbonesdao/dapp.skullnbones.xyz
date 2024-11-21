@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import RaffleCard from 'components/raffle/RaffleCard.vue';
 import { computed, PropType, ref } from 'vue';
-import { useQuasar } from 'quasar';
 
 const props = defineProps({
   is_admin: {
@@ -18,13 +17,6 @@ const props = defineProps({
   },
 });
 
-const cardContainerClass = computed(() => {
-  return useQuasar().screen.gt.xs
-    ? 'example-masonry-table-grid example-masonry-table-grid--' +
-        (useQuasar().screen.gt.sm ? '3' : '2')
-    : null;
-});
-
 const rowsPerPageOptions = computed(() => {
   return [0];
 });
@@ -37,10 +29,8 @@ const pagination = ref({
 <template>
   <q-table
     grid
-    :card-container-class="cardContainerClass"
     :rows="props.raffles"
     row-key="name"
-    :filter="filter"
     hide-header
     v-model:pagination="pagination"
     :rows-per-page-options="rowsPerPageOptions"

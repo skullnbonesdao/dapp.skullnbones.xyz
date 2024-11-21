@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-
-import { Connection, PublicKey, SystemProgram } from '@solana/web3.js';
 import { useWallet } from 'solana-wallets-vue';
-
 import * as anchor from '@coral-xyz/anchor';
-
 import { Notify } from 'quasar';
 import { handle_confirmation } from 'components/messages/handle_confirmation';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { handle_wallet_connected } from 'components/messages/handle_wallet_connected';
 
 const { pg_whitelist } = useWorkspaceAdapter();
@@ -59,8 +55,9 @@ async function remove_address_from_whitelist() {
 </script>
 
 <template>
-  <div class="row q-gutter-x-md">
+  <div class="row">
     <q-btn-dropdown
+      square
       color="primary"
       :label="whitelist_selected?.account.name ?? 'please select a whitelist'"
     >
@@ -79,7 +76,7 @@ async function remove_address_from_whitelist() {
       </q-list>
     </q-btn-dropdown>
 
-    <q-btn color="primary" @click="remove_address_from_whitelist()"
+    <q-btn square color="primary" @click="remove_address_from_whitelist()"
       >Delete</q-btn
     >
   </div>

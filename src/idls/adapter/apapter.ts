@@ -4,6 +4,7 @@ import { Connection } from '@solana/web3.js';
 import { AnchorProvider, Program } from '@coral-xyz/anchor';
 import dapp_whitelist_idl from 'src/idls/whitelist.0.30.1.json';
 import dapp_raffle_idl from 'src/idls/raffle.0.30.1.json';
+import dapp_wrapper_idl from 'src/idls/wrapper_factory.0.30.1.json';
 import proxy_rewarder_idl from 'src/idls/proxy_rewarder.0.30.1.json';
 import locked_voter_idl from 'src/idls/locked_voter.0.30.1.json';
 import snapshot_idl from 'src/idls/snapshots.0.30.1.json';
@@ -14,6 +15,7 @@ import { Raffle } from 'src/idls/types/raffle';
 import { ProxyRewarder } from 'src/idls/types/proxyrewarder';
 import { LockedVoter } from 'src/idls/types/lockedvoter';
 import { Snapshot } from 'src/idls/types/snapshot';
+import { WrapperFactory } from 'src/idls/types/wrapper';
 
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
@@ -23,6 +25,7 @@ interface Workspace {
   connection: ComputedRef<Connection>;
   provider: ComputedRef<AnchorProvider>;
   pg_raffle: ComputedRef<Program<Raffle>>;
+  pg_wrapper: ComputedRef<Program<WrapperFactory>>;
   pg_whitelist: ComputedRef<Program<Whitelist>>;
   pg_proxy_rewarder: ComputedRef<Program<ProxyRewarder>>;
   pg_locked_voter: ComputedRef<Program<LockedVoter>>;
@@ -52,6 +55,14 @@ export const initWorkspaceAdapter = () => {
     () => new Program<Raffle>(dapp_raffle_idl as Raffle, provider.value),
   );
 
+  const pg_wrapper = computed(
+    () =>
+      new Program<WrapperFactory>(
+        dapp_wrapper_idl as WrapperFactory,
+        provider.value,
+      ),
+  );
+
   const pg_proxy_rewarder = computed(
     () =>
       new Program<ProxyRewarder>(
@@ -74,9 +85,10 @@ export const initWorkspaceAdapter = () => {
     connection,
     provider,
     pg_raffle,
+    pg_wrapper,
     pg_whitelist,
     pg_proxy_rewarder,
     pg_locked_voter,
     pg_snapshot,
-  };
+  } as Workspace;
 };

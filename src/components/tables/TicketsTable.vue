@@ -4,6 +4,7 @@ import { format_address } from 'src/functions/format_address';
 import Apex_TicketsChart from 'components/apexcharts/Apex_TicketsChart.vue';
 
 const props = defineProps(['entrants']);
+
 const pagination = ref({
   rowsPerPage: 0,
 });
@@ -45,7 +46,7 @@ const columns = ref([
   />
   <Apex_TicketsChart
     :data_value="entrants?.map((e) => e.amount)"
-    :data_label="entrants?.map((e) => format_address(e.address))"
+    :data_label="entrants?.map((e) => e.address)"
   />
 </template>
 

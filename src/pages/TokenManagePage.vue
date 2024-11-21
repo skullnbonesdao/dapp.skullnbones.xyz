@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-import { useGlobalStore } from 'stores/globalStore';
+import { ref } from 'vue';
 import { Connection, Keypair, Transaction } from '@solana/web3.js';
-import { useAnchorWallet, useWallet } from 'solana-wallets-vue';
+import { useWallet } from 'solana-wallets-vue';
 import {
   createMintToCheckedInstruction,
   getAssociatedTokenAddress,
@@ -14,32 +13,11 @@ import { useRPCStore } from 'stores/rpcStore';
 
 const selected_tab = ref('create');
 
-const token_account = ref();
 const token_decimals = ref(0);
 const token_amount = ref(100);
 const token_mint = ref(Keypair.generate());
 
-const wallet_token_accounts = ref();
-
-onMounted(async () => {
-  if (!useWallet().publicKey.value) return;
-  wallet_token_accounts.value = await useGlobalStore().get_wallet_accounts();
-});
-
-watch(
-  () => useWallet().publicKey.value,
-  async () => {
-    if (!useWallet().publicKey.value) return;
-    wallet_token_accounts.value = await useGlobalStore().get_wallet_accounts();
-  }
-);
-
-function onItemClick(account: string | undefined) {
-  token_account.value = account;
-}
-
 async function create_more_token() {
-  const wallet = useAnchorWallet();
   const connection = useRPCStore().connection as Connection;
   const { publicKey, sendTransaction } = useWallet();
   if (!publicKey.value) return;
@@ -47,7 +25,7 @@ async function create_more_token() {
   let ata = await getAssociatedTokenAddress(
     token_mint.value.publicKey,
     publicKey.value,
-    false
+    false,
   );
 
   const transaction = new Transaction();
@@ -57,8 +35,8 @@ async function create_more_token() {
       ata,
       publicKey.value, // mint auth
       token_amount.value, // amount
-      token_decimals.value // decimals
-    )
+      token_decimals.value, // decimals
+    ),
   );
 
   let signature = await sendTransaction(transaction, connection, {

@@ -1,34 +1,36 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import * as anchor from '@coral-xyz/anchor';
-import { useWallet } from 'solana-wallets-vue';
 import { Notify } from 'quasar';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
-import { handle_confirmation } from 'components/messages/handle_confirmation';
+import { useWorkspaceAdapter } from 'src/solana/connector';
+import { Transaction } from '@solana/web3.js';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
-const input_prize_count = ref(1);
 const input_prize_url = ref('');
-const input_account_selected = ref();
 
 const props = defineProps(['raffle', 'is_admin']);
 
 async function edit_image_url() {
-  const { pg_raffle } = useWorkspaceAdapter();
-
-  const raffle = new anchor.web3.PublicKey(props.raffle.publicKey.toString());
-
   try {
-    const signature = await pg_raffle.value.methods
-      .editUrl(input_prize_url.value)
-      .accounts({
-        raffle: raffle,
-        creator: useWallet().publicKey.value,
-      })
-      .rpc();
+    const tx = new Transaction();
+    const { pg_raffle } = useWorkspaceAdapter();
 
-    console.log(signature);
+    const raffle = new anchor.web3.PublicKey(props.raffle.publicKey.toString());
 
-    await handle_confirmation(signature);
+    tx.add(
+      await pg_raffle.value.methods
+        .editUrl(input_prize_url.value)
+        .accounts({
+          raffle: raffle,
+          creator: getSigner(),
+        })
+        .instruction(),
+    );
+
+    await handleTransaction(tx, '[Raffle] edit metadata');
+    await useRaffleStore().updateStore();
   } catch (err) {
     Notify.create({
       color: 'red',

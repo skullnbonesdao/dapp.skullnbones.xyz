@@ -5,34 +5,44 @@
 <script setup lang="ts">
 import { useGlobalStore } from 'stores/globalStore';
 import { useQuasar } from 'quasar';
-import { useRaffleStore } from 'stores/globalRaffle';
-import { useWhitelist } from 'stores/globalWhitelist';
 import {
   initWorkspaceAdapter,
   useWorkspaceAdapter,
-} from 'src/idls/adapter/apapter';
-import { onMounted } from 'vue';
+} from 'src/solana/connector';
 import 'src/css/backgrounds.scss';
 import { useRPCStore } from 'stores/rpcStore';
-import { useLockerPolisStore } from 'stores/globalLockerPolisStore';
+import { onMounted, ref, watch } from 'vue';
+import { useWallet } from 'solana-wallets-vue';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
+import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 
+const init = ref(false);
+
+useTokenListStore();
+useGlobalStore();
 useRPCStore();
+useWhitelistStore();
+useAccountStore();
+useWorkspaceAdapter();
+
 useRPCStore().update_connection();
 
-useGlobalStore();
-
-useWorkspaceAdapter();
-initWorkspaceAdapter();
-
-useLockerPolisStore();
-
-useWhitelist();
-useRaffleStore();
-
 useQuasar().dark.set(true);
-
 onMounted(async () => {
-  await useGlobalStore().load_token_list();
-  await useWhitelist().update_whitelist();
+  initWorkspaceAdapter();
+  await useAccountStore().updateStore();
+  await useWhitelistStore().updateStore();
+
+  init.value = true;
 });
+
+watch(
+  () => useWallet().publicKey.value,
+  async () => {
+    if (init.value) {
+      await useAccountStore().updateStore();
+    }
+  },
+);
 </script>

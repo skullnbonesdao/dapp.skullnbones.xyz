@@ -1,0 +1,38 @@
+{
+  "name": "Dev Tokens",
+  "logoURI": "",
+  "keywords": ["solana", "spl", "sa"],
+  "tags": {
+    "lp-token": {
+      "name": "lp-token",
+      "description": ""
+    }
+  },
+  "timestamp": "Thu, 14 Nov 2024 09:33:52 GMT",
+  "tokens": [
+    {
+      "chainId": 101,
+      "name": "Pearce X4",
+      "symbol": "PX4",
+      "address": "B8MFK4agivn1tDa2KtYZxmyPsuZepn1ZQ4KEuzZanAMV",
+      "decimals": 0,
+      "logoURI": "https://storage.googleapis.com/nft-assets/items/PX4.jpg",
+      "tags": [],
+      "verified": true,
+      "holders": null,
+      "tree": ["Token"]
+    },
+    {
+      "chainId": 101,
+      "name": "ATLAS DEV",
+      "symbol": "DATLAS",
+      "address": "DzMwjrnAQa6nThhnLQ1KjsaNJfPffMELvJ3BCn8RvXNv",
+      "decimals": 9,
+      "logoURI": "https://assets.coingecko.com/coins/images/17659/large/Icon_Reverse.png?1696517190",
+      "tags": [],
+      "verified": true,
+      "holders": null,
+      "tree": ["Token"]
+    }
+  ]
+}

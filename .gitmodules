@@ -1,0 +1,3 @@
+[submodule "src/stores/tokenlists/solana.tokenlist"]
+	path = src/stores/tokenlists/solana.tokenlist
+	url = https://github.com/skullnbonesdao/solana.tokenlist
