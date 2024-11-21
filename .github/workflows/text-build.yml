@@ -38,9 +38,3 @@ jobs:
           VITE_RPC_3_NAME: ${{ secrets.VITE_RPC_3_NAME }}
           VITE_RPC_3_URL: ${{ secrets.VITE_RPC_1_URL }}
 
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/spa
