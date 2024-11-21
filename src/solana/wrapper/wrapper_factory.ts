@@ -1343,7 +1343,13 @@ export type WrapperFactory = {
             }
           },
           {
-            "name": "onlyCreatorCanUnwrap",
+            "name": "onlyAdminCanWrap",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "onlyAdminCanUnwrap",
             "type": {
               "option": "bool"
             }
@@ -1503,7 +1509,11 @@ export type WrapperFactory = {
             "type": "pubkey"
           },
           {
-            "name": "onlyCreatorCanUnwrap",
+            "name": "onlyAdminCanWrap",
+            "type": "bool"
+          },
+          {
+            "name": "onlyAdminCanUnwrap",
             "type": "bool"
           },
           {

@@ -17,8 +17,10 @@ const $q = useQuasar();
 const wrapper = useWrapperStore().wrapperSelected?.account;
 const allowWrap = ref();
 const allowUnwrap = ref();
-const onlyCreatorCanUnwrap = ref();
+const onlyAdminCanWrap = ref();
+const onlyAdminCanUnwrap = ref();
 const useWhitelist = ref();
+const whitelistAddress = ref();
 const useLimit = ref();
 const limitAmountUnwrapped = ref();
 const changeAdmin = ref(false);
@@ -43,8 +45,10 @@ function mapCurrentWrapperToParams() {
 
   allowWrap.value = wrapper!.allowWrap;
   allowUnwrap.value = wrapper?.allowUnwrap;
-  onlyCreatorCanUnwrap.value = wrapper?.onlyCreatorCanUnwrap;
+  onlyAdminCanWrap.value = wrapper?.onlyAdminCanWrap;
+  onlyAdminCanUnwrap.value = wrapper?.onlyAdminCanUnwrap;
   useWhitelist.value = wrapper?.useWhitelist;
+  whitelistAddress.value = wrapper?.whitelist;
   useLimit.value = wrapper?.useLimit;
   limitAmountUnwrapped.value = wrapper?.limitAmountUnwrapped ?? 0;
   admin.value = wrapper?.admin;
@@ -60,8 +64,12 @@ async function updateWrapper() {
     const params = {
       allowWrap: allowWrap.value,
       allowUnwrap: allowUnwrap.value,
-      onlyCreatorCanUnwrap: onlyCreatorCanUnwrap.value,
+      onlyAdminCanWrap: onlyAdminCanWrap.value,
+      onlyAdminCanUnwrap: onlyAdminCanUnwrap.value,
       useWhitelist: useWhitelist.value,
+      whitelistAddress: useWhitelist.value
+        ? new PublicKey(whitelistAddress.value)
+        : null,
       useLimit: useLimit.value,
       amountAbleToWrap: useLimit.value
         ? calcAmountToTransfer(
@@ -106,52 +114,137 @@ async function updateWrapper() {
 
 <template>
   <q-card flat>
-    <q-card-section>
+    <q-card-section class="q-gutter-y-sm">
       <div class="row items-center">
         <div class="col text-subtitle1">Allow wrap</div>
-        <q-checkbox v-model="allowWrap" />
+        <q-toggle
+          v-model="allowWrap"
+          checked-icon="check"
+          color="primary"
+          unchecked-icon="clear"
+        />
       </div>
       <div class="row items-center">
         <div class="col text-subtitle1">Allow unwrap</div>
-        <q-checkbox v-model="allowUnwrap" />
+        <q-toggle
+          v-model="allowUnwrap"
+          checked-icon="check"
+          color="primary"
+          unchecked-icon="clear"
+        />
+      </div>
+
+      <div class="row items-center">
+        <div class="col text-subtitle1">Only admin can Wrap</div>
+        <q-toggle
+          v-model="onlyAdminCanWrap"
+          checked-icon="check"
+          color="primary"
+          unchecked-icon="clear"
+        />
       </div>
       <div class="row items-center">
-        <div class="col text-subtitle1">Only creator can unwrap</div>
-        <q-checkbox v-model="onlyCreatorCanUnwrap" />
+        <div class="col text-subtitle1">Only admin can unwrap</div>
+        <q-toggle
+          v-model="onlyAdminCanUnwrap"
+          checked-icon="check"
+          color="primary"
+          unchecked-icon="clear"
+        />
       </div>
 
       <div class="row items-center">
         <div class="col text-subtitle1">Use whitelist</div>
-        <q-checkbox v-model="useWhitelist" />
+        <q-input
+          v-if="useWhitelist"
+          dense
+          filled
+          square
+          style="width: 500px"
+          v-model="whitelistAddress"
+          type="text"
+          label="Whitelist"
+        />
+        <q-toggle
+          v-model="useWhitelist"
+          checked-icon="check"
+          color="primary"
+          unchecked-icon="clear"
+        />
+      </div>
+
+      <div class="row items-center">
+        <div class="col text-subtitle1">Use Limit</div>
+
+        <q-input
+          v-if="useLimit"
+          dense
+          filled
+          square
+          style="width: 500px"
+          v-model="limitAmountUnwrapped"
+          type="number"
+          label="Amount wrappable"
+        />
+
+        <q-toggle
+          v-model="useLimit"
+          checked-icon="check"
+          color="primary"
+          unchecked-icon="clear"
+        />
       </div>
 
       <div>
         <div class="row items-center">
-          <div class="col text-subtitle1">Use Limit</div>
-          <q-checkbox v-model="useLimit" />
-        </div>
-        <div v-if="useLimit">
-          <q-input filled square v-model="limitAmountUnwrapped" />
-        </div>
-      </div>
-      <div>
-        <div class="row items-center">
           <div class="col text-subtitle1">Change Admin</div>
-          <q-checkbox v-model="changeAdmin" />
-        </div>
-        <div v-if="changeAdmin">
-          <q-input filled square v-model="admin" />
+          <q-input
+            style="width: 500px"
+            v-if="changeAdmin"
+            dense
+            filled
+            square
+            label="Admin"
+            v-model="admin"
+          />
+          <q-toggle
+            v-model="changeAdmin"
+            checked-icon="check"
+            color="primary"
+            unchecked-icon="clear"
+          />
         </div>
       </div>
       <div>
         <div class="row items-center">
           <div class="col text-subtitle1">Change Ratio</div>
-          <q-checkbox v-model="changeRatio" />
-        </div>
-        <div v-if="changeRatio" class="row items-center">
-          <q-input filled square v-model="ratio_a" type="number" />
-          <q-icon size="md" name="swap_horiz" />
-          <q-input filled square v-model="ratio_b" type="number" />
+          <div style="width: 500px" v-if="changeRatio" class="row items-center">
+            <q-input
+              class="col"
+              dense
+              filled
+              square
+              label="Unwrapped"
+              v-model="ratio_a"
+              type="number"
+            />
+            <q-icon size="md" name="swap_horiz" />
+            <q-input
+              class="col"
+              dense
+              filled
+              square
+              label="Wrapped"
+              v-model="ratio_b"
+              type="number"
+            />
+          </div>
+          <q-toggle
+            v-model="changeRatio"
+            checked-icon="check"
+            color="primary"
+            unchecked-icon="clear"
+          />
         </div>
       </div>
     </q-card-section>

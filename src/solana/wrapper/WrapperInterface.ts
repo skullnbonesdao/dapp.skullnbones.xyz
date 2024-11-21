@@ -18,7 +18,8 @@ export interface IWrapper {
   seed: BN;
   group: PublicKey;
   admin: PublicKey;
-  onlyCreatorCanUnwrap: boolean;
+  onlyAdminCanWrap: boolean;
+  onlyAdminCanUnwrap: boolean;
   mintUnwrapped: PublicKey;
   mintWrapped: PublicKey;
   wrappedDecimals: number;
@@ -41,6 +42,18 @@ export function findWrapperAddress(mintUnwrapped: PublicKey, admin: PublicKey) {
     ID,
   );
   return wrapper[0];
+}
+
+export function findMintWrappedAddress(wrapper: PublicKey, seed: BN) {
+  const mintWrapped = PublicKey.findProgramAddressSync(
+    [
+      anchor.utils.bytes.utf8.encode('wrapper_token'),
+      wrapper.toBytes(),
+      seed.toBuffer().reverse(),
+    ],
+    ID,
+  );
+  return mintWrapped[0];
 }
 
 export function findVaultAddress(wrapper: PublicKey, mintUnwrapped: PublicKey) {

@@ -106,7 +106,7 @@ const rowsPerPageOptions = computed(() => {
                 </div>
               </div>
               <div class="row items-center">
-                <div class="col text-subtitle1 text-weight-thin">Available</div>
+                <div class="col text-subtitle1 text-weight-thin">Wrappable</div>
                 <div class="text-subtitle2">
                   {{
                     props.row?.account.useLimit

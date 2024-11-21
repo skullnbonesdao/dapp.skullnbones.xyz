@@ -46,7 +46,7 @@ const columns = ref([
   />
   <Apex_TicketsChart
     :data_value="entrants?.map((e) => e.amount)"
-    :data_label="entrants?.map((e) => format_address(e.address))"
+    :data_label="entrants?.map((e) => e.address)"
   />
 </template>
 

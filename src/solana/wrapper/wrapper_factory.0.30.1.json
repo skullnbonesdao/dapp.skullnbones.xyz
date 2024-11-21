@@ -950,7 +950,13 @@
             }
           },
           {
-            "name": "only_creator_can_unwrap",
+            "name": "only_admin_can_wrap",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "only_admin_can_unwrap",
             "type": {
               "option": "bool"
             }
@@ -1100,7 +1106,11 @@
             "type": "pubkey"
           },
           {
-            "name": "only_creator_can_unwrap",
+            "name": "only_admin_can_wrap",
+            "type": "bool"
+          },
+          {
+            "name": "only_admin_can_unwrap",
             "type": "bool"
           },
           {

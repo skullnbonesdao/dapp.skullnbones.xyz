@@ -10,7 +10,7 @@ import {
   useWorkspaceAdapter,
 } from 'src/solana/connector';
 
-const tabSelected = ref('manage');
+const tabSelected = ref('wrapping');
 
 useWrapperStore();
 
