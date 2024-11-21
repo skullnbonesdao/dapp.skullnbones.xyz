@@ -33,7 +33,7 @@ async function buildTX(label: string) {
 
     tx.add(
       await pg_wrapper.methods
-        .unwrap(amount_to_transfer)
+        .unwrap(amount_to_transfer as any)
         .accountsPartial({
           signer: getSigner(),
           wrapper: wrapper.publicKey,

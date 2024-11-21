@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { format_address } from 'src/functions/format_address';
 import Apex_TicketsChart from 'components/apexcharts/Apex_TicketsChart.vue';
+import { Connection, PublicKey } from '@solana/web3.js';
+import { reverseLookupBatch } from '@bonfida/spl-name-service';
+import { useRPCStore } from 'stores/rpcStore';
 
 const props = defineProps(['entrants']);
 
@@ -28,6 +31,37 @@ const columns = ref([
     sortable: true,
   },
 ]);
+
+const dataValue = ref();
+const dataLabel = ref();
+const isLoading = ref(true);
+
+onMounted(async () => {
+  await loadData();
+});
+
+watch(
+  () => props.entrants,
+  async () => {
+    await loadData();
+  },
+);
+
+async function loadData() {
+  dataValue.value = props.entrants?.map((e) => e.amount);
+  const addresses = props.entrants?.flatMap((e) => new PublicKey(e.address));
+  const resolvedAddresses = await reverseLookupBatch(
+    useRPCStore().connection as Connection,
+    addresses,
+  );
+
+  dataLabel.value = addresses.flatMap((address, idx) => {
+    if (resolvedAddresses[idx]) return resolvedAddresses[idx];
+    else return address.toString();
+  });
+
+  isLoading.value = false;
+}
 </script>
 
 <template>
@@ -44,10 +78,9 @@ const columns = ref([
     v-model:pagination="pagination"
     :rows-per-page-options="[0]"
   />
-  <Apex_TicketsChart
-    :data_value="entrants?.map((e) => e.amount)"
-    :data_label="entrants?.map((e) => e.address)"
-  />
+
+  <q-skeleton v-if="isLoading" type="QInput" />
+  <Apex_TicketsChart :data_value="dataValue" :data_label="dataLabel" />
 </template>
 
 <style scoped lang="sass"></style>
