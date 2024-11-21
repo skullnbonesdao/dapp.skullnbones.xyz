@@ -3,11 +3,12 @@ import { ref } from 'vue';
 import { Notify } from 'quasar';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { createTransferCheckedInstruction } from '@solana/spl-token';
-import { getATA } from 'stores/globalWrapper_old';
+
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { calcAmountToTransfer } from 'stores/globalStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
+import { findATA } from 'src/solana/wrapper/WrapperInterface';
 
 const amount = ref();
 
@@ -19,8 +20,8 @@ async function transfer() {
     const token = useTokenListStore().tokenList.find(
       (t) => t.address == 'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx',
     )!;
-    const source = getATA(getSigner().toString(), token.address);
-    const destination = getATA(owner.toString(), token.address);
+    const source = findATA(getSigner().toString(), token.address);
+    const destination = findATA(owner.toString(), token.address);
 
     tx.add(
       createTransferCheckedInstruction(
