@@ -99,7 +99,7 @@ export type WrapperFactory = {
           "name": "mintUnwrapped"
         },
         {
-          "name": "vaultWrapped",
+          "name": "vaultUnwrappedAta",
           "writable": true,
           "pda": {
             "seeds": [
@@ -240,7 +240,7 @@ export type WrapperFactory = {
           }
         },
         {
-          "name": "vaultUnwrapped",
+          "name": "vaultUnwrappedAta",
           "writable": true,
           "pda": {
             "seeds": [
@@ -881,7 +881,7 @@ export type WrapperFactory = {
           "writable": true
         },
         {
-          "name": "ataUnwrappedVault",
+          "name": "vaultUnwrappedAta",
           "writable": true,
           "pda": {
             "seeds": [
@@ -1531,7 +1531,7 @@ export type WrapperFactory = {
             "type": "bool"
           },
           {
-            "name": "amountAbleToWrap",
+            "name": "limitAmountUnwrapped",
             "type": "u64"
           },
           {

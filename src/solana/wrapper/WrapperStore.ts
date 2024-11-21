@@ -17,8 +17,8 @@ export interface WrapperAccount {
 
 export const useWrapperStore = defineStore('wrapperStore', {
   state: () => ({
-    wrapperSelected: {} as WrapperAccount,
-    groupSelected: {} as GroupAccount,
+    wrapperSelected: {} as WrapperAccount | undefined,
+    groupSelected: {} as GroupAccount | undefined,
     wrapper: [] as WrapperAccount[],
     groups: [] as GroupAccount[],
   }),
@@ -31,6 +31,8 @@ export const useWrapperStore = defineStore('wrapperStore', {
 
         this.groups = (await pg_wrapper.value.account.group.all()) as never;
         this.wrapper = (await pg_wrapper.value.account.wrapper.all()) as never;
+
+        if (!this.groupSelected) this.groupSelected = this.groups[0];
         console.log('[Updated] WrapperStore');
       }
     },

@@ -25,7 +25,7 @@ export interface IWrapper {
   allowWrap: boolean;
   allowUnwrap: boolean;
   useLimit: boolean;
-  amountAbleToWrap: BN;
+  limitAmountUnwrapped: BN;
   ratio: [BN, 2];
   useWhitelist: boolean;
   whitelist: PublicKey;

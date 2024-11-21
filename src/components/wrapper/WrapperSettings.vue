@@ -20,7 +20,7 @@ const allowUnwrap = ref();
 const onlyCreatorCanUnwrap = ref();
 const useWhitelist = ref();
 const useLimit = ref();
-const amountAbleToWrap = ref();
+const limitAmountUnwrapped = ref();
 const changeAdmin = ref(false);
 const admin = ref();
 const changeRatio = ref(false);
@@ -46,7 +46,7 @@ function mapCurrentWrapperToParams() {
   onlyCreatorCanUnwrap.value = wrapper?.onlyCreatorCanUnwrap;
   useWhitelist.value = wrapper?.useWhitelist;
   useLimit.value = wrapper?.useLimit;
-  amountAbleToWrap.value = wrapper?.amountAbleToWrap ?? 0;
+  limitAmountUnwrapped.value = wrapper?.limitAmountUnwrapped ?? 0;
   admin.value = wrapper?.admin;
   ratio_a.value = wrapper?.ratio[0];
   ratio_b.value = wrapper?.ratio[1];
@@ -65,7 +65,7 @@ async function updateWrapper() {
       useLimit: useLimit.value,
       amountAbleToWrap: useLimit.value
         ? calcAmountToTransfer(
-            amountAbleToWrap.value,
+            limitAmountUnwrapped.value,
             useTokenListStore().tokenList.find(
               (t) =>
                 t.address ==
@@ -131,7 +131,7 @@ async function updateWrapper() {
           <q-checkbox v-model="useLimit" />
         </div>
         <div v-if="useLimit">
-          <q-input filled square v-model="amountAbleToWrap" />
+          <q-input filled square v-model="limitAmountUnwrapped" />
         </div>
       </div>
       <div>

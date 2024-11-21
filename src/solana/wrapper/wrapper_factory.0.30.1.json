@@ -64,7 +64,7 @@
           "name": "mint_unwrapped"
         },
         {
-          "name": "vault_wrapped",
+          "name": "vault_unwrapped_ata",
           "writable": true,
           "pda": {
             "seeds": [
@@ -155,7 +155,7 @@
           }
         },
         {
-          "name": "vault_unwrapped",
+          "name": "vault_unwrapped_ata",
           "writable": true,
           "pda": {
             "seeds": [
@@ -618,7 +618,7 @@
           "writable": true
         },
         {
-          "name": "ata_unwrapped_vault",
+          "name": "vault_unwrapped_ata",
           "writable": true,
           "pda": {
             "seeds": [
@@ -1128,7 +1128,7 @@
             "type": "bool"
           },
           {
-            "name": "amount_able_to_wrap",
+            "name": "limit_amount_unwrapped",
             "type": "u64"
           },
           {

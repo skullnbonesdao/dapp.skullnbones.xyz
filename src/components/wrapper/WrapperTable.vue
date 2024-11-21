@@ -110,7 +110,7 @@ const rowsPerPageOptions = computed(() => {
                 <div class="text-subtitle2">
                   {{
                     props.row?.account.useLimit
-                      ? props.row?.account.amountAbleToWrap
+                      ? props.row?.account.limitAmountUnwrapped
                       : '∞'
                   }}
                 </div>
