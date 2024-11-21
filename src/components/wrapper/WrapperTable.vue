@@ -2,7 +2,7 @@
 import { useQuasar } from 'quasar';
 import { computed, ref, watch } from 'vue';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { useAccountStore } from 'stores/globalAccountStore';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { UNKNOWN_IMAGE } from 'stores/constants';
 import WrapperWrap from 'components/wrapper/WrapperWrap.vue';
 import WrapperUnwrap from 'components/wrapper/WrapperUnwrap.vue';

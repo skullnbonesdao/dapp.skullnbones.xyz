@@ -128,6 +128,8 @@ const links1 = computed(() => {
   let data = [];
   data.push({ icon: 'home', text: 'Home', to: '/' });
 
+  data.push({ icon: 'content_cut', text: 'Cut', to: '/cut' });
+
   if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
     data.push({ icon: 'work', text: 'Jobs', to: '/jobs' });
   }

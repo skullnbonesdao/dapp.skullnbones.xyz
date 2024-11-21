@@ -13,7 +13,7 @@ import 'src/css/backgrounds.scss';
 import { useRPCStore } from 'stores/rpcStore';
 import { onMounted, ref, watch } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
-import { useAccountStore } from 'stores/globalAccountStore';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 

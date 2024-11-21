@@ -7,8 +7,8 @@ import { ref, watch } from 'vue';
 import { ParsedAccountData } from '@solana/web3.js';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 import WrapperTransferVaultOut from 'components/wrapper/WrapperTransferVaultOut.vue';
-import { useAccountStore } from '../../stores/globalAccountStore';
 import { findVaultAddress } from 'src/solana/wrapper/WrapperInterface';
+import { useTokenListStore } from '../../solana/tokens/TokenListStore';
 
 const $q = useQuasar();
 
@@ -64,11 +64,9 @@ async function loadAccountInfo() {
         <div class="col text-subtitle1 text-weight-thin">Unwrapped</div>
         <div class="text-subtitle2">
           {{
-            useAccountStore().tokenList.find(
-              (t) =>
-                t.address ==
-                useWrapperStore().wrapperSelected.account?.mintUnwrapped.toString(),
-            )?.name
+            useTokenListStore().getTokenByMintPublicKey(
+              useWrapperStore().wrapperSelected.account.mintUnwrapped!,
+            ).name
           }}
         </div>
       </div>

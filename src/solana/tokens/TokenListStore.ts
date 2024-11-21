@@ -13,7 +13,9 @@ export const useTokenListStore = defineStore('tokenListStore', {
   getters: {
     getTokenByMintPublicKey: (state) => {
       return (mint: PublicKey) =>
-        state.tokenList.find((token) => token.address === mint.toString());
+        state.tokenList.find(
+          (token) => token.address === mint.toString(),
+        ) as IToken;
     },
   },
   actions: {

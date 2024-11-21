@@ -10,7 +10,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { calcAmountToTransfer } from 'stores/globalStore';
-import { useAccountStore } from 'stores/globalAccountStore';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
 import { handleTransaction } from 'src/solana/handleTransaction';

@@ -4,7 +4,7 @@ import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { useAccountStore } from 'stores/globalAccountStore';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 import { handleTransaction } from 'src/solana/handleTransaction';

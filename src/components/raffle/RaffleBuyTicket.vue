@@ -9,7 +9,7 @@ import { Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
-import { useAccountStore } from '../../stores/globalAccountStore';
+import { useAccountStore } from '../../solana/accounts/AccountStore';
 import { findWhitelistAddress } from 'src/solana/whitelist/WhitelistInterface';
 
 const input_raffle_ticket_amount = ref();

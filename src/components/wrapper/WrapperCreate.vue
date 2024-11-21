@@ -6,7 +6,10 @@ import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { AccountStore, useAccountStore } from 'stores/globalAccountStore';
+import {
+  AccountStore,
+  useAccountStore,
+} from 'src/solana/accounts/AccountStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 
