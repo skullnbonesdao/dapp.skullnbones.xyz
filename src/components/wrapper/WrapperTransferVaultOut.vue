@@ -48,7 +48,6 @@ async function transfer() {
       );
 
       await handleTransaction(tx, `[Wrapper] transfer to ${recipient.value}`);
-
       await useWrapperStore().updateStore();
     }
   } catch (err) {

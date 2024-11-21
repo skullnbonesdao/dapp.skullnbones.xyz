@@ -21,38 +21,35 @@ const ratioWrapped = ref<number>(1);
 
 async function createWrapper() {
   try {
-    if (useWorkspaceAdapter()) {
-      const tx = new Transaction();
-      const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
+    const tx = new Transaction();
+    const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
-      const params = {
-        ratio: [
-          new anchor.BN(ratioUnwrapped.value),
-          new anchor.BN(ratioWrapped.value),
-        ],
-        onlyCreatorCanUnwrap: false,
-        wrappedDecimals: mintWrappedDecimals.value,
-        seed: new anchor.BN(window.crypto.getRandomValues(new Uint8Array(8))),
-      };
+    const params = {
+      ratio: [
+        new anchor.BN(ratioUnwrapped.value),
+        new anchor.BN(ratioWrapped.value),
+      ],
+      onlyCreatorCanUnwrap: false,
+      wrappedDecimals: mintWrappedDecimals.value,
+      seed: new anchor.BN(window.crypto.getRandomValues(new Uint8Array(8))),
+    };
 
-      tx.add(
-        await pg_wrapper.methods
-          .initialize(params as any)
-          .accountsPartial({
-            signer: getSigner(),
-            group: new PublicKey(
-              useWrapperStore().groupSelected?.publicKey.toString() ?? '',
-            ),
-            mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
-            tokenProgram: TOKEN_PROGRAM_ID,
-          })
-          .instruction(),
-      );
+    tx.add(
+      await pg_wrapper.methods
+        .initialize(params as any)
+        .accountsPartial({
+          signer: getSigner(),
+          group: new PublicKey(
+            useWrapperStore().groupSelected?.publicKey.toString() ?? '',
+          ),
+          mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .instruction(),
+    );
 
-      await handleTransaction(tx);
-
-      await useWrapperStore().updateStore();
-    }
+    await handleTransaction(tx, '[Wrapper] create');
+    await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);
     $q.notify({

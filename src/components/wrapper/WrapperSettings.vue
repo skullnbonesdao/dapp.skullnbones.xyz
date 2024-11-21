@@ -52,46 +52,43 @@ function mapCurrentWrapperToParams() {
 
 async function updateWrapper() {
   try {
-    if (useWorkspaceAdapter()) {
-      const tx = new Transaction();
+    const tx = new Transaction();
 
-      const params = {
-        allowWrap: allowWrap.value,
-        allowUnwrap: allowUnwrap.value,
-        onlyCreatorCanUnwrap: onlyCreatorCanUnwrap.value,
-        useWhitelist: useWhitelist.value,
-        useLimit: useLimit.value,
-        amountAbleToWrap: useLimit.value
-          ? amountAbleToWrap.value *
-            10 **
-              useAccountStore().tokenList.find(
-                (t) =>
-                  t.address ==
-                  useWrapperStore().wrapperSelected?.account?.mintUnwrapped.toString(),
-              )?.decimals
-          : null,
-        admin: changeAdmin.value ? new PublicKey(admin.value) : null,
-        ratio: changeRatio.value
-          ? [new anchor.BN(ratio_a.value), new anchor.BN(ratio_b.value)]
-          : null,
-      } as any;
+    const params = {
+      allowWrap: allowWrap.value,
+      allowUnwrap: allowUnwrap.value,
+      onlyCreatorCanUnwrap: onlyCreatorCanUnwrap.value,
+      useWhitelist: useWhitelist.value,
+      useLimit: useLimit.value,
+      amountAbleToWrap: useLimit.value
+        ? amountAbleToWrap.value *
+          10 **
+            useAccountStore().tokenList.find(
+              (t) =>
+                t.address ==
+                useWrapperStore().wrapperSelected?.account?.mintUnwrapped.toString(),
+            )?.decimals
+        : null,
+      admin: changeAdmin.value ? new PublicKey(admin.value) : null,
+      ratio: changeRatio.value
+        ? [new anchor.BN(ratio_a.value), new anchor.BN(ratio_b.value)]
+        : null,
+    } as any;
 
-      tx.add(
-        await useWorkspaceAdapter()
-          ?.pg_wrapper.value.methods.edit(params)
-          .accountsPartial({
-            wrapper: useWrapperStore().wrapperSelected?.publicKey,
-            signer: getSigner(),
-            mintUnwrapped:
-              useWrapperStore().wrapperSelected?.account.mintUnwrapped,
-            whitelist: null,
-            tokenProgram: TOKEN_PROGRAM_ID,
-          })
-          .instruction(),
-      );
-      await handleTransaction(tx);
-    }
-
+    tx.add(
+      await useWorkspaceAdapter()
+        ?.pg_wrapper.value.methods.edit(params)
+        .accountsPartial({
+          wrapper: useWrapperStore().wrapperSelected?.publicKey,
+          signer: getSigner(),
+          mintUnwrapped:
+            useWrapperStore().wrapperSelected?.account.mintUnwrapped,
+          whitelist: null,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .instruction(),
+    );
+    await handleTransaction(tx);
     await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);

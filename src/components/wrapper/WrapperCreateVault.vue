@@ -2,20 +2,22 @@
 import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
 import { useQuasar } from 'quasar';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 
 import { ref } from 'vue';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
+import { handleTransaction } from 'src/solana/handleTransaction';
 
 const $q = useQuasar();
 const vaultFound = ref<boolean>(false);
 
 async function buildTX(label: string) {
   try {
-    if (useWorkspaceAdapter()) {
-      const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
+    const tx = new Transaction();
+    const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
+    tx.add(
       await pg_wrapper.methods
         .createVault()
         .accountsPartial({
@@ -28,13 +30,10 @@ async function buildTX(label: string) {
           ),
           tokenProgram: TOKEN_PROGRAM_ID,
         })
-        .rpc();
-    }
+        .instruction(),
+    );
 
-    $q.notify({
-      message: `${label} successful!`,
-      type: 'positive',
-    });
+    await handleTransaction(tx, '[Wrapper] create vault');
   } catch (err) {
     console.error(err);
     $q.notify({

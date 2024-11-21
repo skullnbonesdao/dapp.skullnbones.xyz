@@ -17,26 +17,23 @@ const props = defineProps({
 
 async function closeWrapper() {
   try {
-    if (useWorkspaceAdapter()) {
-      const tx = new Transaction();
-      const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
+    const tx = new Transaction();
+    const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
-      tx.add(
-        await pg_wrapper.methods
-          .close()
-          .accountsPartial({
-            wrapper: useWrapperStore().wrapperSelected?.publicKey,
-            signer: getSigner(),
-            mintUnwrapped:
-              useWrapperStore().wrapperSelected?.account.mintUnwrapped,
-            tokenProgram: TOKEN_PROGRAM_ID,
-          })
-          .instruction(),
-      );
+    tx.add(
+      await pg_wrapper.methods
+        .close()
+        .accountsPartial({
+          wrapper: useWrapperStore().wrapperSelected?.publicKey,
+          signer: getSigner(),
+          mintUnwrapped:
+            useWrapperStore().wrapperSelected?.account.mintUnwrapped,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .instruction(),
+    );
 
-      await handleTransaction(tx, 'Close WrapperInterface');
-    }
-
+    await handleTransaction(tx, '[Wrapper] Close');
     await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);

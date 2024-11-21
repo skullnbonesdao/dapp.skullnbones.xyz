@@ -25,74 +25,70 @@ const props = defineProps(['wrapper']);
 
 async function buildTX(label: string) {
   try {
-    if (useWorkspaceAdapter()) {
-      const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
-      const tx = new Transaction();
+    const tx = new Transaction();
+    const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
-      const wrapper = props.wrapper;
+    const wrapper = props.wrapper;
 
-      const amount_to_transfer = new anchor.BN(
-        calcAmountToTransfer(
-          amountToWrap.value,
-          useAccountStore().accounts.find(
-            (acc) =>
-              acc.mint.toString() == wrapper?.account.mintUnwrapped.toString(),
-          )?.decimals ?? 0,
-        ),
-      );
+    const amount_to_transfer = new anchor.BN(
+      calcAmountToTransfer(
+        amountToWrap.value,
+        useAccountStore().accounts.find(
+          (acc) =>
+            acc.mint.toString() == wrapper?.account.mintUnwrapped.toString(),
+        )?.decimals ?? 0,
+      ),
+    );
 
-      let ataInfo = await useRPCStore().connection.getAccountInfo(
-        getATA(
-          useWallet().publicKey.value!.toString(),
-          props.wrapper.account.mintWrapped.toString(),
-        ),
-      );
+    let ataInfo = await useRPCStore().connection.getAccountInfo(
+      getATA(
+        useWallet().publicKey.value!.toString(),
+        props.wrapper.account.mintWrapped.toString(),
+      ),
+    );
 
-      if (!ataInfo) {
-        tx.add(
-          createAssociatedTokenAccountInstruction(
-            getSigner()!,
-            getATA(
-              getSigner()!.toString(),
-              props.wrapper.account.mintWrapped.toString(),
-            ),
-            getSigner()!,
-            props.wrapper.account.mintWrapped,
-            TOKEN_PROGRAM_ID,
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-          ),
-        );
-      }
-
+    if (!ataInfo) {
       tx.add(
-        await pg_wrapper.methods
-          .wrap(amount_to_transfer)
-          .accountsPartial({
-            signer: useWallet().publicKey.value,
-            wrapper: wrapper.publicKey,
-            mintUnwrapped: wrapper.account.mintUnwrapped,
-            signerUnwrapped: new PublicKey(
-              useAccountStore().accounts.find(
-                (acc) =>
-                  acc.mint.toString() ==
-                  wrapper.account.mintUnwrapped.toString(),
-              )?.pubkey ?? '',
-            ),
-            signerWrapped: getATA(
-              useWallet().publicKey.value!.toString(),
-              props.wrapper.account.mintWrapped.toString(),
-            ),
-
-            tokenProgram: TOKEN_PROGRAM_ID,
-            whitelist: null,
-            whitelistEntry: null,
-          })
-          .instruction(),
+        createAssociatedTokenAccountInstruction(
+          getSigner()!,
+          getATA(
+            getSigner()!.toString(),
+            props.wrapper.account.mintWrapped.toString(),
+          ),
+          getSigner()!,
+          props.wrapper.account.mintWrapped,
+          TOKEN_PROGRAM_ID,
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+        ),
       );
-
-      await handleTransaction(tx, 'Wrap tokens');
     }
 
+    tx.add(
+      await pg_wrapper.methods
+        .wrap(amount_to_transfer)
+        .accountsPartial({
+          signer: useWallet().publicKey.value,
+          wrapper: wrapper.publicKey,
+          mintUnwrapped: wrapper.account.mintUnwrapped,
+          signerUnwrapped: new PublicKey(
+            useAccountStore().accounts.find(
+              (acc) =>
+                acc.mint.toString() == wrapper.account.mintUnwrapped.toString(),
+            )?.pubkey ?? '',
+          ),
+          signerWrapped: getATA(
+            useWallet().publicKey.value!.toString(),
+            props.wrapper.account.mintWrapped.toString(),
+          ),
+
+          tokenProgram: TOKEN_PROGRAM_ID,
+          whitelist: null,
+          whitelistEntry: null,
+        })
+        .instruction(),
+    );
+
+    await handleTransaction(tx, '[Wrapper] wrap tokens');
     await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);

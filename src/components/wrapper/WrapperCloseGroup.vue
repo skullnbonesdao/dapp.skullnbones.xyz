@@ -15,22 +15,21 @@ const $q = useQuasar();
 
 async function closeGroup() {
   try {
-    if (useWorkspaceAdapter()) {
-      const tx = new Transaction();
-      const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
+    const tx = new Transaction();
+    const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
-      tx.add(
-        await pg_wrapper.methods
-          .closeGroup()
-          .accountsPartial({
-            group: useWrapperStore().groupSelected.publicKey,
-            signer: getSigner(),
-          })
-          .instruction(),
-      );
+    tx.add(
+      await pg_wrapper.methods
+        .closeGroup()
+        .accountsPartial({
+          group: useWrapperStore().groupSelected.publicKey,
+          signer: getSigner(),
+        })
+        .instruction(),
+    );
 
-      await handleTransaction(tx, 'Close Group');
-    }
+    await handleTransaction(tx, 'Close Group');
+    await useWrapperStore().updateStore();
   } catch (err) {
     $q.notify({
       message: err.message,

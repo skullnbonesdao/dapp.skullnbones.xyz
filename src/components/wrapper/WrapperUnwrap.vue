@@ -21,50 +21,46 @@ const props = defineProps(['wrapper']);
 
 async function buildTX(label: string) {
   try {
-    if (useWorkspaceAdapter()) {
-      const tx = new Transaction();
-      const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
+    const tx = new Transaction();
+    const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
-      const wrapper = props.wrapper;
+    const wrapper = props.wrapper;
 
-      const amount_to_transfer = new anchor.BN(
-        calcAmountToTransfer(
-          amountToWrap.value,
-          useAccountStore().accounts.find(
-            (acc) =>
-              acc.mint.toString() == wrapper?.account.mintUnwrapped.toString(),
-          )?.decimals ?? 0,
-        ),
-      );
+    const amount_to_transfer = new anchor.BN(
+      calcAmountToTransfer(
+        amountToWrap.value,
+        useAccountStore().accounts.find(
+          (acc) =>
+            acc.mint.toString() == wrapper?.account.mintUnwrapped.toString(),
+        )?.decimals ?? 0,
+      ),
+    );
 
-      tx.add(
-        await pg_wrapper.methods
-          .unwrap(amount_to_transfer)
-          .accountsPartial({
-            signer: getSigner(),
-            wrapper: wrapper.publicKey,
-            mintUnwrapped: wrapper.account.mintUnwrapped,
-            signerUnwrapped: new PublicKey(
-              useAccountStore().accounts.find(
-                (acc) =>
-                  acc.mint.toString() ==
-                  wrapper.account.mintUnwrapped.toString(),
-              )?.pubkey ?? '',
-            ),
-            signerWrapped: findATA(
-              useWallet().publicKey.value!.toString(),
-              props.wrapper.account.mintWrapped.toString(),
-            ),
+    tx.add(
+      await pg_wrapper.methods
+        .unwrap(amount_to_transfer)
+        .accountsPartial({
+          signer: getSigner(),
+          wrapper: wrapper.publicKey,
+          mintUnwrapped: wrapper.account.mintUnwrapped,
+          signerUnwrapped: new PublicKey(
+            useAccountStore().accounts.find(
+              (acc) =>
+                acc.mint.toString() == wrapper.account.mintUnwrapped.toString(),
+            )?.pubkey ?? '',
+          ),
+          signerWrapped: findATA(
+            useWallet().publicKey.value!.toString(),
+            props.wrapper.account.mintWrapped.toString(),
+          ),
 
-            tokenProgram: TOKEN_PROGRAM_ID,
-            whitelist: null,
-            whitelistEntry: null,
-          })
-          .instruction(),
-      );
-      await handleTransaction(tx, 'Unwrap tokens');
-    }
-
+          tokenProgram: TOKEN_PROGRAM_ID,
+          whitelist: null,
+          whitelistEntry: null,
+        })
+        .instruction(),
+    );
+    await handleTransaction(tx, '[Wrapper] unwrap tokens');
     await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);

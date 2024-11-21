@@ -5,6 +5,8 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { findMetadataAddress } from 'src/solana/wrapper/WrapperInterface';
 import { getSigner } from 'src/solana/squads/SignerFinder';
+import { Transaction } from '@solana/web3.js';
+import { handleTransaction } from 'src/solana/handleTransaction';
 
 const props = defineProps(['name', 'symbol', 'uri']);
 
@@ -12,14 +14,15 @@ const $q = useQuasar();
 
 async function buildTX(label: string) {
   try {
-    if (useWorkspaceAdapter()) {
-      const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
+    const tx = new Transaction();
+    const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
-      const metadata = {
-        name: props.name,
-        symbol: props.symbol,
-        uri: props.uri,
-      } as any;
+    const metadata = {
+      name: props.name,
+      symbol: props.symbol,
+      uri: props.uri,
+    } as any;
+    tx.add(
       await pg_wrapper.methods
         .metadataUpdate(metadata)
         .accountsPartial({
@@ -32,13 +35,11 @@ async function buildTX(label: string) {
             useWrapperStore().wrapperSelected?.account.mintUnwrapped,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
-        .rpc();
-    }
+        .instruction(),
+    );
 
-    $q.notify({
-      message: `${label} successful!`,
-      type: 'positive',
-    });
+    await handleTransaction(tx, '[Wrapper] metadata update');
+    await useWrapperStore().updateStore();
   } catch (err) {
     console.error(err);
     $q.notify({
