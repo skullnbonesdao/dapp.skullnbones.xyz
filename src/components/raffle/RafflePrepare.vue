@@ -5,7 +5,7 @@ import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/solana/connector';
-import { useGlobalWalletStore } from 'stores/globalWallet';
+
 import { useRPCStore } from 'stores/rpcStore';
 import { Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
@@ -20,26 +20,6 @@ const prize_account_selected = ref('');
 const props = defineProps(['raffle']);
 
 const options = ref<any[]>([]);
-
-const stringOptions = ref(
-  useGlobalWalletStore()
-    .token_accounts.filter(
-      (account) => account.account.data.parsed.info.tokenAmount.uiAmount > 0,
-    )
-    .flatMap((account) => account.account.data.parsed.info.mint),
-);
-
-stringOptions.value.forEach((o) =>
-  options.value.push({
-    label: useGlobalStore().token_list.find((t) => t.address == o)
-      ? useGlobalStore().token_list.find((t) => t.address == o)?.name +
-        ' [' +
-        useGlobalStore().token_list.find((t) => t.address == o)?.symbol +
-        ']'
-      : o,
-    value: o,
-  }),
-);
 
 async function add_prize_to_raffle() {
   try {
