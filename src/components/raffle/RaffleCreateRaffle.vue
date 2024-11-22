@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { ref } from 'vue';
 import { Notify } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { useGlobalStore } from '../../stores/globalStore';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 import { useRPCStore } from 'stores/rpcStore';
-import { useWhitelist } from 'stores/globalWhitelist';
+
 import { findRaffleAddress } from 'src/solana/raffle/RaffleInterface';
 import { findWhitelistAddress } from 'src/solana/whitelist/WhitelistInterface';
 import { Transaction } from '@solana/web3.js';
@@ -23,25 +23,6 @@ const inputRaffleTicketPrice = ref();
 const input_account_selected = ref();
 const whitelist_selected = ref<{ label: string; value: string | null }>();
 const whitelist_options = ref<{ label: string; value: string | null }[]>([]);
-
-onMounted(() => update_whitelists());
-watch(
-  () => useWhitelist().whitelists,
-  () => update_whitelists(),
-);
-
-function update_whitelists() {
-  useWhitelist().whitelists.forEach((whitelist) => {
-    whitelist_options.value.push({
-      label: 'Crew',
-      value: whitelist.publicKey.toString(),
-    });
-  });
-  whitelist_options.value.push({ label: 'none', value: null });
-  whitelist_selected.value = whitelist_options.value.find(
-    (entry) => entry.label == 'Crew',
-  );
-}
 
 async function create_new_raffle() {
   try {
