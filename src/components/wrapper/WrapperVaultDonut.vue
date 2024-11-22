@@ -3,15 +3,23 @@ import { computed, onMounted, ref } from 'vue';
 import { useRPCStore } from 'stores/rpcStore';
 import { PublicKey } from '@solana/web3.js';
 import { findVaultAddress } from 'src/solana/wrapper/WrapperInterface';
+import { watchDeep } from '@vueuse/core';
+import FormatNumber from 'components/text/FormatNumber.vue';
 
 const props = defineProps(['wrapper']);
 
 const total = ref(0);
 const vault = ref(0);
+const redeemable = ref(0);
 
 async function load() {
-  total.value = (await getTotalSupply()) * props.wrapper.account.ratio[0] ?? 0;
-  vault.value = (await getBalance()) * props.wrapper.account.ratio[1] ?? 0;
+  total.value = (await getTotalSupply()) ?? 0;
+  vault.value = (await getBalance()) ?? 0;
+
+  redeemable.value =
+    ((total.value * props.wrapper.account.ratio[1]) / total.value) *
+    props.wrapper.account.ratio[1] *
+    100;
 }
 
 async function getTotalSupply() {
@@ -36,8 +44,13 @@ onMounted(async () => {
   await load();
 });
 
+watchDeep(
+  () => props.wrapper,
+  async () => await load(),
+);
+
 const data = computed(() => {
-  return [vault.value, total.value];
+  return [redeemable.value];
 });
 
 const options = ref({
@@ -48,16 +61,29 @@ const options = ref({
     labels: {
       colors: 'white',
     },
-    show: true,
-    position: 'bottom',
+    show: false,
+    position: 'left',
   },
   theme: {
     palette: 'palette3', // upto palette10
   },
-  labels: ['Vault', 'Circ. Supply'],
+  labels: ['Redeemable' + ''],
 });
 </script>
 
 <template>
-  <apexchart height="200px" type="donut" :options="options" :series="data" />
+  <div class="row">
+    <div class="col">Vault Balance</div>
+    <FormatNumber class="" :number="vault" :decimals="4" :pad-start="10" />
+  </div>
+  <div class="row">
+    <div class="col">Circ. Supply</div>
+    <FormatNumber :number="total" :decimals="4" :pad-start="10" />
+  </div>
+  <apexchart
+    height="300px"
+    type="radialBar"
+    :options="options"
+    :series="data"
+  />
 </template>

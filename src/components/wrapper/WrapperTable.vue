@@ -9,6 +9,7 @@ import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useAccountStore } from '../../solana/accounts/AccountStore';
 import { format_address } from '../../functions/format_address';
+import FormatNumber from 'components/text/FormatNumber.vue';
 
 const rows = [];
 
@@ -116,6 +117,7 @@ const rowsPerPageOptions = computed(() => {
                   }}
                 </div>
               </div>
+
               <div class="row items-center">
                 <div class="col text-subtitle1 text-weight-thin">Address</div>
                 <div class="text-subtitle2">
@@ -155,21 +157,31 @@ const rowsPerPageOptions = computed(() => {
             </q-card-actions>
 
             <q-card-section class="col">
-              <div class="row q-mb-md q-px-md text-weight-thin">
-                <div class="col-1 q-gutter-x-xs">
-                  {{
-                    useAccountStore().getAccountByMintPublicKey(
-                      props.row.account.mintUnwrapped,
-                    )?.uiAmount
-                  }}
+              <div class="row q-mb-md q-px-md">
+                <div class="col-3 q-gutter-x-xs">
+                  <FormatNumber
+                    class=""
+                    :number="
+                      useAccountStore().getAccountByMintPublicKey(
+                        props.row.account.mintUnwrapped,
+                      )?.uiAmount
+                    "
+                    :decimals="4"
+                    :pad-start="10"
+                  />
                 </div>
                 <div class="col text-center">Wallet Balance</div>
-                <div class="col-1 text-right q-gutter-x-xs">
-                  {{
-                    useAccountStore().getAccountByMintPublicKey(
-                      props.row.account.mintWrapped,
-                    )?.uiAmount
-                  }}
+                <div class="col-3 text-right q-gutter-x-xs">
+                  <FormatNumber
+                    class=""
+                    :number="
+                      useAccountStore().getAccountByMintPublicKey(
+                        props.row.account.mintWrapped,
+                      )?.uiAmount
+                    "
+                    :decimals="4"
+                    :pad-start="10"
+                  />
                 </div>
               </div>
 
