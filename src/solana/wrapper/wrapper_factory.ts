@@ -1411,7 +1411,11 @@ export type WrapperFactory = {
             }
           },
           {
-            "name": "onlyCreatorCanUnwrap",
+            "name": "onlyAdminCanWrap",
+            "type": "bool"
+          },
+          {
+            "name": "onlyAdminCanUnwrap",
             "type": "bool"
           },
           {

@@ -73,7 +73,7 @@ async function buildTX(label: string) {
                 acc.mint.toString() == wrapper.account.mintUnwrapped.toString(),
             )?.pubkey ?? '',
           ),
-          signerWrapped: getATA(
+          signerWrapped: findATA(
             useWallet().publicKey.value!.toString(),
             props.wrapper.account.mintWrapped.toString(),
           ),

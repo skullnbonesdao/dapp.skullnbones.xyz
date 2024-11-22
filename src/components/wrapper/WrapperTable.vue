@@ -7,6 +7,7 @@ import WrapperWrap from 'components/wrapper/WrapperWrap.vue';
 import WrapperUnwrap from 'components/wrapper/WrapperUnwrap.vue';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
+import { useAccountStore } from '../../solana/accounts/AccountStore';
 import { format_address } from '../../functions/format_address';
 
 const rows = [];
@@ -153,10 +154,29 @@ const rowsPerPageOptions = computed(() => {
               </q-card>
             </q-card-actions>
 
-            <q-card-section class="row q-gutter-x-md">
-              <WrapperWrap class="col" :wrapper="props.row" />
+            <q-card-section class="col">
+              <div class="row q-mb-md q-px-md text-weight-thin">
+                <div class="col-1 q-gutter-x-xs">
+                  {{
+                    useAccountStore().getAccountByMintPublicKey(
+                      props.row.account.mintUnwrapped,
+                    )?.uiAmount
+                  }}
+                </div>
+                <div class="col text-center">Wallet Balance</div>
+                <div class="col-1 text-right q-gutter-x-xs">
+                  {{
+                    useAccountStore().getAccountByMintPublicKey(
+                      props.row.account.mintWrapped,
+                    )?.uiAmount
+                  }}
+                </div>
+              </div>
 
-              <WrapperUnwrap class="col" :wrapper="props.row" />
+              <div class="row q-gutter-x-md">
+                <WrapperWrap class="col" :wrapper="props.row" />
+                <WrapperUnwrap class="col" :wrapper="props.row" />
+              </div>
             </q-card-section>
           </q-card>
         </div>

@@ -25,9 +25,7 @@ export const useAccountStore = defineStore('accountStore', {
         state.accounts.find((acc) => acc.mint === mint.toString());
     },
     getAccountsBalanceNotZero(state) {
-      return state.accounts.find(
-        (account) => account.uiAmount > 0,
-      ) as AccountStore;
+      return state.accounts.filter((account) => account.uiAmount > 0);
     },
   },
   actions: {

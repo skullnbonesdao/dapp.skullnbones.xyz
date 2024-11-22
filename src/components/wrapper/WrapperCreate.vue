@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import {
-  AccountStore,
-  useAccountStore,
-} from 'src/solana/accounts/AccountStore';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import {
@@ -18,8 +15,11 @@ import {
   findVaultAddress,
   findWrapperAddress,
 } from 'src/solana/wrapper/WrapperInterface';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 
 const $q = useQuasar();
+const filterOptions = ref(['list', 'address']);
+const filterOption = ref('list');
 const optionUnwrapped = ref();
 const mintWrappedDecimals = ref<number>(9);
 const ratioUnwrapped = ref<number>(1);
@@ -42,10 +42,13 @@ async function createWrapper() {
         new anchor.BN(ratioUnwrapped.value),
         new anchor.BN(ratioWrapped.value),
       ],
+      onlyCreatorCanWrap: false,
       onlyCreatorCanUnwrap: false,
       wrappedDecimals: mintWrappedDecimals.value,
       seed: seed,
     };
+
+    const mintUnwrapped = new PublicKey(optionUnwrapped.value.mint.toString());
 
     //Create Wrapper
     tx.add(
@@ -56,7 +59,7 @@ async function createWrapper() {
           group: new PublicKey(
             useWrapperStore().groupSelected?.publicKey.toString() ?? '',
           ),
-          mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
+          mintUnwrapped: mintUnwrapped,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .instruction(),
@@ -68,18 +71,12 @@ async function createWrapper() {
         .createVault()
         .accountsPartial({
           signer: getSigner(),
-          wrapper: findWrapperAddress(
-            new PublicKey(optionUnwrapped.value.mint.toString()),
-            getSigner(),
-          ),
+          wrapper: findWrapperAddress(mintUnwrapped, getSigner()),
           vaultUnwrappedAta: findVaultAddress(
-            findWrapperAddress(
-              new PublicKey(optionUnwrapped.value.mint.toString()),
-              getSigner(),
-            ),
-            new PublicKey(optionUnwrapped.value.mint.toString()),
+            findWrapperAddress(mintUnwrapped, getSigner()),
+            mintUnwrapped,
           ),
-          mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
+          mintUnwrapped: mintUnwrapped,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .instruction(),
@@ -94,11 +91,7 @@ async function createWrapper() {
         uri: metadataURI.value,
       } as any;
 
-      const wrapper = findWrapperAddress(
-        new PublicKey(optionUnwrapped.value.mint.toString()),
-        getSigner(),
-      );
-
+      const wrapper = findWrapperAddress(mintUnwrapped, getSigner());
       const mintWrapped = findMintWrappedAddress(wrapper, seed);
       const metadataAccount = findMetadataAddress(mintWrapped);
 
@@ -109,7 +102,7 @@ async function createWrapper() {
             signer: getSigner(),
             wrapper: wrapper,
             mintWrapped: mintWrapped,
-            mintUnwrapped: new PublicKey(optionUnwrapped.value.mint.toString()),
+            mintUnwrapped: mintUnwrapped,
             metadata: metadataAccount,
             tokenProgram: TOKEN_PROGRAM_ID,
           })
@@ -131,24 +124,83 @@ async function createWrapper() {
     });
   }
 }
+
+const tokenOptions = ref<
+  [
+    {
+      name: string;
+      symbol: string;
+      mint: string;
+    },
+  ]
+>(mapTokens2TokenOptions());
+
+watch(
+  () => filterOption.value,
+  () => (tokenOptions.value = mapTokens2TokenOptions()),
+);
+
+function mapTokens2TokenOptions() {
+  return filterOption.value == 'list'
+    ? useTokenListStore().tokenList.map((t) => {
+        return {
+          name: t.name,
+          symbol: t.symbol,
+          mint: t.address,
+        };
+      })
+    : useAccountStore().getAccountsBalanceNotZero?.map((t) => {
+        return {
+          name: t.info?.name,
+          symbol: t.info?.symbol,
+          mint: t.mint,
+        };
+      });
+}
+
+function filterFn(val, update, abort) {
+  update(() => {
+    const needle = val.toLowerCase();
+    tokenOptions.value = mapTokens2TokenOptions().filter(
+      (v) => JSON.stringify(v).toLowerCase().indexOf(needle) > -1,
+    );
+  });
+}
 </script>
 
 <template>
   <q-card flat>
     <q-card-section class="">
-      <div class="text-h6">Unwrapped Token</div>
+      <div class="row items-center">
+        <div class="col text-h6">Unwrapped Token</div>
+        <div class="row items-center">
+          <div class="col text-right q-mr-md text-subtitle2">Filter:</div>
+          <q-tabs dense v-model="filterOption" class="text-teal">
+            <q-tab
+              v-for="fo in filterOptions"
+              :name="fo"
+              :label="fo"
+              :key="fo"
+            />
+          </q-tabs>
+        </div>
+      </div>
       <div class="row q-gutter-x-md items-center">
         <q-select
           filled
           square
           class="col"
-          :options="useAccountStore().getAccountsBalanceNotZero"
+          use-input
+          hide-selected
+          fill-input
+          @filter="filterFn"
+          :options="tokenOptions"
           :option-label="
-            (option: AccountStore) => option.info?.name ?? option.mint
+            (option) =>
+              option.name ? `[${option.symbol}] ${option.name}` : option.mint
           "
           v-model="optionUnwrapped"
           label="Token to Wrap"
-          type="number"
         />
       </div>
     </q-card-section>
