@@ -91,8 +91,8 @@ async function buy_raffle_ticket() {
       />
     </div>
     <div class="row">
-      <div class="col row q-gutter-x-xs">
-        <p class="text-weight-light">Available:</p>
+      <div class="col row q-gutter-x-xs text-weight-light">
+        <p>Available:</p>
         <p>
           {{
             useAccountStore().accounts?.find(
