@@ -38,7 +38,7 @@
           <WalletMultiButton dark />
           <q-space />
         </div>
-        <div class="row">
+        <div v-if="useSquadsStore().multisigPDA.length" class="row">
           <q-space />
           <SquadsButton />
           <q-space />
@@ -100,6 +100,7 @@ import { useWhitelist } from '../stores/globalWhitelist';
 import { useRPCStore } from 'stores/rpcStore';
 import { useQuasar } from 'quasar';
 import SquadsButton from 'components/squads/SquadsButton.vue';
+import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
