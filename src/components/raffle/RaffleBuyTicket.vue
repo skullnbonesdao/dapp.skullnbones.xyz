@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import * as anchor from '@coral-xyz/anchor';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/solana/connector';
-import { useGlobalWalletStore } from 'stores/globalWallet';
+
 import { useRPCStore } from 'stores/rpcStore';
 import { Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
@@ -18,7 +18,6 @@ const props = defineProps(['raffle', 'tickets']);
 
 async function buy_raffle_ticket() {
   const tx = new Transaction();
-  await useGlobalWalletStore().update_accounts();
 
   const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
   const pg_whitelist = useWorkspaceAdapter()?.pg_whitelist.value;
