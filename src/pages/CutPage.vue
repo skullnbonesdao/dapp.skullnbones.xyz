@@ -10,17 +10,20 @@ import CutPayment from 'components/cut/CutPayment.vue';
         <div class="col text-h6">Cut</div>
       </q-card-section>
       <q-separator />
-
-      <q-card-section>
-        <div class="text-subtitle1">Pay your cut: 3.3%</div>
-        <div class="text-subtitle2 text-accent">
-          Easily pay your cut to Skull&Bones for the current month
-        </div>
-      </q-card-section>
-      <q-card-section class="q-gutter-y-sm">
-        <CutPayment />
-      </q-card-section>
     </q-card>
+    <div class="row justify-center q-ma-md">
+      <q-card class="" flat>
+        <q-card-section>
+          <div class="text-subtitle1">Pay your cut: 3.3%</div>
+          <div class="text-subtitle2 text-accent">
+            Easily pay your cut to Skull&Bones for the current month
+          </div>
+        </q-card-section>
+        <q-card-section class="q-gutter-y-sm">
+          <CutPayment />
+        </q-card-section>
+      </q-card>
+    </div>
   </q-page>
 </template>
 

@@ -9,8 +9,11 @@ import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { calcAmountToTransfer } from 'stores/globalStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
+import FormatNumber from 'components/text/FormatNumber.vue';
 
 const amount = ref();
+const ATLAS = 'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx';
 
 async function transfer() {
   try {
@@ -18,7 +21,7 @@ async function transfer() {
 
     const owner = new PublicKey('756pfnvP3HHRx1BPwBPQwe1xBMfMWef5N9oN61Ews7np');
     const token = useTokenListStore().tokenList.find(
-      (t) => t.address == 'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx',
+      (t) => t.address == ATLAS,
     )!;
     const source = findATA(getSigner().toString(), token.address);
     const destination = findATA(owner.toString(), token.address);
@@ -55,6 +58,20 @@ async function transfer() {
       label="Pay"
       @click="transfer()"
     />
+  </div>
+  <div class="row">
+    <div class="col">Balance:</div>
+    <div>
+      <FormatNumber
+        class=""
+        :number="
+          useAccountStore().accounts.find((acc) => acc.mint == ATLAS)
+            ?.uiAmount ?? 0
+        "
+        :decimals="4"
+        :pad-start="10"
+      />
+    </div>
   </div>
 </template>
 
