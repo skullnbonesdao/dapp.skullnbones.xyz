@@ -10,7 +10,7 @@ import {
 } from '@solana/spl-token';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
-import { PublicKey, Transaction } from '@solana/web3.js';
+import { Transaction } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
 
@@ -39,7 +39,7 @@ async function buildTX(label: string) {
 
     let ataInfo = await useRPCStore().connection.getAccountInfo(
       findATA(
-        useWallet().publicKey.value!.toString(),
+        getSigner().toString(),
         props.wrapper.account.mintWrapped.toString(),
       ),
     );
@@ -49,7 +49,7 @@ async function buildTX(label: string) {
         createAssociatedTokenAccountInstruction(
           getSigner()!,
           findATA(
-            getSigner()!.toString(),
+            getSigner().toString(),
             props.wrapper.account.mintWrapped.toString(),
           ),
           getSigner()!,
@@ -64,15 +64,14 @@ async function buildTX(label: string) {
       await pg_wrapper.methods
         .wrap(amount_to_transfer)
         .accountsPartial({
-          signer: useWallet().publicKey.value,
+          signer: getSigner(),
           wrapper: wrapper.publicKey,
           mintUnwrapped: wrapper.account.mintUnwrapped,
-          signerUnwrapped: new PublicKey(
-            useAccountStore().accounts.find(
-              (acc) =>
-                acc.mint.toString() == wrapper.account.mintUnwrapped.toString(),
-            )?.pubkey ?? '',
+          signerUnwrapped: findATA(
+            getSigner().toString(),
+            wrapper.account.mintUnwrapped.toString(),
           ),
+
           signerWrapped: findATA(
             useWallet().publicKey.value!.toString(),
             props.wrapper.account.mintWrapped.toString(),
