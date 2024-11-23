@@ -96,7 +96,7 @@ function filterFn(val, update, abort) {
                 :src="
                   useTokenListStore().getTokenByMintPublicKey(
                     new PublicKey(scope.opt.mint),
-                  ).logoURI
+                  )?.logoURI
                 "
               ></q-img>
             </q-avatar>
