@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import {
@@ -15,11 +14,10 @@ import {
   findVaultAddress,
   findWrapperAddress,
 } from 'src/solana/wrapper/WrapperInterface';
-import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
+import TokenSelectDropdown from 'components/dropdown/TokenSelectDropdown.vue';
 
 const $q = useQuasar();
-const filterOptions = ref(['list', 'address']);
-const filterOption = ref('list');
+
 const optionUnwrapped = ref();
 const mintWrappedDecimals = ref<number>(9);
 const ratioUnwrapped = ref<number>(1);
@@ -124,85 +122,16 @@ async function createWrapper() {
     });
   }
 }
-
-const tokenOptions = ref<
-  [
-    {
-      name: string;
-      symbol: string;
-      mint: string;
-    },
-  ]
->(mapTokens2TokenOptions());
-
-watch(
-  () => filterOption.value,
-  () => (tokenOptions.value = mapTokens2TokenOptions()),
-);
-
-function mapTokens2TokenOptions() {
-  return filterOption.value == 'list'
-    ? useTokenListStore().tokenList.map((t) => {
-        return {
-          name: t.name,
-          symbol: t.symbol,
-          mint: t.address,
-        };
-      })
-    : useAccountStore().getAccountsBalanceNotZero?.map((t) => {
-        return {
-          name: t.info?.name,
-          symbol: t.info?.symbol,
-          mint: t.mint,
-        };
-      });
-}
-
-function filterFn(val, update, abort) {
-  update(() => {
-    const needle = val.toLowerCase();
-    tokenOptions.value = mapTokens2TokenOptions().filter(
-      (v) => JSON.stringify(v).toLowerCase().indexOf(needle) > -1,
-    );
-  });
-}
 </script>
 
 <template>
   <q-card flat>
     <q-card-section class="">
-      <div class="row items-center">
-        <div class="col text-h6">Unwrapped Token</div>
-        <div class="row items-center">
-          <div class="col text-right q-mr-md text-subtitle2">Filter:</div>
-          <q-tabs dense v-model="filterOption" class="text-teal">
-            <q-tab
-              v-for="fo in filterOptions"
-              :name="fo"
-              :label="fo"
-              :key="fo"
-            />
-          </q-tabs>
-        </div>
-      </div>
-      <div class="row q-gutter-x-md items-center">
-        <q-select
-          filled
-          square
-          class="col"
-          use-input
-          hide-selected
-          fill-input
-          @filter="filterFn"
-          :options="tokenOptions"
-          :option-label="
-            (option) =>
-              option.name ? `[${option.symbol}] ${option.name}` : option.mint
-          "
-          v-model="optionUnwrapped"
-          label="Token to Wrap"
-        />
-      </div>
+      <TokenSelectDropdown
+        label="Unwrapped Token"
+        textbox-label="Token to wrap"
+        @token_account_selected="(val) => (optionUnwrapped = val)"
+      />
     </q-card-section>
     <q-card-section>
       <div class="text-h6">Wrapped Token</div>

@@ -2,7 +2,6 @@
 import { onMounted, ref, watch } from 'vue';
 import { format_address } from 'src/functions/format_address';
 import Apex_TicketsChart from 'components/apexcharts/Apex_TicketsChart.vue';
-import { PublicKey } from '@solana/web3.js';
 
 const props = defineProps(['entrants']);
 
@@ -47,7 +46,7 @@ watch(
 
 async function loadData() {
   dataValue.value = props.entrants?.map((e) => e.amount);
-  const addresses = props.entrants?.flatMap((e) => new PublicKey(e.address));
+  const addresses = props.entrants?.flatMap((e) => format_address(e.address));
   // const resolvedAddresses = await reverseLookupBatch(
   //   useRPCStore().connection as Connection,
   //   addresses,

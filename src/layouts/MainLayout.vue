@@ -96,7 +96,7 @@ import { RPC_NETWORKS } from 'stores/interfaces/RPC_Networks';
 import { useGlobalStore } from 'stores/globalStore';
 import { version } from 'src/../package.json';
 import { WalletMultiButton } from 'solana-wallets-vue';
-import { useWhitelist } from '../stores/globalWhitelist';
+import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
 import { useRPCStore } from 'stores/rpcStore';
 import { useQuasar } from 'quasar';
 import SquadsButton from 'components/squads/SquadsButton.vue';
@@ -131,11 +131,17 @@ const links1 = computed(() => {
 
   data.push({ icon: 'content_cut', text: 'Cut', to: '/cut' });
 
-  if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
+  if (
+    useWhitelistStore().check_wallet_whitelisted ||
+    useGlobalStore().is_admin
+  ) {
     data.push({ icon: 'work', text: 'Jobs', to: '/jobs' });
   }
 
-  if (useWhitelist().check_wallet_whitelisted || useGlobalStore().is_admin) {
+  if (
+    useWhitelistStore().check_wallet_whitelisted ||
+    useGlobalStore().is_admin
+  ) {
     data.push({ icon: 'local_activity', text: 'Raffle', to: '/raffle' });
   }
 

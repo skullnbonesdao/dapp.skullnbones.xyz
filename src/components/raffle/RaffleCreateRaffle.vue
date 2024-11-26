@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { ref } from 'vue';
 import { Notify } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
 import { useGlobalStore } from '../../stores/globalStore';
 import { useWorkspaceAdapter } from 'src/solana/connector';
-import { useGlobalWalletStore } from '../../stores/globalWallet';
 import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 import { useRPCStore } from 'stores/rpcStore';
-import { useWhitelist } from 'stores/globalWhitelist';
+
 import { findRaffleAddress } from 'src/solana/raffle/RaffleInterface';
 import { findWhitelistAddress } from 'src/solana/whitelist/WhitelistInterface';
 import { Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { getSigner } from 'src/solana/squads/SignerFinder';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
+import TokenSelectDropdown from 'components/dropdown/TokenSelectDropdown.vue';
 
 const inputRaffleName = ref();
 const input_raffle_description = ref();
@@ -22,25 +23,6 @@ const inputRaffleTicketPrice = ref();
 const input_account_selected = ref();
 const whitelist_selected = ref<{ label: string; value: string | null }>();
 const whitelist_options = ref<{ label: string; value: string | null }[]>([]);
-
-onMounted(() => update_whitelists());
-watch(
-  () => useWhitelist().whitelists,
-  () => update_whitelists(),
-);
-
-function update_whitelists() {
-  useWhitelist().whitelists.forEach((whitelist) => {
-    whitelist_options.value.push({
-      label: 'Crew',
-      value: whitelist.publicKey.toString(),
-    });
-  });
-  whitelist_options.value.push({ label: 'none', value: null });
-  whitelist_selected.value = whitelist_options.value.find(
-    (entry) => entry.label == 'Crew',
-  );
-}
 
 async function create_new_raffle() {
   try {
@@ -54,7 +36,7 @@ async function create_new_raffle() {
     const whitelist = findWhitelistAddress();
 
     const account_info = await useRPCStore().connection.getParsedAccountInfo(
-      new anchor.web3.PublicKey(input_account_selected.value.value),
+      new anchor.web3.PublicKey(input_account_selected.value.mint),
     );
 
     tx.add(
@@ -73,7 +55,7 @@ async function create_new_raffle() {
           creator: getSigner(),
           raffle: raffle,
           ticketsMint: new anchor.web3.PublicKey(
-            input_account_selected.value.value,
+            input_account_selected.value.mint,
           ),
           whitelist: whitelist,
         })
@@ -94,8 +76,8 @@ async function create_new_raffle() {
 const options = ref<any[]>([]);
 
 const stringOptions = ref(
-  useGlobalWalletStore()
-    .token_accounts.filter(
+  useAccountStore()
+    .accounts.filter(
       (account) => account.account.data.parsed.info.tokenAmount.uiAmount > 0,
     )
     .flatMap((account) => account.account.data.parsed.info.mint),
@@ -140,34 +122,12 @@ stringOptions.value.forEach((o) => {
     <q-card-section class="q-gutter-y-md">
       <p class="text-h5">Tickets</p>
 
-      <div class="row justify-center">
-        <q-select
-          class="col"
-          filled
-          square
-          v-model="input_account_selected"
-          clearable
-          use-input
-          hide-selected
-          fill-input
-          input-debounce="0"
-          behavior="menu"
-          label="Select Ticket by mint"
-          :options="options"
-          style="width: 250px"
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <q-btn
-          icon="refresh"
-          color="primary"
-          square
-          @click="useGlobalWalletStore().update_accounts()"
-        ></q-btn>
+      <div class="">
+        <TokenSelectDropdown
+          label=""
+          textbox-label="Token"
+          @token_account_selected="(val) => (input_account_selected = val)"
+        />
       </div>
 
       <q-input
@@ -175,7 +135,7 @@ stringOptions.value.forEach((o) => {
         square
         v-model="input_raffle_ticket_count"
         type="number"
-        label="Tickets"
+        label="Tickets Count"
       />
 
       <q-input

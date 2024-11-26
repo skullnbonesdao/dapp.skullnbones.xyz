@@ -5,12 +5,13 @@ import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/solana/connector';
-import { useGlobalWalletStore } from 'stores/globalWallet';
+
 import { useRPCStore } from 'stores/rpcStore';
 import { Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
+import TokenSelectDropdown from 'components/dropdown/TokenSelectDropdown.vue';
 
 const input_prize_count = ref(1);
 const input_prize_url = ref('');
@@ -20,26 +21,6 @@ const props = defineProps(['raffle']);
 
 const options = ref<any[]>([]);
 
-const stringOptions = ref(
-  useGlobalWalletStore()
-    .token_accounts.filter(
-      (account) => account.account.data.parsed.info.tokenAmount.uiAmount > 0,
-    )
-    .flatMap((account) => account.account.data.parsed.info.mint),
-);
-
-stringOptions.value.forEach((o) =>
-  options.value.push({
-    label: useGlobalStore().token_list.find((t) => t.address == o)
-      ? useGlobalStore().token_list.find((t) => t.address == o)?.name +
-        ' [' +
-        useGlobalStore().token_list.find((t) => t.address == o)?.symbol +
-        ']'
-      : o,
-    value: o,
-  }),
-);
-
 async function add_prize_to_raffle() {
   try {
     const tx = new Transaction();
@@ -47,7 +28,7 @@ async function add_prize_to_raffle() {
     const pg_raffle = useWorkspaceAdapter()?.pg_raffle.value;
 
     const prize_mint = new anchor.web3.PublicKey(
-      prize_account_selected.value.value,
+      prize_account_selected.value.mint,
     );
 
     const ata = (
@@ -102,27 +83,11 @@ async function add_prize_to_raffle() {
   <div class="col q-pa-sm">
     <p class="text-overline">Add a prize:</p>
     <div class="col q-gutter-y-sm">
-      <q-select
-        class="full-width"
-        filled
-        square
-        v-model="prize_account_selected"
-        clearable
-        use-input
-        hide-selected
-        fill-input
-        input-debounce="0"
-        behavior="menu"
-        label="Select Ticket by mint"
-        :options="options"
-        style="width: 250px"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey"> No results </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+      <TokenSelectDropdown
+        label=""
+        textbox-label="Select prize"
+        @token_account_selected="(val) => (prize_account_selected = val)"
+      />
 
       <div class="row">
         <q-input
