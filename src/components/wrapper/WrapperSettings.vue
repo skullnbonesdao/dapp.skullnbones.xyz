@@ -67,9 +67,6 @@ async function updateWrapper() {
       onlyAdminCanWrap: onlyAdminCanWrap.value,
       onlyAdminCanUnwrap: onlyAdminCanUnwrap.value,
       useWhitelist: useWhitelist.value,
-      whitelistAddress: useWhitelist.value
-        ? new PublicKey(whitelistAddress.value)
-        : null,
       useLimit: useLimit.value,
       amountAbleToWrap: useLimit.value
         ? calcAmountToTransfer(
@@ -95,7 +92,9 @@ async function updateWrapper() {
           signer: getSigner(),
           mintUnwrapped:
             useWrapperStore().wrapperSelected?.account.mintUnwrapped,
-          whitelist: null,
+          whitelist: useWhitelist.value
+            ? new PublicKey(whitelistAddress.value)
+            : null,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .instruction(),
