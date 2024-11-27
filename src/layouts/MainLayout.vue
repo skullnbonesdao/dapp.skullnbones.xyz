@@ -119,8 +119,9 @@ watch(
 
     $q.notify({
       timeout: 5000,
-      message: `Updated RPC to: ${useRPCStore().rpc_selected.name}`,
+      message: `Using RPC: ${useRPCStore().rpc_selected.name}`,
       position: 'bottom-right',
+      color: 'orange',
     });
   },
 );
