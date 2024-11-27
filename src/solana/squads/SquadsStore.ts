@@ -25,9 +25,11 @@ export const useSquadsStore = defineStore('squadsStore', {
       else return `https://app.squads.so/squads/${state.vaultPDA}/`;
     },
     getVaultPDA(state) {
+      if (!state.multisigPDA) return '';
+
       try {
         const [vaultPda, bump] = multisig.getVaultPda({
-          multisigPda: new PublicKey(this.multisigPDA),
+          multisigPda: new PublicKey(state.multisigPDA),
           index: 0,
         });
         state.vaultPDA = vaultPda.toString();
