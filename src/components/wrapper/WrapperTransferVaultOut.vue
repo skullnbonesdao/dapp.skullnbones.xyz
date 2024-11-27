@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { getSigner } from 'src/solana/squads/SignerFinder';
@@ -10,12 +10,20 @@ import { useQuasar } from 'quasar';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
+import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 
 const $q = useQuasar();
 const amountToTransfer = ref(1);
-const recipient = ref('C6LnFVyc5Qj2LAPdkX5CyyEEga9ePPB6ZRuzGhirZnqX');
+const recipient = ref(getSigner().toString());
 
 const enableTransfer = ref(false);
+
+watch(
+  () => useSquadsStore().useSquads,
+  () => {
+    recipient.value = getSigner().toString();
+  },
+);
 
 async function transfer() {
   try {

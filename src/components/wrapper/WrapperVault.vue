@@ -24,6 +24,8 @@ watch(
 );
 
 async function loadAccountInfo() {
+  if (!useWrapperStore().wrapperSelected) return;
+
   accountInfo.value = (
     await useRPCStore().connection.getParsedAccountInfo(
       findVaultAddress(
@@ -65,7 +67,7 @@ async function loadAccountInfo() {
         <div class="text-subtitle2">
           {{
             useTokenListStore().getTokenByMintPublicKey(
-              useWrapperStore().wrapperSelected.account.mintUnwrapped!,
+              useWrapperStore().wrapperSelected?.account.mintUnwrapped!,
             ).name
           }}
         </div>

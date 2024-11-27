@@ -57,7 +57,11 @@ const confirmClose = ref(false);
                 class="col"
                 filled
                 v-model="useWrapperStore().wrapperSelected"
-                :options="useWrapperStore().wrapper"
+                :options="
+                  useWrapperStore().getWrapperByGroup(
+                    useWrapperStore().groupSelected,
+                  )
+                "
                 :option-label="
                   (option: WrapperAccount) => {
                     return (

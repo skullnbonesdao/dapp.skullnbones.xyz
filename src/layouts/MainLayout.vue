@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff" class="bg-image-dark">
-    <q-header class="bg-dark">
+    <q-header :class="useSquadsStore().useSquads ? '' : 'bg-dark'">
       <q-toolbar>
         <q-btn
           flat

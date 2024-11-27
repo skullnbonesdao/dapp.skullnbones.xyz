@@ -23,7 +23,14 @@ export const useWrapperStore = defineStore('wrapperStore', {
     groups: [] as GroupAccount[],
   }),
 
-  getters: {},
+  getters: {
+    getWrapperByGroup: (state) => {
+      return (group: GroupAccount | undefined) =>
+        state.wrapper.filter(
+          (w) => w.account.group.toString() == group?.publicKey.toString(),
+        );
+    },
+  },
   actions: {
     async updateStore() {
       if (useWorkspaceAdapter()) {
