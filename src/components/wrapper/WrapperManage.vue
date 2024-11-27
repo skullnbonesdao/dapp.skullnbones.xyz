@@ -87,34 +87,29 @@ const confirmClose = ref(false);
             class="row full-width"
           >
             <q-list bordered class="rounded-borders full-width">
-              <q-expansion-item
-                expand-separator
-                class="text-h5"
-                icon="info"
-                label="Info"
-              >
+              <q-expansion-item class="text-h5" icon="info" label="Info">
                 <WrapperInfo />
               </q-expansion-item>
+              <q-separator />
               <q-expansion-item
-                expand-separator
                 class="text-h5"
                 icon="settings"
                 label="Settings"
               >
                 <WrapperSettings />
               </q-expansion-item>
+              <q-separator />
               <q-expansion-item
-                expand-separator
                 class="text-h5"
                 icon="note_add"
                 label="Metadata"
               >
                 <WrapperMetadata />
               </q-expansion-item>
+              <q-separator />
               <q-expansion-item
-                default-opened
-                expand-separator
                 class="text-h5"
+                default-opened
                 icon="inventory_2"
                 label="Vault"
               >

@@ -7,7 +7,7 @@ import { format_address } from 'src/functions/format_address';
   <q-card square flat class="squads-buttons">
     <q-toggle
       :label="
-        'Squad: ' + format_address(useSquadsStore().getVaultPDA.toString(), 3)
+        'Squad: ' + format_address(useSquadsStore().getVaultPDA?.toString(), 3)
       "
       v-model="useSquadsStore().useSquads"
       checked-icon="check"
