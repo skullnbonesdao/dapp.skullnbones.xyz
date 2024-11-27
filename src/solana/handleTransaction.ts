@@ -37,6 +37,7 @@ export const handleTransaction = async (
         useRPCStore().connection as Connection,
       );
     } else {
+      console.log(tx.instructions);
       const blockhash = await useRPCStore().connection.getRecentBlockhash();
       const transactionMessage = new TransactionMessage({
         payerKey: new PublicKey(useSquadsStore().vaultPDA),
