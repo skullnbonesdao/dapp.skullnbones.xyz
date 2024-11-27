@@ -21,7 +21,6 @@ export const useRPCStore = defineStore('rpcStore', {
       this.rpc_selected =
         RPC_NETWORKS.find((rpc) => rpc.name.includes(this.rpc_stored_name)) ??
         RPC_NETWORKS[0];
-
       console.log('RPC is set to: ' + this.rpc_selected.name);
     },
   },
