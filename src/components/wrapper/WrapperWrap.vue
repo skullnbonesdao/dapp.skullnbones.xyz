@@ -35,7 +35,8 @@ async function buildTX() {
       )?.decimals ??
         useAccountStore().getAccountByMintPublicKey(
           wrapper?.account.mintUnwrapped,
-        )?.decimals,
+        )?.decimals ??
+        0,
     );
 
     let ataInfo = await useRPCStore().connection.getAccountInfo(
@@ -61,7 +62,7 @@ async function buildTX() {
       );
     }
 
-    console.log(`Amount=${amount_to_transfer}`);
+    console.log(`amount_to_transfer=${amount_to_transfer}`);
 
     tx.add(
       await pg_wrapper.methods
