@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff" class="bg-image-dark">
-    <q-header class="bg-dark">
+    <q-header :class="useSquadsStore().useSquads ? '' : 'bg-dark'">
       <q-toolbar>
         <q-btn
           flat
@@ -119,8 +119,9 @@ watch(
 
     $q.notify({
       timeout: 5000,
-      message: `Updated RPC to: ${useRPCStore().rpc_selected.name}`,
+      message: `Using RPC: ${useRPCStore().rpc_selected.name}`,
       position: 'bottom-right',
+      color: 'orange',
     });
   },
 );

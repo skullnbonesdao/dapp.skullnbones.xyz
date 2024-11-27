@@ -27,6 +27,8 @@ watch(
 );
 
 async function loadAccountInfo() {
+  if (!useWrapperStore().wrapperSelected) return;
+
   accountInfo.value = await useRPCStore().connection.getAccountInfo(
     findMetadataAddress(useWrapperStore().wrapperSelected.account.mintWrapped),
   );

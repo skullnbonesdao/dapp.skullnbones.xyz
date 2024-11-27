@@ -7,6 +7,7 @@ const props = defineProps(['number', 'decimals', 'padStart']);
 const styledNumber = computed(() => {
   // Regular expression to separate leading zeros
   const regex = /^(0+)(.+)/;
+
   const match = formatNumber(
     props.number,
     props.decimals,

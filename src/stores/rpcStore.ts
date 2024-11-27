@@ -10,12 +10,12 @@ export const useRPCStore = defineStore('rpcStore', {
       RPC_NETWORKS.find((rpc) =>
         rpc.name.includes(useLocalStorage('rpc_store_0', RPC_NETWORKS[0].name)),
       ) ?? RPC_NETWORKS[0],
-    connection: new Connection(
-      RPC_NETWORKS.find((rpc) =>
-        rpc.name.includes(useLocalStorage('rpc_store_0', RPC_NETWORKS[0].name)),
-      )?.url ?? RPC_NETWORKS[0].url,
-    ),
   }),
+  getters: {
+    connection(state) {
+      return new Connection(state.rpc_selected.url);
+    },
+  },
   actions: {
     update_connection() {
       this.rpc_selected =
@@ -23,9 +23,6 @@ export const useRPCStore = defineStore('rpcStore', {
         RPC_NETWORKS[0];
 
       console.log('RPC is set to: ' + this.rpc_selected.name);
-      this.connection = new Connection(this.rpc_selected.url, {
-        commitment: 'confirmed',
-      });
     },
   },
 });

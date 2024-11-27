@@ -16,6 +16,7 @@ import { useWallet } from 'solana-wallets-vue';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
+import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 
 const init = ref(false);
 
@@ -36,6 +37,13 @@ onMounted(async () => {
 
   init.value = true;
 });
+
+watch(
+  () => useSquadsStore().useSquads,
+  () => {
+    useAccountStore().updateStore();
+  },
+);
 
 watch(
   () => useWallet().publicKey.value,

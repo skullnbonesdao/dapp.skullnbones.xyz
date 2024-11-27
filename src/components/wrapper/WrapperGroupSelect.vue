@@ -7,6 +7,7 @@ import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
     label="Select a group"
     square
     filled
+    @update:model-value="() => (useWrapperStore().wrapperSelected = undefined)"
     v-model="useWrapperStore().groupSelected"
     :options="useWrapperStore().groups"
     :option-label="(option) => option?.account?.name"

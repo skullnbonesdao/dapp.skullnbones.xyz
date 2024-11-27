@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { getSigner } from 'src/solana/squads/SignerFinder';
@@ -9,13 +9,20 @@ import { handleTransaction } from 'src/solana/handleTransaction';
 import { useQuasar } from 'quasar';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
-import { useAccountStore } from 'src/solana/accounts/AccountStore';
+import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 
 const $q = useQuasar();
 const amountToTransfer = ref(1);
-const recipient = ref('C6LnFVyc5Qj2LAPdkX5CyyEEga9ePPB6ZRuzGhirZnqX');
+const recipient = ref(getSigner().toString());
 
 const enableTransfer = ref(false);
+
+watch(
+  () => useSquadsStore().useSquads,
+  () => {
+    recipient.value = getSigner().toString();
+  },
+);
 
 async function transfer() {
   try {
@@ -28,19 +35,17 @@ async function transfer() {
           .transferVault(
             calcAmountToTransfer(
               amountToTransfer.value,
-              useAccountStore().getAccountByMintPublicKey(
-                useWrapperStore().wrapperSelected.account.mintUnwrapped,
-              ).decimals,
+              useWrapperStore().wrapperSelected!.account.wrappedDecimals,
             ) as any,
           )
           .accountsPartial({
             signer: getSigner(),
-            wrapper: useWrapperStore().wrapperSelected.publicKey,
+            wrapper: useWrapperStore().wrapperSelected?.publicKey,
             mintUnwrapped:
-              useWrapperStore().wrapperSelected.account.mintUnwrapped,
+              useWrapperStore().wrapperSelected?.account.mintUnwrapped,
             ataUnwrappedSigner: findATA(
               new PublicKey(recipient.value).toString(),
-              useWrapperStore().wrapperSelected.account.mintUnwrapped.toString(),
+              useWrapperStore().wrapperSelected!.account.mintUnwrapped.toString(),
             ),
             tokenProgram: TOKEN_PROGRAM_ID,
           })

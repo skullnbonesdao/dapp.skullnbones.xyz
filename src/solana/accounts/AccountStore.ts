@@ -5,6 +5,7 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { AccountInfo, ParsedAccountData, PublicKey } from '@solana/web3.js';
 import { IToken } from 'stores/tokenlists/solana.tokenlist/src/types/ITokenList';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 export interface AccountStore {
   pubkey: string;
@@ -33,7 +34,7 @@ export const useAccountStore = defineStore('accountStore', {
       if (!useWallet().publicKey.value) return;
       const accounts =
         await useRPCStore().connection.getParsedTokenAccountsByOwner(
-          useWallet().publicKey.value!,
+          getSigner(),
           {
             programId: TOKEN_PROGRAM_ID,
           },
