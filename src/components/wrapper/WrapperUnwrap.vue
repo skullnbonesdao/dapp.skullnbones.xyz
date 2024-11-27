@@ -33,9 +33,11 @@ async function buildTX(label: string) {
       )?.decimals,
     );
 
-    let whitelist = props.wrapper.account.use_whitelist ? WHITELST.ID : null;
+    let whitelist = props.wrapper.account.use_whitelist
+      ? props.wrapper.account.whitelist
+      : null;
     let whitelistEntry = props.wrapper.account.use_whitelist
-      ? WHITELST.findWhitelistEntryAddress(getSigner())
+      ? WHITELST.findWhitelistEntryAddress(whitelist)
       : null;
 
     tx.add(
@@ -59,6 +61,7 @@ async function buildTX(label: string) {
           tokenProgram: TOKEN_PROGRAM_ID,
           whitelist: whitelist,
           whitelistEntry: whitelistEntry,
+          whitelistProgram: WHITELST.ID,
         })
         .instruction(),
     );

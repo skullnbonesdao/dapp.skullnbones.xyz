@@ -66,9 +66,11 @@ async function buildTX() {
 
     console.log(`amount_to_transfer=${amount_to_transfer}`);
 
-    let whitelist = props.wrapper.account.use_whitelist ? WHITELST.ID : null;
+    let whitelist = props.wrapper.account.use_whitelist
+      ? props.wrapper.account.whitelist
+      : null;
     let whitelistEntry = props.wrapper.account.use_whitelist
-      ? WHITELST.findWhitelistEntryAddress(getSigner())
+      ? WHITELST.findWhitelistEntryAddress(whitelist)
       : null;
 
     tx.add(
@@ -90,6 +92,7 @@ async function buildTX() {
           tokenProgram: TOKEN_PROGRAM_ID,
           whitelist: whitelist,
           whitelistEntry: whitelistEntry,
+          whitelistProgram: WHITELST.ID,
         })
         .instruction(),
     );
