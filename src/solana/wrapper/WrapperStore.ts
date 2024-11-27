@@ -27,7 +27,7 @@ export const useWrapperStore = defineStore('wrapperStore', {
     getWrapperByGroup: (state) => {
       return (group: GroupAccount | undefined) =>
         state.wrapper.filter(
-          (w) => w.account.group.toString() == group?.publicKey.toString(),
+          (w) => w.account.group.toString() == group?.publicKey?.toString(),
         );
     },
   },
@@ -39,7 +39,8 @@ export const useWrapperStore = defineStore('wrapperStore', {
         this.groups = (await pg_wrapper.value.account.group.all()) as never;
         this.wrapper = (await pg_wrapper.value.account.wrapper.all()) as never;
 
-        if (!this.groupSelected) this.groupSelected = this.groups[0];
+        if (!this.groupSelected?.publicKey) this.groupSelected = this.groups[0];
+
         console.log('[Updated] WrapperStore');
       }
     },

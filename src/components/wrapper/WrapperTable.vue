@@ -51,11 +51,15 @@ const rowsPerPageOptions = computed(() => {
 <template>
   <div class="q-pa-md">
     <q-table
+      v-if="useWrapperStore().groupSelected"
       grid
-      :rows="useWrapperStore().wrapper"
+      hide-header
+      hide-bottom
+      :rows="
+        useWrapperStore().getWrapperByGroup(useWrapperStore().groupSelected)
+      "
       row-key="name"
       :filter="filter"
-      hide-header
       v-model:pagination="pagination"
       :rows-per-page-options="[0]"
     >
@@ -160,30 +164,33 @@ const rowsPerPageOptions = computed(() => {
             </q-card-actions>
 
             <q-card-section class="col">
-              <div class="row q-mb-md q-px-md">
-                <FormatNumber
-                  :number="
-                    useAccountStore().getAccountByMintPublicKey(
-                      props.row.account.mintUnwrapped,
-                    )?.uiAmount
-                  "
-                  :decimals="4"
-                  :pad-start="10"
-                />
-
-                <div class="col text-center">Wallet Balance</div>
-
-                <FormatNumber
-                  :number="
-                    useAccountStore().getAccountByMintPublicKey(
-                      props.row.account.mintWrapped,
-                    )?.uiAmount
-                  "
-                  :decimals="4"
-                  :pad-start="10"
-                />
-              </div>
-
+              <q-card bordered flat class="q-mb-md">
+                <q-card-section>
+                  <div class="col text-center">Wallet Balance</div>
+                </q-card-section>
+                <q-separator />
+                <div class="row q-pa-md">
+                  <FormatNumber
+                    :number="
+                      useAccountStore().getAccountByMintPublicKey(
+                        props.row.account.mintUnwrapped,
+                      )?.uiAmount
+                    "
+                    :decimals="4"
+                    :pad-start="10"
+                  />
+                  <q-space />
+                  <FormatNumber
+                    :number="
+                      useAccountStore().getAccountByMintPublicKey(
+                        props.row.account.mintWrapped,
+                      )?.uiAmount
+                    "
+                    :decimals="4"
+                    :pad-start="10"
+                  />
+                </div>
+              </q-card>
               <div class="row q-gutter-x-md">
                 <WrapperWrap class="col" :wrapper="props.row" />
                 <WrapperUnwrap class="col" :wrapper="props.row" />

@@ -46,23 +46,9 @@ onMounted(async () => {
       <q-tab-panels v-model="tabSelected" animated>
         <q-tab-panel name="wrapping">
           <div class="row">
-            <WrapperGroupSelect class="col" />
-            <q-btn
-              square
-              color="primary"
-              label="reload"
-              @click="
-                () => {
-                  useWrapperStore().updateStore();
-                }
-              "
-            />
+            <WrapperGroupSelect as-tabs="true" class="col" />
           </div>
-          <q-card flat>
-            <q-card-section>
-              <WrapperTable />
-            </q-card-section>
-          </q-card>
+          <WrapperTable />
         </q-tab-panel>
 
         <q-tab-panel name="manage" class="row q-gutter-x-md">
