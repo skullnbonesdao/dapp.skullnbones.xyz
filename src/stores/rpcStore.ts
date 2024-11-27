@@ -18,9 +18,13 @@ export const useRPCStore = defineStore('rpcStore', {
   },
   actions: {
     update_connection() {
-      this.rpc_selected =
+      const rpc =
         RPC_NETWORKS.find((rpc) => rpc.name.includes(this.rpc_stored_name)) ??
         RPC_NETWORKS[0];
+
+      this.rpc_stored_name = rpc.name;
+      this.rpc_selected = rpc;
+
       console.log('RPC is set to: ' + this.rpc_selected.name);
     },
   },
