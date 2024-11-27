@@ -68,7 +68,8 @@ const rowsPerPageOptions = computed(() => {
           <q-card flat bordered>
             <q-card-section class="text-center">
               <q-img
-                height="200px"
+                height="150px"
+                width="150px"
                 :src="
                   useTokenListStore().tokenList.find(
                     (t) =>

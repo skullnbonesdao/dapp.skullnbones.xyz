@@ -4,7 +4,9 @@ import { ref, watch } from 'vue';
 
 const props = defineProps(['asTabs']);
 
-const tab = ref('S&B Dockyard');
+const tab = ref(
+  useWrapperStore().groupSelected?.account?.name ?? 'S&B Dockyard',
+);
 
 watch(
   () => tab.value,
@@ -17,7 +19,7 @@ watch(
 </script>
 
 <template>
-  <q-card bordered flat>
+  <q-card bordered flat class="">
     <q-tabs
       v-model="tab"
       active-color="primary"

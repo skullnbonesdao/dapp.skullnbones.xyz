@@ -29,6 +29,13 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/RafflePage.vue') }],
   },
   {
+    path: '/playerprofile',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/PlayerProfilePage.vue') },
+    ],
+  },
+  {
     path: '/staratlaslocker',
     component: () => import('layouts/MainLayout.vue'),
     children: [

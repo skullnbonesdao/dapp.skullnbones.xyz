@@ -8,10 +8,12 @@ import { useRPCStore } from 'stores/rpcStore';
 import whitelistIDL from './whitelist/whitelist.0.30.1.json';
 import wrapperIDL from './wrapper/wrapper_factory.0.30.1.json';
 import raffleIDL from './raffle/raffle.0.30.1.json';
+import playerProfileIDL from './staratlas/player_profile/player_profile.0.30.1.json';
 
 import { Whitelist } from './whitelist/whitelist';
 import { Raffle } from './raffle/raffle';
 import { WrapperFactory } from './wrapper/wrapper_factory';
+import { PlayerProfile } from './staratlas/player_profile/player_profile';
 
 const preflightCommitment = 'processed';
 const commitment = 'confirmed';
@@ -23,6 +25,7 @@ interface Workspace {
   pg_wrapper: ComputedRef<Program<WrapperFactory>>;
   pg_raffle: ComputedRef<Program<Raffle>>;
   pg_whitelist: ComputedRef<Program<Whitelist>>;
+  pg_playerProfile: ComputedRef<Program<PlayerProfile>>;
 }
 
 let workspace: Workspace | undefined = undefined;
@@ -55,6 +58,15 @@ export const initWorkspaceAdapter = () => {
       new Program<WrapperFactory>(wrapperIDL as WrapperFactory, provider.value),
   );
 
+  //StarATLAS
+  const pg_playerProfile = computed(
+    () =>
+      new Program<PlayerProfile>(
+        playerProfileIDL as PlayerProfile,
+        provider.value,
+      ),
+  );
+
   console.log('[Loaded] Workspace');
 
   workspace = {
@@ -64,5 +76,6 @@ export const initWorkspaceAdapter = () => {
     pg_wrapper: pg_wrapper,
     pg_whitelist: pg_whitelist,
     pg_raffle: pg_raffle,
+    pg_playerProfile: pg_playerProfile,
   } as Workspace;
 };

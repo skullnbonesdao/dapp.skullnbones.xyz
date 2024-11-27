@@ -17,6 +17,7 @@ import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
+import { retryFunction } from 'src/solana/retryFunction';
 
 const init = ref(false);
 
@@ -32,7 +33,7 @@ useRPCStore().update_connection();
 useQuasar().dark.set(true);
 onMounted(async () => {
   initWorkspaceAdapter();
-  await useAccountStore().updateStore();
+  await retryFunction(useAccountStore().updateStore);
   await useWhitelistStore().updateStore();
 
   init.value = true;

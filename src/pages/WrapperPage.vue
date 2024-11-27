@@ -30,12 +30,10 @@ onMounted(async () => {
       <q-separator />
       <q-tabs
         v-model="tabSelected"
-        dense
         class="text-grey"
         active-color="primary"
         indicator-color="primary"
         align="justify"
-        narrow-indicator
       >
         <q-tab name="wrapping" label="Wrap / Unwrap" />
         <q-tab name="manage" label="Manage" />
