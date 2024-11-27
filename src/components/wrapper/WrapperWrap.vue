@@ -8,7 +8,6 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
-import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { Transaction } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
@@ -16,6 +15,8 @@ import { handleTransaction } from 'src/solana/handleTransaction';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
 
 const $q = useQuasar();
 const amountToWrap = ref(1);
@@ -29,9 +30,12 @@ async function buildTX() {
     const wrapper = props.wrapper;
     const amount_to_transfer = calcAmountToTransfer(
       amountToWrap.value,
-      useAccountStore().getAccountByMintPublicKey(
+      useTokenListStore().getTokenByMintPublicKey(
         wrapper?.account.mintUnwrapped,
-      )?.decimals,
+      )?.decimals ??
+        useAccountStore().getAccountByMintPublicKey(
+          wrapper?.account.mintUnwrapped,
+        )?.decimals,
     );
 
     let ataInfo = await useRPCStore().connection.getAccountInfo(
@@ -57,9 +61,11 @@ async function buildTX() {
       );
     }
 
+    console.log(`Amount=${amount_to_transfer}`);
+
     tx.add(
       await pg_wrapper.methods
-        .wrap(amount_to_transfer)
+        .wrap(amount_to_transfer as any)
         .accountsPartial({
           signer: getSigner(),
           wrapper: wrapper.publicKey,
@@ -97,6 +103,7 @@ async function buildTX() {
     <q-input
       :disable="!wrapper.account.allowWrap"
       filled
+      type="number"
       v-model="amountToWrap"
     />
     <q-btn

@@ -73,6 +73,7 @@ async function buildTX(label: string) {
     <q-input
       :disable="!wrapper.account.allowUnwrap"
       filled
+      type="number"
       v-model="amountToWrap"
     />
     <q-btn
