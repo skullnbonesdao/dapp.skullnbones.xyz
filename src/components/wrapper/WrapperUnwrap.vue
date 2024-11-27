@@ -33,10 +33,10 @@ async function buildTX(label: string) {
       )?.decimals,
     );
 
-    let whitelist = props.wrapper.account.use_whitelist
+    let whitelist = props.wrapper.account.useWhitelist
       ? props.wrapper.account.whitelist
       : null;
-    let whitelistEntry = props.wrapper.account.use_whitelist
+    let whitelistEntry = props.wrapper.account.useWhitelist
       ? WHITELST.findWhitelistEntryAddress(whitelist)
       : null;
 

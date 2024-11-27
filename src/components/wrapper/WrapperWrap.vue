@@ -66,12 +66,14 @@ async function buildTX() {
 
     console.log(`amount_to_transfer=${amount_to_transfer}`);
 
-    let whitelist = props.wrapper.account.use_whitelist
+    let whitelist = props.wrapper.account.useWhitelist
       ? props.wrapper.account.whitelist
       : null;
-    let whitelistEntry = props.wrapper.account.use_whitelist
+    let whitelistEntry = props.wrapper.account.useWhitelist
       ? WHITELST.findWhitelistEntryAddress(whitelist)
       : null;
+
+    console.log(whitelist);
 
     tx.add(
       await pg_wrapper.methods
