@@ -3,7 +3,7 @@ import * as anchor from '@coral-xyz/anchor';
 import whitelistIDL from 'src/solana/whitelist/whitelist.0.30.1.json';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 
-const ID = new PublicKey(whitelistIDL.address);
+export const ID = new PublicKey(whitelistIDL.address);
 
 export const WHITELIST_CREATOR_WALLET = new PublicKey(
   'adm1rpWxyo8u9y2Q2wxxfqaVDLE2gD1N9PbZbbhokTP',

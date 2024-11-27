@@ -18,6 +18,8 @@ import { findATA } from 'src/solana/wrapper/WrapperInterface';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
 
+import * as WHITELST from 'src/solana/whitelist/WhitelistInterface';
+
 const $q = useQuasar();
 const amountToWrap = ref(1);
 
@@ -64,6 +66,11 @@ async function buildTX() {
 
     console.log(`amount_to_transfer=${amount_to_transfer}`);
 
+    let whitelist = props.wrapper.account.use_whitelist ? WHITELST.ID : null;
+    let whitelistEntry = props.wrapper.account.use_whitelist
+      ? WHITELST.findWhitelistEntryAddress(getSigner())
+      : null;
+
     tx.add(
       await pg_wrapper.methods
         .wrap(amount_to_transfer as any)
@@ -81,8 +88,8 @@ async function buildTX() {
           ),
 
           tokenProgram: TOKEN_PROGRAM_ID,
-          whitelist: null,
-          whitelistEntry: null,
+          whitelist: whitelist,
+          whitelistEntry: whitelistEntry,
         })
         .instruction(),
     );
