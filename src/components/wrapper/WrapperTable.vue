@@ -8,8 +8,9 @@ import WrapperUnwrap from 'components/wrapper/WrapperUnwrap.vue';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useAccountStore } from '../../solana/accounts/AccountStore';
-import { format_address } from '../../functions/format_address';
 import FormatNumber from 'components/text/FormatNumber.vue';
+import { format_address } from '../../functions/format_address';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const rows = [];
 
@@ -39,6 +40,8 @@ watch(
     pagination.value.rowsPerPage = getItemsPerPage();
   },
 );
+
+format_address(getSigner().toString());
 
 const rowsPerPageOptions = computed(() => {
   return $q.screen.gt.xs ? ($q.screen.gt.sm ? [3, 6, 9] : [3, 6]) : [3];
@@ -158,31 +161,27 @@ const rowsPerPageOptions = computed(() => {
 
             <q-card-section class="col">
               <div class="row q-mb-md q-px-md">
-                <div class="col-3 q-gutter-x-xs">
-                  <FormatNumber
-                    class=""
-                    :number="
-                      useAccountStore().getAccountByMintPublicKey(
-                        props.row.account.mintUnwrapped,
-                      )?.uiAmount
-                    "
-                    :decimals="4"
-                    :pad-start="10"
-                  />
-                </div>
+                <FormatNumber
+                  :number="
+                    useAccountStore().getAccountByMintPublicKey(
+                      props.row.account.mintUnwrapped,
+                    )?.uiAmount
+                  "
+                  :decimals="4"
+                  :pad-start="10"
+                />
+
                 <div class="col text-center">Wallet Balance</div>
-                <div class="col-3 text-right q-gutter-x-xs">
-                  <FormatNumber
-                    class=""
-                    :number="
-                      useAccountStore().getAccountByMintPublicKey(
-                        props.row.account.mintWrapped,
-                      )?.uiAmount
-                    "
-                    :decimals="4"
-                    :pad-start="10"
-                  />
-                </div>
+
+                <FormatNumber
+                  :number="
+                    useAccountStore().getAccountByMintPublicKey(
+                      props.row.account.mintWrapped,
+                    )?.uiAmount
+                  "
+                  :decimals="4"
+                  :pad-start="10"
+                />
               </div>
 
               <div class="row q-gutter-x-md">

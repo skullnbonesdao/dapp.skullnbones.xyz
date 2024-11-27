@@ -9,7 +9,6 @@ import { handleTransaction } from 'src/solana/handleTransaction';
 import { useQuasar } from 'quasar';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
-import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 
 const $q = useQuasar();
@@ -36,19 +35,17 @@ async function transfer() {
           .transferVault(
             calcAmountToTransfer(
               amountToTransfer.value,
-              useAccountStore().getAccountByMintPublicKey(
-                useWrapperStore().wrapperSelected.account.mintUnwrapped,
-              ).decimals,
+              useWrapperStore().wrapperSelected!.account.wrappedDecimals,
             ) as any,
           )
           .accountsPartial({
             signer: getSigner(),
-            wrapper: useWrapperStore().wrapperSelected.publicKey,
+            wrapper: useWrapperStore().wrapperSelected?.publicKey,
             mintUnwrapped:
-              useWrapperStore().wrapperSelected.account.mintUnwrapped,
+              useWrapperStore().wrapperSelected?.account.mintUnwrapped,
             ataUnwrappedSigner: findATA(
               new PublicKey(recipient.value).toString(),
-              useWrapperStore().wrapperSelected.account.mintUnwrapped.toString(),
+              useWrapperStore().wrapperSelected!.account.mintUnwrapped.toString(),
             ),
             tokenProgram: TOKEN_PROGRAM_ID,
           })
