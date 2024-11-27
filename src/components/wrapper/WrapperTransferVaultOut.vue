@@ -4,12 +4,17 @@ import { useWorkspaceAdapter } from 'src/solana/connector';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { useQuasar } from 'quasar';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
+import { useRPCStore } from 'stores/rpcStore';
 
 const $q = useQuasar();
 const amountToTransfer = ref(1);
@@ -30,6 +35,27 @@ async function transfer() {
       const tx = new Transaction();
       const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
+      const ataUnwrappedSigner = findATA(
+        new PublicKey(recipient.value).toString(),
+        useWrapperStore().wrapperSelected!.account.mintUnwrapped.toString(),
+      );
+
+      const ataInfo =
+        await useRPCStore().connection.getAccountInfo(ataUnwrappedSigner);
+
+      if (!ataInfo) {
+        tx.add(
+          createAssociatedTokenAccountInstruction(
+            getSigner()!,
+            ataUnwrappedSigner,
+            new PublicKey(recipient.value),
+            useWrapperStore().wrapperSelected!.account.mintUnwrapped,
+            TOKEN_PROGRAM_ID,
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+          ),
+        );
+      }
+
       tx.add(
         await pg_wrapper.methods
           .transferVault(
@@ -43,10 +69,7 @@ async function transfer() {
             wrapper: useWrapperStore().wrapperSelected?.publicKey,
             mintUnwrapped:
               useWrapperStore().wrapperSelected?.account.mintUnwrapped,
-            ataUnwrappedSigner: findATA(
-              new PublicKey(recipient.value).toString(),
-              useWrapperStore().wrapperSelected!.account.mintUnwrapped.toString(),
-            ),
+            ataUnwrappedSigner: ataUnwrappedSigner,
             tokenProgram: TOKEN_PROGRAM_ID,
           })
           .instruction(),
