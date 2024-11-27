@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
-import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -23,13 +22,11 @@ const amountToWrap = ref(1);
 
 const props = defineProps(['wrapper']);
 
-async function buildTX(label: string) {
+async function buildTX() {
   try {
     const tx = new Transaction();
     const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
-
     const wrapper = props.wrapper;
-
     const amount_to_transfer = calcAmountToTransfer(
       amountToWrap.value,
       useAccountStore().getAccountByMintPublicKey(
@@ -71,9 +68,8 @@ async function buildTX(label: string) {
             getSigner().toString(),
             wrapper.account.mintUnwrapped.toString(),
           ),
-
           signerWrapped: findATA(
-            useWallet().publicKey.value!.toString(),
+            getSigner().toString(),
             props.wrapper.account.mintWrapped.toString(),
           ),
 
@@ -108,7 +104,7 @@ async function buildTX(label: string) {
       class="full-width"
       color="primary"
       label="Wrap"
-      @click="buildTX('Wrapping')"
+      @click="buildTX()"
     ></q-btn>
   </div>
 </template>
