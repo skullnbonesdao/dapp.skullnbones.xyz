@@ -13,15 +13,15 @@ import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import FormatNumber from 'components/text/FormatNumber.vue';
 
 const amount = ref();
-const ATLAS = 'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx';
+const props = defineProps(['tokenAddress', 'recipientAddress']);
 
 async function transfer() {
   try {
     const tx = new Transaction();
 
-    const owner = new PublicKey('756pfnvP3HHRx1BPwBPQwe1xBMfMWef5N9oN61Ews7np');
+    const owner = new PublicKey(props.recipientAddress);
     const token = useTokenListStore().tokenList.find(
-      (t) => t.address == ATLAS,
+      (t) => t.address == props.tokenAddress,
     )!;
     const source = findATA(getSigner().toString(), token.address);
     const destination = findATA(owner.toString(), token.address);
@@ -61,16 +61,24 @@ async function transfer() {
   </div>
   <div class="row">
     <div class="col">Balance:</div>
-    <div>
+    <div class="row q-gutter-x-xs">
       <FormatNumber
         class=""
         :number="
-          useAccountStore().accounts.find((acc) => acc.mint == ATLAS)
-            ?.uiAmount ?? 0
+          useAccountStore().accounts.find(
+            (acc) => acc.mint == props.tokenAddress,
+          )?.uiAmount ?? 0
         "
         :decimals="4"
         :pad-start="10"
       />
+      <div>
+        {{
+          useAccountStore().accounts.find(
+            (acc) => acc.mint == props.tokenAddress,
+          )?.info.symbol
+        }}
+      </div>
     </div>
   </div>
 </template>
