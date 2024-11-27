@@ -65,7 +65,7 @@ const options = ref({
     position: 'left',
   },
   theme: {
-    palette: 'palette3', // upto palette10
+    palette: 'palette4', // upto palette10
   },
   labels: ['Redeemable' + ''],
 });
@@ -81,7 +81,7 @@ const options = ref({
     <FormatNumber :number="total" :decimals="4" :pad-start="10" />
   </div>
   <apexchart
-    height="300px"
+    height="200px"
     type="radialBar"
     :options="options"
     :series="data"
