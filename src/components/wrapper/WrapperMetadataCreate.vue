@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { useWorkspaceAdapter } from 'src/solana/connector';
+
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { findMetadataAddress } from 'src/solana/wrapper/WrapperInterface';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 
 const props = defineProps(['name', 'symbol', 'uri']);
 
@@ -15,6 +16,7 @@ const $q = useQuasar();
 async function buildTX(label: string) {
   try {
     const tx = new Transaction();
+
     const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
     const metadata = {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey, Transaction } from '@solana/web3.js';

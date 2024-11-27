@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { useWorkspaceAdapter } from 'src/idls/adapter/apapter';
+import { useWorkspaceAdapter } from 'src/solana/connector';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { findMetadataAddress } from 'src/solana/wrapper/WrapperInterface';
