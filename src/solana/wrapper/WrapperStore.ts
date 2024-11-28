@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { IGroup, IWrapper } from 'src/solana/wrapper/WrapperInterface';
 import { PublicKey } from '@solana/web3.js';
+import { useLocalStorage } from '@vueuse/core';
 
 export const RAFLLE_WHITELIST_NAME = 'Crew';
 
@@ -17,6 +18,7 @@ export interface WrapperAccount {
 
 export const useWrapperStore = defineStore('wrapperStore', {
   state: () => ({
+    enableManage: useLocalStorage('enableManage', false),
     wrapperSelected: {} as WrapperAccount | undefined,
     groupSelected: {} as GroupAccount | undefined,
     wrapper: [] as WrapperAccount[],

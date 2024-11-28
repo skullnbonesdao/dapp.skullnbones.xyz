@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import WrapperGroupView from 'components/wrapper/WrapperGroupView.vue';
 import WrapperManage from 'components/wrapper/WrapperManage.vue';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
@@ -14,6 +14,13 @@ const tabSelected = ref('wrapping');
 
 useWrapperStore();
 
+watch(
+  () => useWrapperStore().enableManage,
+  () => {
+    if (!useWrapperStore().enableManage) tabSelected.value = 'wrapping';
+  },
+);
+
 onMounted(async () => {
   if (!useWorkspaceAdapter()) initWorkspaceAdapter();
   await useWrapperStore().updateStore();
@@ -26,9 +33,19 @@ onMounted(async () => {
       <q-card-section class="row items-center q-gutter-x-md">
         <q-icon name="inventory_2" size="md" />
         <div class="col text-h6">Token Wrapper Interface</div>
+        <q-toggle
+          dense
+          left-label
+          label="Enable Management"
+          v-model="useWrapperStore().enableManage"
+          checked-icon="check"
+          color="primary"
+          unchecked-icon="clear"
+        />
       </q-card-section>
       <q-separator />
       <q-tabs
+        v-if="useWrapperStore().enableManage"
         v-model="tabSelected"
         class="text-grey"
         active-color="primary"
