@@ -5,13 +5,13 @@ import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import WrapperWrap from 'components/wrapper/WrapperWrap.vue';
 import WrapperUnwrap from 'components/wrapper/WrapperUnwrap.vue';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
-import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useAccountStore } from '../../solana/accounts/AccountStore';
 import FormatNumber from 'components/text/FormatNumber.vue';
 import { format_address } from '../../functions/format_address';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import WrapperImageAsync from 'components/wrapper/WrapperImageAsync.vue';
 import WrapperSolscanLink from 'components/wrapper/WrapperSolscanLink.vue';
+import { useTokenListStore } from '../../solana/tokens/TokenListStore';
 
 const rows = [];
 
@@ -70,6 +70,7 @@ const rowsPerPageOptions = computed(() => {
             <q-card-section class="text-center">
               <WrapperImageAsync :wrapper="props.row" />
             </q-card-section>
+
             <q-card-section class="q-gutter-y-xs">
               <div class="row items-center">
                 <div class="col text-subtitle1 text-weight-thin">Group</div>
@@ -109,12 +110,21 @@ const rowsPerPageOptions = computed(() => {
               </div>
               <div class="row items-center">
                 <div class="col text-subtitle1 text-weight-thin">Wrappable</div>
-                <div class="text-subtitle2">
-                  {{
-                    props.row?.account.useLimit
-                      ? props.row?.account.limitAmountUnwrapped
-                      : '∞'
-                  }}
+                <div
+                  :class="
+                    props.row.account.useLimit == true &&
+                    props.row?.account.limitAmountUnwrapped == 0
+                      ? 'text-red'
+                      : ''
+                  "
+                >
+                  <FormatNumber
+                    v-if="props.row?.account.useLimit"
+                    :number="props.row?.account.limitAmountUnwrapped.toNumber()"
+                    :decimals="4"
+                    :pad-start="10"
+                  />
+                  <div v-else>Unlimited</div>
                 </div>
               </div>
 
@@ -152,17 +162,6 @@ const rowsPerPageOptions = computed(() => {
             </q-card-section>
 
             <q-separator />
-
-            <q-card-actions class="row text-h4">
-              <div class="col text-center">
-                {{ props.row.account.ratio[0] }}
-              </div>
-              <q-icon size="md" name="swap_horiz" />
-              <div class="col text-center">
-                {{ props.row.account.ratio[1] }}
-              </div>
-            </q-card-actions>
-
             <q-card-actions class="row">
               <q-card class="col q-mx-sm" flat bordered>
                 <q-card-section>

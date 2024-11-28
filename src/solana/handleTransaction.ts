@@ -64,7 +64,7 @@ export const handleTransaction = async (
 
     notif({
       color: 'green-5',
-      message: `Waiting for confirmation...`,
+      message: `[1/2] Waiting for confirmation...`,
       caption: `${signature}`,
     });
 
@@ -81,7 +81,7 @@ export const handleTransaction = async (
 
     notif({
       color: 'green-8',
-      message: `Waiting for finalization...`,
+      message: `[2/2]  Waiting for finalization...`,
       caption: `${signature}`,
     });
 

@@ -20,7 +20,7 @@ const styledNumber = computed(() => {
 
     // Return HTML string with spans
     return `
-          <div class="row">
+          <div class="row" >
           <span class="text-weight-thin">${leadingZeros}</span>
           <span class="text-weight-bold">${rest}</span>
           </div>

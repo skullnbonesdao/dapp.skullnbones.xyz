@@ -48,29 +48,35 @@ async function loadMetadata(mint: PublicKey) {
 
 <template>
   <div class="row items-center">
-    <q-avatar size="100px">
-      <q-img v-if="imageURLWrapped" :src="imageURLUnwrapped" />
-      <q-img
-        v-else
-        :src="
-          useTokenListStore().tokenList.find(
-            (t) => t.address == wrapper.account?.mintUnwrapped.toString(),
-          )?.logoURI ?? UNKNOWN_IMAGE
-        "
-      />
-    </q-avatar>
-    <q-icon class="col" size="md" name="swap_horiz" />
-    <q-avatar size="100px">
-      <q-img v-if="imageURLWrapped" :src="imageURLWrapped" />
-      <q-img
-        v-else
-        :src="
-          useTokenListStore().tokenList.find(
-            (t) => t.address == wrapper.account?.mintWrapped.toString(),
-          )?.logoURI ?? UNKNOWN_IMAGE
-        "
-      />
-    </q-avatar>
+    <div>
+      <q-avatar size="100px">
+        <q-img v-if="imageURLWrapped" :src="imageURLUnwrapped" />
+        <q-img
+          v-else
+          :src="
+            useTokenListStore().tokenList.find(
+              (t) => t.address == wrapper.account?.mintUnwrapped.toString(),
+            )?.logoURI ?? UNKNOWN_IMAGE
+          "
+        />
+      </q-avatar>
+      <div class="text-h4">{{ props.wrapper.account.ratio[0] }}</div>
+    </div>
+    <q-icon class="col" size="xl" name="swap_horiz" />
+    <div>
+      <q-avatar size="100px">
+        <q-img v-if="imageURLWrapped" :src="imageURLWrapped" />
+        <q-img
+          v-else
+          :src="
+            useTokenListStore().tokenList.find(
+              (t) => t.address == wrapper.account?.mintWrapped.toString(),
+            )?.logoURI ?? UNKNOWN_IMAGE
+          "
+        />
+      </q-avatar>
+      <div class="text-h4">{{ props.wrapper.account.ratio[1] }}</div>
+    </div>
   </div>
 </template>
 
