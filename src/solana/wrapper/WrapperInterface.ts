@@ -10,7 +10,7 @@ import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
 const ID = new PublicKey(wrapperIDL.address);
 
 export interface IGroup {
-  name: PublicKey;
+  name: string;
   owner: PublicKey;
 }
 

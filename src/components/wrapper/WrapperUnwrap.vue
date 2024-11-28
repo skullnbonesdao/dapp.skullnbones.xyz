@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
@@ -67,6 +67,7 @@ async function buildTX(label: string) {
     );
     await handleTransaction(tx, '[Wrapper] unwrap tokens');
     await useWrapperStore().updateStore();
+    await useAccountStore().updateStore();
   } catch (err) {
     console.error(err);
     $q.notify({
@@ -75,18 +76,17 @@ async function buildTX(label: string) {
     });
   }
 }
+
+const disabled = computed(() => {
+  return !props.wrapper.account.allowWrap;
+});
 </script>
 
 <template>
   <div>
-    <q-input
-      :disable="!wrapper.account.allowUnwrap"
-      filled
-      type="number"
-      v-model="amountToWrap"
-    />
+    <q-input :disable="disabled" filled type="number" v-model="amountToWrap" />
     <q-btn
-      :disable="!wrapper.account.allowUnwrap"
+      :disable="disabled"
       class="full-width"
       color="primary"
       label="Unwrap"

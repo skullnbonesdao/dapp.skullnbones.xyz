@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps(['asTabs']);
 
-const tab = ref(
-  useWrapperStore().groupSelected?.account?.name ?? 'S&B Dockyard',
-);
+const tab = ref();
+
+onMounted(() => {
+  tab.value = useWrapperStore().groupSelected
+    ? useWrapperStore().groupSelected?.account?.name
+    : useWrapperStore().groups[0].account.name;
+});
 
 watch(
   () => tab.value,

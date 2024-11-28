@@ -48,6 +48,7 @@ async function createNewGroup() {
 
 <template>
   <div class="row">
+    {{ getSigner() }}
     <q-input
       square
       filled
