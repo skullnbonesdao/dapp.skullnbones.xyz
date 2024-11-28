@@ -21,13 +21,12 @@ export const handleTransaction = async (
     timeout: 0, // we want to be in control when it gets dismissed
     spinner: true,
     message: label,
-    caption: '...',
     position: 'bottom-right',
   });
 
   try {
     notif({
-      caption: 'Waiting for user to sign...',
+      caption: `Waiting for user to sign...`,
     });
 
     let signature = '';
@@ -64,22 +63,44 @@ export const handleTransaction = async (
     }
 
     notif({
-      caption: `Waiting for confirmation: ${signature}`,
+      color: 'green-5',
+      message: `[1/2] Waiting for confirmation...`,
+      caption: `${signature}`,
     });
 
     const latestBlockHash = await useRPCStore().connection.getLatestBlockhash();
-    await useRPCStore().connection.confirmTransaction({
-      blockhash: latestBlockHash.blockhash,
-      lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-      signature: signature,
+
+    await useRPCStore().connection.confirmTransaction(
+      {
+        blockhash: latestBlockHash.blockhash,
+        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+        signature: signature,
+      },
+      'confirmed',
+    );
+
+    notif({
+      color: 'green-8',
+      message: `[2/2]  Waiting for finalization...`,
+      caption: `${signature}`,
     });
+
+    await useRPCStore().connection.confirmTransaction(
+      {
+        blockhash: latestBlockHash.blockhash,
+        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+        signature: signature,
+      },
+      'finalized',
+    );
 
     notif({
       color: 'positive',
       timeout: 5000,
       icon: 'done',
       spinner: false,
-      caption: `Confirmed: ${signature}`,
+      message: `Finalized`,
+      caption: `${signature}`,
     });
 
     return 0;

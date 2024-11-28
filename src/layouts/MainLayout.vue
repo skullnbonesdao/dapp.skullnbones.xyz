@@ -150,6 +150,12 @@ const links1 = computed(() => {
 
   data.push({
     icon: 'lock_clock',
+    text: 'Player Profile',
+    to: '/playerprofile',
+  });
+
+  data.push({
+    icon: 'lock_clock',
     text: 'StarAtlasLocker',
     to: '/staratlaslocker',
   });
