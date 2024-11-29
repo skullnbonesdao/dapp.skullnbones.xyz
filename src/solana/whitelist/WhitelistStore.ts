@@ -5,13 +5,20 @@ import {
   Whitelist,
   WhitelistEntry,
 } from 'src/solana/whitelist/WhitelistInterface';
+import { PublicKey } from '@solana/web3.js';
 
 export const RAFLLE_WHITELIST_NAME = 'Crew';
+
+export interface WhitelistAccount {
+  publicKey: PublicKey;
+  account: Whitelist;
+}
 
 export const useWhitelistStore = defineStore('whitelistStore', {
   state: () => ({
     whitelists: [] as Whitelist[],
     whitelistEntries: [] as WhitelistEntry[],
+    whitelistSelected: {} as WhitelistAccount,
   }),
 
   getters: {

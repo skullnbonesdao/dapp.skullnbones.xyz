@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue';
 import { usePlayerProfileStore } from 'src/solana/staratlas/player_profile/PlayerProfileStore';
-import { useWorkspaceAdapter } from 'src/solana/connector';
+import { getSigner } from '../solana/squads/SignerFinder';
+import PlayerProfilePermissions from 'components/playerProfile/PlayerProfilePermissions.vue';
+import PlayerProfileCreate from 'components/playerProfile/PlayerProfileCreate.vue';
 
 onMounted(async () => {
   await usePlayerProfileStore().updateStore();
 });
 
 watch(
-  () => usePlayerProfileStore().profile,
+  () => getSigner()?.toString(),
   async () => {
-    const pg_playerProfile = useWorkspaceAdapter()?.pg_playerProfile.value;
-    console.log(
-      await pg_playerProfile?.account.profile.fetch(
-        usePlayerProfileStore().profile!.pubkey,
-      ),
-    );
+    await usePlayerProfileStore().updateStore();
   },
 );
 </script>
@@ -36,13 +33,20 @@ watch(
         </div>
       </q-card-section>
       <q-card-section class="q-gutter-y-sm">
-        <div>
-          {{ usePlayerProfileStore().profile?.pubkey?.toString() }}
+        <div class="row items-center">
+          <div class="col text-subtitle1">User</div>
+          {{ getSigner().toString() ?? 'not-found' }}
+        </div>
+        <div class="row items-center">
+          <div class="col text-subtitle1">PlayerProfile</div>
+          {{
+            usePlayerProfileStore().profile?.pubkey?.toString() ?? 'not-found'
+          }}
         </div>
 
-        <div></div>
+        <PlayerProfilePermissions />
 
-        <q-btn label="Create Profile"></q-btn>
+        <PlayerProfileCreate />
       </q-card-section>
     </q-card>
   </q-page>

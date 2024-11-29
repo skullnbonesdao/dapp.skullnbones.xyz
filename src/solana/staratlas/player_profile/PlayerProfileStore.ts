@@ -4,20 +4,29 @@ import { useRPCStore } from 'stores/rpcStore';
 import { PLAYERPROFILE_ID } from 'src/solana/staratlas/player_profile/PlayerProfileInterface';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { useWorkspaceAdapter } from 'src/solana/connector';
+import { SagePermissions } from '@staratlas/sage';
 
 export interface ProfileAccount {
   pubkey: PublicKey;
   account: any;
 }
 
+export interface ProfileKey {
+  profileKeys: any;
+  sagePermissions: SagePermissions;
+}
+
 export const usePlayerProfileStore = defineStore('playerProfileStore', {
   state: () => ({
     profile: ({} as ProfileAccount) || undefined,
+    profileKeys: [] as ProfileKey[],
   }),
 
   getters: {},
   actions: {
     async updateStore() {
+      this.profileKeys = [];
+
       const pg_playerProfile = useWorkspaceAdapter()!.pg_playerProfile.value;
 
       const profile = await useRPCStore().connection.getProgramAccounts(
@@ -39,22 +48,29 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
       const permissionedAccounts = [];
 
       // The first 30 bytes are general information about the Profile
-      let profileData = profile[0].account.data.subarray(30);
-      let iter = 0;
+      const profileData = profile[0].account.data.subarray(30);
+      //let iter = 0;
 
       // Each account which has been granted access to this Profile
-      //   is listed in 80 byte chunks
+      // is listed in 80 byte chunks
       while (profileData.length >= 80) {
         const currProfileKey = profileData.subarray(0, 80);
+
+        console.log(`currProfileKey: ${currProfileKey}`);
 
         const decodedProfileKey = pg_playerProfile.coder.types.decode(
           'profileKey',
           currProfileKey,
         );
-        console.log('sjdkajl');
-        console.log(decodedProfileKey);
 
-        // Find the Player Profile associated with the account which has been granted access
+        this.profileKeys.push({
+          profileKeys: decodedProfileKey as never,
+          sagePermissions: SagePermissions.fromPermissions(
+            decodedProfileKey.permissions,
+          ),
+        });
+
+        /*        // Find the Player Profile associated with the account which has been granted access
         const [targetUserProfile] =
           await useRPCStore().connection.getProgramAccounts(PLAYERPROFILE_ID, {
             filters: [
@@ -87,9 +103,7 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
         const playerName = playerNameAcct
           ? new TextDecoder().decode(playerNameAcct.account.data.subarray(42))
           : '';
-        const permissions = await decodePermissions(
-          decodedProfileKey.permissions,
-        );
+        const permissions = decodePermissions(decodedProfileKey.permissions);
 
         console.log(`Permission: ${permissions} `);
         permissionedAccounts.push({
@@ -99,9 +113,9 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
           permissions: permissions,
         });
         profileData = profileData.subarray(80);
-        iter += 1;
+        iter += 1;*/
       }
-      console.log(permissionedAccounts);
+      //console.log(permissionedAccounts);
     },
   },
 });
