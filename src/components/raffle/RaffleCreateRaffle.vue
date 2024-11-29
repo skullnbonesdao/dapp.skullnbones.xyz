@@ -15,14 +15,13 @@ import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import TokenSelectDropdown from 'components/dropdown/TokenSelectDropdown.vue';
+import { useWhitelistStore } from '../../solana/whitelist/WhitelistStore';
 
 const inputRaffleName = ref();
 const input_raffle_description = ref();
 const input_raffle_ticket_count = ref();
 const inputRaffleTicketPrice = ref();
 const input_account_selected = ref();
-const whitelist_selected = ref<{ label: string; value: string | null }>();
-const whitelist_options = ref<{ label: string; value: string | null }[]>([]);
 
 async function create_new_raffle() {
   try {
@@ -57,7 +56,7 @@ async function create_new_raffle() {
           ticketsMint: new anchor.web3.PublicKey(
             input_account_selected.value.mint,
           ),
-          whitelist: whitelist,
+          whitelist: useWhitelistStore().whitelistSelected.publicKey,
         })
         .instruction(),
     );
@@ -146,23 +145,24 @@ stringOptions.value.forEach((o) => {
         label="Ticket Price"
       />
     </q-card-section>
+    <q-separator />
     <q-card-section class="q-gutter-y-md">
       <p class="text-h5">Whitelist</p>
-
       <div class="col q-gutter-y-sm">
         <q-select
           class="full-width"
           filled
           square
-          v-model="whitelist_selected"
+          v-model="useWhitelistStore().whitelistSelected"
           clearable
           use-input
           hide-selected
           fill-input
           input-debounce="0"
           behavior="menu"
+          :option-label="(opt) => opt.account.name"
           label="Whitelist selcted"
-          :options="whitelist_options"
+          :options="useWhitelistStore().whitelists"
           style="width: 250px"
         >
           <template v-slot:no-option>
