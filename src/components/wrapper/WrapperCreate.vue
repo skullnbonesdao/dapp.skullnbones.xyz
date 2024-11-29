@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useQuasar } from 'quasar';
 import * as anchor from '@coral-xyz/anchor';
@@ -26,6 +26,17 @@ const addMetadata = ref(true);
 const metadataName = ref('');
 const metadataSymbol = ref('');
 const metadataURI = ref('');
+
+const disabled = computed(() => {
+  if (!addMetadata.value) return optionUnwrapped.value ? false : true;
+  else
+    return optionUnwrapped.value &&
+      metadataName.value &&
+      metadataSymbol.value &&
+      metadataURI.value
+      ? false
+      : true;
+});
 
 async function createWrapper() {
   try {
@@ -89,12 +100,8 @@ async function createWrapper() {
       } as any;
 
       const wrapper = findWrapperAddress(mintUnwrapped, getSigner());
-      console.log(`wrapper=${wrapper}`);
-      console.log(`seed=${seed}`);
       const mintWrapped = findMintWrappedAddress(wrapper, seed);
-      console.log(`mintWrapped=${mintWrapped}`);
       const metadataAccount = findMetadataAddress(mintWrapped);
-      console.log(`metadataAccount=${metadataAccount}`);
 
       tx.add(
         await pg_wrapper.methods
@@ -213,6 +220,7 @@ async function createWrapper() {
     <q-card-section class="row justify-end">
       <q-btn
         square
+        :disable="disabled"
         color="primary"
         label="Create new wrapper"
         @click="createWrapper()"

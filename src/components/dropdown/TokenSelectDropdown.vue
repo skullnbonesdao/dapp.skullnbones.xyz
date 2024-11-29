@@ -2,7 +2,6 @@
 import { ref, watch } from 'vue';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
-import { PublicKey } from '@solana/web3.js';
 
 const props = defineProps(['label', 'textboxLabel']);
 const emits = defineEmits(['token_account_selected']);
@@ -95,7 +94,7 @@ function filterFn(val, update, abort) {
               <q-img
                 :src="
                   useTokenListStore().getTokenByMintPublicKey(
-                    new PublicKey(scope.opt.mint),
+                    scope.opt?.mint.toString(),
                   )?.logoURI
                 "
               ></q-img>
