@@ -90,6 +90,7 @@ async function createWrapper() {
 
       const wrapper = findWrapperAddress(mintUnwrapped, getSigner());
       console.log(`wrapper=${wrapper}`);
+      console.log(`seed=${seed}`);
       const mintWrapped = findMintWrappedAddress(wrapper, seed);
       console.log(`mintWrapped=${mintWrapped}`);
       const metadataAccount = findMetadataAddress(mintWrapped);
