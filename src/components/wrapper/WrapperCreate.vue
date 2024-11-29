@@ -89,12 +89,8 @@ async function createWrapper() {
       } as any;
 
       const wrapper = findWrapperAddress(mintUnwrapped, getSigner());
-      console.log(`wrapper=${wrapper}`);
-      console.log(`seed=${seed}`);
       const mintWrapped = findMintWrappedAddress(wrapper, seed);
-      console.log(`mintWrapped=${mintWrapped}`);
       const metadataAccount = findMetadataAddress(mintWrapped);
-      console.log(`metadataAccount=${metadataAccount}`);
 
       tx.add(
         await pg_wrapper.methods
