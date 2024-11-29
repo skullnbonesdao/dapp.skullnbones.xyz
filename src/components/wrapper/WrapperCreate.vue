@@ -81,7 +81,6 @@ async function createWrapper() {
     );
 
     //Add Metadata Account
-
     if (addMetadata.value) {
       const metadata = {
         name: metadataName.value,
@@ -92,6 +91,10 @@ async function createWrapper() {
       const wrapper = findWrapperAddress(mintUnwrapped, getSigner());
       const mintWrapped = findMintWrappedAddress(wrapper, seed);
       const metadataAccount = findMetadataAddress(mintWrapped);
+
+      console.log(
+        `wrapper=${wrapper}, mintWrapped=${mintWrapped}, metadataAccount=${metadataAccount}`,
+      );
 
       tx.add(
         await pg_wrapper.methods
