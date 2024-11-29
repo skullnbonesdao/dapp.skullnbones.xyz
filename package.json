@@ -33,6 +33,8 @@
     "@solana/web3.js": "^1.87.3",
     "@sqds/multisig": "2.0.0",
     "@staratlas/factory": "^0.6.0",
+    "@staratlas/player-profile": "^0.11.0",
+    "@staratlas/sage": "^1.8.4",
     "@vueuse/core": "^10.6.1",
     "apexcharts": "^4.0.0",
     "axios": "^1.2.1",
