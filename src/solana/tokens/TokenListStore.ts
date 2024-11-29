@@ -12,10 +12,12 @@ export const useTokenListStore = defineStore('tokenListStore', {
 
   getters: {
     getTokenByMintPublicKey: (state) => {
-      return (mint: PublicKey) =>
-        state.tokenList.find(
+      return (mint: PublicKey | undefined) => {
+        if (!mint) return 'unknown.svg';
+        return state.tokenList.find(
           (token) => token.address === mint.toString(),
         ) as IToken;
+      };
     },
   },
   actions: {
