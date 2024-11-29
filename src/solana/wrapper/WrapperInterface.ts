@@ -49,7 +49,7 @@ export function findMintWrappedAddress(wrapper: PublicKey, seed: BN) {
     [
       anchor.utils.bytes.utf8.encode('wrapper_token'),
       wrapper.toBytes(),
-      seed.toBuffer().reverse(),
+      seed.toArrayLike(Buffer).reverse(),
     ],
     ID,
   );
