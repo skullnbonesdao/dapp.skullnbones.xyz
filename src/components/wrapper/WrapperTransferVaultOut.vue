@@ -15,6 +15,7 @@ import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 import { useRPCStore } from 'stores/rpcStore';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 
 const $q = useQuasar();
 const amountToTransfer = ref(1);
@@ -56,14 +57,16 @@ async function transfer() {
         );
       }
 
+      const amount = calcAmountToTransfer(
+        amountToTransfer.value,
+        useTokenListStore().getTokenByMintPublicKey(
+          useWrapperStore().wrapperSelected?.account.mintUnwrapped.toString(),
+        )?.decimals ?? 0,
+      );
+
       tx.add(
         await pg_wrapper.methods
-          .transferVault(
-            calcAmountToTransfer(
-              amountToTransfer.value,
-              useWrapperStore().wrapperSelected!.account.wrappedDecimals,
-            ) as any,
-          )
+          .transferVault(amount as any)
           .accountsPartial({
             signer: getSigner(),
             wrapper: useWrapperStore().wrapperSelected?.publicKey,
