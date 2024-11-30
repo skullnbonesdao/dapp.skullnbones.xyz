@@ -5,10 +5,10 @@ import { useLocalStorage } from '@vueuse/core';
 
 export const useRPCStore = defineStore('rpcStore', {
   state: () => ({
-    rpc_stored_name: useLocalStorage('rpc_store_0', RPC_NETWORKS[0].name),
+    rpc_stored_name: useLocalStorage('rpc_store_1', RPC_NETWORKS[0].name),
     rpc_selected:
       RPC_NETWORKS.find((rpc) =>
-        rpc.name.includes(useLocalStorage('rpc_store_0', RPC_NETWORKS[0].name)),
+        rpc.name.includes(useLocalStorage('rpc_store_1', RPC_NETWORKS[0].name)),
       ) ?? RPC_NETWORKS[0],
   }),
   getters: {
