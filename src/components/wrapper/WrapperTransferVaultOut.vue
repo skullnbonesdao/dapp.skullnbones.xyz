@@ -36,7 +36,7 @@ async function transfer() {
       const pg_wrapper = useWorkspaceAdapter()!.pg_wrapper.value;
 
       const ataUnwrappedSigner = findATA(
-        new PublicKey(recipient.value).toString(),
+        new PublicKey(recipient.value.toString()).toString(),
         useWrapperStore().wrapperSelected!.account.mintUnwrapped.toString(),
       );
 
@@ -46,9 +46,9 @@ async function transfer() {
       if (!ataInfo) {
         tx.add(
           createAssociatedTokenAccountInstruction(
-            getSigner()!,
+            getSigner(),
             ataUnwrappedSigner,
-            new PublicKey(recipient.value),
+            new PublicKey(recipient.value.toString()),
             useWrapperStore().wrapperSelected!.account.mintUnwrapped,
             TOKEN_PROGRAM_ID,
             ASSOCIATED_TOKEN_PROGRAM_ID,
