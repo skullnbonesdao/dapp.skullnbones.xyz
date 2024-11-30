@@ -90,7 +90,7 @@ function getEntrant(entrantsData: Uint8Array[], index: number): PublicKey {
 }
 
 onMounted(async () => {
-  await retryFunction(loadTicketsAccounts);
+  await loadTicketsAccounts();
   await retryFunction(loadTokenAccounts);
   await retryFunction(loadTickets);
 });
