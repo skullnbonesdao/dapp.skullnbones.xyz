@@ -9,9 +9,9 @@ import { Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
-import { useAccountStore } from '../../solana/accounts/AccountStore';
 import { findWhitelistAddress } from 'src/solana/whitelist/WhitelistInterface';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
+import AccountBalance from 'components/AccountBalance.vue';
 
 const input_raffle_ticket_amount = ref();
 
@@ -95,29 +95,16 @@ async function buy_raffle_ticket() {
       />
     </div>
     <div class="row">
-      <div class="col row q-gutter-x-xs text-weight-light">
-        <p>Available:</p>
-        <p>
-          {{
-            useAccountStore().accounts?.find(
-              (acc) => acc.mint == raffle.account.ticketMint.toString(),
-            )?.uiAmount
-          }}
-        </p>
-        <p>
-          {{
-            useAccountStore().accounts?.find(
-              (acc) => acc.mint == raffle.account.ticketMint.toString(),
-            )?.info.symbol
-          }}
-        </p>
-      </div>
+      <q-space />
       <p class="text-caption text-right text-weight-thin">
         0.001◎ fee
         <q-tooltip anchor="bottom right" self="top middle">
           cover deployment costs
         </q-tooltip>
       </p>
+    </div>
+    <div class="col">
+      <AccountBalance :mint="raffle.account.ticketMint" />
     </div>
   </div>
   <div v-else class="row full-width justify-center">
