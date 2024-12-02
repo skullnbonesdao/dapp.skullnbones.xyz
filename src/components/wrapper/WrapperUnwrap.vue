@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { useWallet } from 'solana-wallets-vue';
 import { useQuasar } from 'quasar';
@@ -9,15 +9,31 @@ import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
-import { findATA } from 'src/solana/wrapper/WrapperInterface';
+import { findATA, findVaultAddress } from 'src/solana/wrapper/WrapperInterface';
 import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import * as WHITELST from 'src/solana/whitelist/WhitelistInterface';
+import { useRPCStore } from 'stores/rpcStore';
 
 const $q = useQuasar();
-const amountToWrap = ref(1);
+const amountToUnwrap = ref(0);
+const vaultBalance = ref(0);
 
 const props = defineProps(['wrapper']);
+
+const isValid = computed(() => amountToUnwrap.value <= vaultBalance.value);
+
+onMounted(async () => {
+  const accountBalance = (
+    await useRPCStore().connection.getTokenAccountBalance(
+      findVaultAddress(
+        props.wrapper.publicKey,
+        props.wrapper.account.mintUnwrapped,
+      ),
+    )
+  ).value;
+  vaultBalance.value = accountBalance.uiAmount ?? 0;
+});
 
 async function buildTX(label: string) {
   try {
@@ -27,7 +43,7 @@ async function buildTX(label: string) {
     const wrapper = props.wrapper;
 
     const amount_to_transfer = calcAmountToTransfer(
-      amountToWrap.value,
+      amountToUnwrap.value,
       useAccountStore().getAccountByMintPublicKey(
         wrapper?.account.mintUnwrapped,
       )?.decimals,
@@ -83,13 +99,25 @@ const disabled = computed(() => {
 </script>
 
 <template>
-  <div>
-    <q-input :disable="disabled" filled type="number" v-model="amountToWrap" />
-    <q-btn
+  <div class="col q-gutter-y-md">
+    <q-input
+      class="col"
+      square
       :disable="disabled"
+      filled
+      type="number"
+      v-model="amountToUnwrap"
+      :hint="`Max ${vaultBalance} allowed to unwrap`"
+      bottom-slots
+      :error-message="`Max ${vaultBalance} allowed to unwrap`"
+      :error="!isValid"
+    />
+    <q-btn
       class="full-width"
+      :disable="disabled"
       color="primary"
       label="Unwrap"
+      icon-right="send"
       @click="buildTX('Unwrapping')"
     ></q-btn>
   </div>

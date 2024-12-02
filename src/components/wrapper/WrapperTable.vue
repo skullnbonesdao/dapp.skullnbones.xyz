@@ -14,8 +14,10 @@ import WrapperSolscanLink from 'components/wrapper/WrapperSolscanLink.vue';
 import { useTokenListStore } from '../../solana/tokens/TokenListStore';
 
 const rows = [];
-
+const tab = ref('wrap');
 rows.sort(() => -1 + Math.floor(3 * Math.random()));
+
+useTokenListStore();
 
 const $q = useQuasar();
 
@@ -215,10 +217,31 @@ const rowsPerPageOptions = computed(() => {
                   />
                 </div>
               </q-card>
-              <div class="row q-gutter-x-md">
-                <WrapperWrap class="col" :wrapper="props.row" />
-                <WrapperUnwrap class="col" :wrapper="props.row" />
-              </div>
+              <q-card flat bordered>
+                <div class="col q-gutter-x-md">
+                  <q-tabs
+                    v-model="tab"
+                    dense
+                    class="text-grey"
+                    active-color="primary"
+                    indicator-color="primary"
+                    align="justify"
+                    narrow-indicator
+                  >
+                    <q-tab name="wrap" label="Wrap" />
+                    <q-tab name="unwrap" label="Unwrap" />
+                  </q-tabs>
+                  <q-separator />
+                  <q-tab-panels v-model="tab" animated>
+                    <q-tab-panel name="wrap">
+                      <WrapperWrap class="col" :wrapper="props.row" />
+                    </q-tab-panel>
+                    <q-tab-panel name="unwrap"
+                      ><WrapperUnwrap class="col" :wrapper="props.row" />
+                    </q-tab-panel>
+                  </q-tab-panels>
+                </div>
+              </q-card>
             </q-card-section>
           </q-card>
         </div>
