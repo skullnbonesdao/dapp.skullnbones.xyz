@@ -7,8 +7,13 @@ const props = defineProps(['mint']);
 
 <template>
   <div class="row">
-    <div class="col">Wallet-Balance:</div>
+    <div class="col text-caption text-weight-light">Wallet-Balance:</div>
     <FormatNumber
+      :class="
+        useAccountStore().getAccountByMintPublicKey(mint)?.uiAmount == 0
+          ? 'text-red'
+          : ''
+      "
       :number="useAccountStore().getAccountByMintPublicKey(mint)?.uiAmount"
       :decimals="4"
       :pad-start="10"
