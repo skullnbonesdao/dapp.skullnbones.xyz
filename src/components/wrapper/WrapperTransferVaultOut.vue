@@ -78,7 +78,10 @@ async function transfer() {
           .instruction(),
       );
 
-      await handleTransaction(tx, `[Wrapper] transfer to ${recipient.value}`);
+      await handleTransaction(
+        tx,
+        `[Wrapper] transfer OUT to: ${recipient.value}`,
+      );
       await useWrapperStore().updateStore();
     }
   } catch (err) {
@@ -93,12 +96,6 @@ async function transfer() {
 
 <template>
   <q-card flat>
-    <div class="text-subtitle2 row items-center">
-      <q-checkbox v-model="enableTransfer" />
-      <div class="text-accent">
-        I want to transfer tokens out of the vault to a new address
-      </div>
-    </div>
     <div class="col">
       <div class="row">
         <q-input
@@ -108,7 +105,7 @@ async function transfer() {
           filled
           v-model="recipient"
           type="text"
-          label="recipient"
+          label="Recipient address"
         />
         <q-separator vertical />
         <q-input
@@ -122,10 +119,17 @@ async function transfer() {
         <q-btn
           :disable="!amountToTransfer || !recipient || !enableTransfer"
           color="primary"
-          label="Send"
+          label="Transfer OUT"
+          icon="logout"
           square
           @click="transfer()"
         />
+      </div>
+    </div>
+    <div class="text-subtitle2 row items-center">
+      <q-checkbox v-model="enableTransfer" />
+      <div class="text-accent">
+        I want to transfer tokens out of the vault to a new address
       </div>
     </div>
   </q-card>
