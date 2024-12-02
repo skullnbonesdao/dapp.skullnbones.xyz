@@ -9,8 +9,7 @@ import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { calcAmountToTransfer } from 'stores/globalStore';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { findATA } from 'src/solana/wrapper/WrapperInterface';
-import { useAccountStore } from 'src/solana/accounts/AccountStore';
-import FormatNumber from 'components/text/FormatNumber.vue';
+import AccountBalance from 'components/AccountBalance.vue';
 
 const amount = ref();
 const props = defineProps(['tokenAddress', 'recipientAddress']);
@@ -59,28 +58,7 @@ async function transfer() {
       @click="transfer()"
     />
   </div>
-  <div class="row">
-    <div class="col">Balance:</div>
-    <div class="row q-gutter-x-xs">
-      <FormatNumber
-        class=""
-        :number="
-          useAccountStore().accounts.find(
-            (acc) => acc.mint == props.tokenAddress,
-          )?.uiAmount ?? 0
-        "
-        :decimals="4"
-        :pad-start="10"
-      />
-      <div>
-        {{
-          useAccountStore().accounts.find(
-            (acc) => acc.mint == props.tokenAddress,
-          )?.info.symbol
-        }}
-      </div>
-    </div>
-  </div>
+  <AccountBalance :mint="props.tokenAddress" />
 </template>
 
 <style scoped lang="sass"></style>
