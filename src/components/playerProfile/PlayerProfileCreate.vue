@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { useWorkspaceAdapter } from 'src/solana/connector';
-import { ProfilePermissions } from '@staratlas/player-profile';
-import { getSigner } from 'src/solana/squads/SignerFinder';
-import { PLAYERPROFILE_ID } from 'src/solana/staratlas/player_profile/PlayerProfileInterface';
-import { AddKeyInput } from '@staratlas/player-profile/src';
-import { BN } from '@staratlas/anchor';
-import { Keypair, SystemProgram, Transaction } from '@solana/web3.js';
+import { Keypair, Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { ref } from 'vue';
 
@@ -15,12 +10,12 @@ async function buildTX() {
   console.log('buildTX');
 
   const tx = new Transaction();
-  const pg_playerProfile = useWorkspaceAdapter()?.pg_playerProfile.value;
+  const pg_playerProfile = useWorkspaceAdapter()!.pg_playerProfile.value;
 
   const profile = Keypair.generate().publicKey;
 
   //Create Profile
-  tx.add(
+  /* tx.add(
     await pg_playerProfile?.methods
       .createProfile(
         [
@@ -51,7 +46,7 @@ async function buildTX() {
         },
       ])
       .instruction(),
-  );
+  );*/
 
   //Set Name
 

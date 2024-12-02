@@ -48,8 +48,8 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
       const permissionedAccounts = [];
 
       // The first 30 bytes are general information about the Profile
-      const profileData = profile[0].account.data.subarray(30);
-      //let iter = 0;
+      let profileData = profile[0].account.data.subarray(30);
+      let iter = 0;
 
       // Each account which has been granted access to this Profile
       // is listed in 80 byte chunks
@@ -70,21 +70,21 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
           ),
         });
 
-        /*        // Find the Player Profile associated with the account which has been granted access
-        const [targetUserProfile] =
-          await useRPCStore().connection.getProgramAccounts(PLAYERPROFILE_ID, {
-            filters: [
-              {
-                memcmp: {
-                  offset: 30,
-                  bytes: decodedProfileKey.key.toString(),
-                },
-              },
-            ],
-          });
+        // Find the Player Profile associated with the account which has been granted access
+        // const [targetUserProfile] =
+        //   await useRPCStore().connection.getProgramAccounts(PLAYERPROFILE_ID, {
+        //     filters: [
+        //       {
+        //         memcmp: {
+        //           offset: 30,
+        //           bytes: decodedProfileKey.key.toString(),
+        //         },
+        //       },
+        //     ],
+        //   });
 
         // Find the Player Name associated with the account which has been granted access
-        let playerNameAcct;
+        /*        let playerNameAcct;
         if (targetUserProfile) {
           [playerNameAcct] = await useRPCStore().connection.getProgramAccounts(
             PLAYERPROFILE_ID,
@@ -111,11 +111,11 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
           name: playerName,
           idx: iter,
           permissions: permissions,
-        });
+        });*/
         profileData = profileData.subarray(80);
-        iter += 1;*/
+        iter += 1;
       }
-      //console.log(permissionedAccounts);
+      // console.log(permissionedAccounts);
     },
   },
 });

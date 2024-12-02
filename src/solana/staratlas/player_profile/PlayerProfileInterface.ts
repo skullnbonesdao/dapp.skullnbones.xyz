@@ -12,3 +12,11 @@ export function findProfile() {
   );
   return profile[0];
 }
+
+export function findPlayerNameAddress(profile: PublicKey) {
+  const account = anchor.web3.PublicKey.findProgramAddressSync(
+    [anchor.utils.bytes.utf8.encode('wrapper_token'), profile.toBytes()],
+    PLAYERPROFILE_ID,
+  );
+  return account[0];
+}

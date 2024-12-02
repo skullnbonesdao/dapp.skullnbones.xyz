@@ -15,25 +15,32 @@ import { usePlayerProfileStore } from 'src/solana/staratlas/player_profile/Playe
         {{ k.profileKeys.key }}
       </div>
     </q-card-section>
-    <q-card-section
-      class="col"
-      v-for="permission in Object.keys(k.sagePermissions)"
-      :key="permission"
-    >
-      <div class="row justify-end">
-        <q-toggle
-          dense
-          left-label
-          :label="permission"
-          v-model="
-            usePlayerProfileStore().profileKeys[0].sagePermissions[permission]
-          "
-          checked-icon="check"
-          color="primary"
-          unchecked-icon="clear"
-        />
-      </div>
-    </q-card-section>
+
+    <q-list bordered separator>
+      <q-item
+        v-for="permission in Object.keys(k.sagePermissions)"
+        :key="permission"
+      >
+        <q-item-section class="">
+          <div class="row">
+            <div class="col">
+              {{ permission.toUpperCase() }}
+            </div>
+            <q-toggle
+              dense
+              v-model="
+                usePlayerProfileStore().profileKeys[0].sagePermissions[
+                  permission
+                ]
+              "
+              checked-icon="check"
+              color="primary"
+              unchecked-icon="clear"
+            />
+          </div>
+        </q-item-section>
+      </q-item>
+    </q-list>
   </q-card>
 </template>
 
