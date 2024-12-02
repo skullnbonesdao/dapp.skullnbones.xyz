@@ -10,7 +10,7 @@ onMounted(async () => {
 });
 
 watch(
-  () => getSigner()?.toString(),
+  () => getSigner(),
   async () => {
     await usePlayerProfileStore().updateStore();
   },

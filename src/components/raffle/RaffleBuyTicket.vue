@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import * as anchor from '@coral-xyz/anchor';
 import { Notify } from 'quasar';
 import { useWorkspaceAdapter } from 'src/solana/connector';
@@ -9,12 +9,17 @@ import { Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { useRaffleStore } from 'src/solana/raffle/RaffleStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
-import { useAccountStore } from '../../solana/accounts/AccountStore';
 import { findWhitelistAddress } from 'src/solana/whitelist/WhitelistInterface';
+import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
+import AccountBalance from 'components/AccountBalance.vue';
 
 const input_raffle_ticket_amount = ref();
 
 const props = defineProps(['raffle', 'tickets']);
+
+const disabled = computed(() => {
+  return useWallet().publicKey.value ? false : true;
+});
 
 async function buy_raffle_ticket() {
   const tx = new Transaction();
@@ -68,7 +73,7 @@ async function buy_raffle_ticket() {
 </script>
 
 <template>
-  <div class="col q-pa-sm q-gutter-y-sm">
+  <div v-if="!disabled" class="col q-pa-sm q-gutter-y-sm">
     <p class="text-overline">Buy Ticket(s)</p>
     <div class="row">
       <q-input
@@ -90,23 +95,7 @@ async function buy_raffle_ticket() {
       />
     </div>
     <div class="row">
-      <div class="col row q-gutter-x-xs text-weight-light">
-        <p>Available:</p>
-        <p>
-          {{
-            useAccountStore().accounts?.find(
-              (acc) => acc.mint == raffle.account.ticketMint.toString(),
-            )?.uiAmount
-          }}
-        </p>
-        <p>
-          {{
-            useAccountStore().accounts?.find(
-              (acc) => acc.mint == raffle.account.ticketMint.toString(),
-            )?.info.symbol
-          }}
-        </p>
-      </div>
+      <q-space />
       <p class="text-caption text-right text-weight-thin">
         0.001◎ fee
         <q-tooltip anchor="bottom right" self="top middle">
@@ -114,6 +103,12 @@ async function buy_raffle_ticket() {
         </q-tooltip>
       </p>
     </div>
+    <div class="col">
+      <AccountBalance :mint="raffle.account.ticketMint" />
+    </div>
+  </div>
+  <div v-else class="row full-width justify-center">
+    <WalletMultiButton class="" dark />
   </div>
 </template>
 

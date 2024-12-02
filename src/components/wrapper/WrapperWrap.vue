@@ -19,11 +19,23 @@ import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
 
 import * as WHITELST from 'src/solana/whitelist/WhitelistInterface';
+import AccountBalance from 'components/AccountBalance.vue';
 
 const $q = useQuasar();
-const amountToWrap = ref(1);
+const amountToWrap = ref(0);
 
 const props = defineProps(['wrapper']);
+const wrappable = computed(() => {
+  return props.wrapper.account.useLimit
+    ? props.wrapper.account.limitAmountUnwrapped.toNumber()
+    : 0;
+});
+
+const isValid = computed(() => {
+  if (props.wrapper.account.useLimit)
+    return amountToWrap.value <= wrappable.value;
+  else return true;
+});
 
 async function buildTX() {
   try {
@@ -116,15 +128,28 @@ const disabled = computed(() => {
 </script>
 
 <template>
-  <div>
-    <q-input :disable="disabled" filled type="number" v-model="amountToWrap" />
-    <q-btn
+  <div class="col q-gutter-y-md">
+    <q-input
+      class="col"
       :disable="disabled"
+      filled
+      :hint="`Max ${wrappable} allowed to wrap`"
+      type="number"
+      bottom-slots
+      :error="!isValid"
+      :error-message="`Max ${wrappable} allowed to wrap`"
+      v-model="amountToWrap"
+    />
+    <q-btn
       class="full-width"
+      :disable="disabled"
       color="primary"
       label="Wrap"
+      icon-right="send"
       @click="buildTX()"
     ></q-btn>
+
+    <AccountBalance :mint="props.wrapper.account.mintUnwrapped" />
   </div>
 </template>
 

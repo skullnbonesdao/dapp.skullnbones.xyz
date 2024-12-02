@@ -5,7 +5,6 @@ import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import WrapperWrap from 'components/wrapper/WrapperWrap.vue';
 import WrapperUnwrap from 'components/wrapper/WrapperUnwrap.vue';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
-import { useAccountStore } from '../../solana/accounts/AccountStore';
 import FormatNumber from 'components/text/FormatNumber.vue';
 import { format_address } from '../../functions/format_address';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
@@ -14,8 +13,10 @@ import WrapperSolscanLink from 'components/wrapper/WrapperSolscanLink.vue';
 import { useTokenListStore } from '../../solana/tokens/TokenListStore';
 
 const rows = [];
-
+const tab = ref('wrap');
 rows.sort(() => -1 + Math.floor(3 * Math.random()));
+
+useTokenListStore();
 
 const $q = useQuasar();
 
@@ -188,37 +189,31 @@ const rowsPerPageOptions = computed(() => {
             </q-card-section>
 
             <q-card-section v-else class="col">
-              <q-card bordered flat class="q-mb-md">
-                <q-card-section>
-                  <div class="col text-center">Wallet Balance</div>
-                </q-card-section>
-                <q-separator />
-                <div class="row q-pa-md">
-                  <FormatNumber
-                    :number="
-                      useAccountStore().getAccountByMintPublicKey(
-                        props.row.account.mintUnwrapped,
-                      )?.uiAmount
-                    "
-                    :decimals="4"
-                    :pad-start="10"
-                  />
-                  <q-space />
-                  <FormatNumber
-                    :number="
-                      useAccountStore().getAccountByMintPublicKey(
-                        props.row.account.mintWrapped,
-                      )?.uiAmount
-                    "
-                    :decimals="4"
-                    :pad-start="10"
-                  />
+              <q-card flat bordered>
+                <div class="col q-gutter-x-md">
+                  <q-tabs
+                    v-model="tab"
+                    dense
+                    class="text-grey"
+                    active-color="primary"
+                    indicator-color="primary"
+                    align="justify"
+                    narrow-indicator
+                  >
+                    <q-tab name="wrap" label="Wrap" />
+                    <q-tab name="unwrap" label="Unwrap" />
+                  </q-tabs>
+                  <q-separator />
+                  <q-tab-panels v-model="tab" animated>
+                    <q-tab-panel name="wrap">
+                      <WrapperWrap class="col" :wrapper="props.row" />
+                    </q-tab-panel>
+                    <q-tab-panel name="unwrap"
+                      ><WrapperUnwrap class="col" :wrapper="props.row" />
+                    </q-tab-panel>
+                  </q-tab-panels>
                 </div>
               </q-card>
-              <div class="row q-gutter-x-md">
-                <WrapperWrap class="col" :wrapper="props.row" />
-                <WrapperUnwrap class="col" :wrapper="props.row" />
-              </div>
             </q-card-section>
           </q-card>
         </div>
