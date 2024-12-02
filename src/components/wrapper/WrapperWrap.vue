@@ -19,6 +19,7 @@ import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
 
 import * as WHITELST from 'src/solana/whitelist/WhitelistInterface';
+import AccountBalance from 'components/AccountBalance.vue';
 
 const $q = useQuasar();
 const amountToWrap = ref(0);
@@ -147,6 +148,8 @@ const disabled = computed(() => {
       icon-right="send"
       @click="buildTX()"
     ></q-btn>
+
+    <AccountBalance :mint="props.wrapper.account.mintUnwrapped" />
   </div>
 </template>
 

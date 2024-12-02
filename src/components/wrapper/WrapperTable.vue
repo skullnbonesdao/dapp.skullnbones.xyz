@@ -5,7 +5,6 @@ import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import WrapperWrap from 'components/wrapper/WrapperWrap.vue';
 import WrapperUnwrap from 'components/wrapper/WrapperUnwrap.vue';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
-import { useAccountStore } from '../../solana/accounts/AccountStore';
 import FormatNumber from 'components/text/FormatNumber.vue';
 import { format_address } from '../../functions/format_address';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
@@ -190,33 +189,6 @@ const rowsPerPageOptions = computed(() => {
             </q-card-section>
 
             <q-card-section v-else class="col">
-              <q-card bordered flat class="q-mb-md">
-                <q-card-section>
-                  <div class="col text-center">Wallet Balance</div>
-                </q-card-section>
-                <q-separator />
-                <div class="row q-pa-md">
-                  <FormatNumber
-                    :number="
-                      useAccountStore().getAccountByMintPublicKey(
-                        props.row.account.mintUnwrapped,
-                      )?.uiAmount
-                    "
-                    :decimals="4"
-                    :pad-start="10"
-                  />
-                  <q-space />
-                  <FormatNumber
-                    :number="
-                      useAccountStore().getAccountByMintPublicKey(
-                        props.row.account.mintWrapped,
-                      )?.uiAmount
-                    "
-                    :decimals="4"
-                    :pad-start="10"
-                  />
-                </div>
-              </q-card>
               <q-card flat bordered>
                 <div class="col q-gutter-x-md">
                   <q-tabs

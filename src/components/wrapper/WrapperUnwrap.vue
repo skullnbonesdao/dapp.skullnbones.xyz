@@ -14,6 +14,7 @@ import { useWrapperStore } from 'src/solana/wrapper/WrapperStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import * as WHITELST from 'src/solana/whitelist/WhitelistInterface';
 import { useRPCStore } from 'stores/rpcStore';
+import AccountBalance from 'components/AccountBalance.vue';
 
 const $q = useQuasar();
 const amountToUnwrap = ref(0);
@@ -120,6 +121,8 @@ const disabled = computed(() => {
       icon-right="send"
       @click="buildTX('Unwrapping')"
     ></q-btn>
+
+    <AccountBalance :mint="props.wrapper.account.mintWrapped" />
   </div>
 </template>
 
