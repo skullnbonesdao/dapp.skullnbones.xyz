@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CutPayment from 'components/cut/CutPayment.vue';
 import { format_address } from '../functions/format_address';
+import { WalletMultiButton } from 'solana-wallets-vue';
 
 const RECIPIENT = '756pfnvP3HHRx1BPwBPQwe1xBMfMWef5N9oN61Ews7np';
 const TOKEN = 'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx';
@@ -28,6 +29,7 @@ const TOKEN = 'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx';
           </div>
         </q-card-section>
         <q-card-section class="q-gutter-y-sm">
+          <WalletMultiButton dark />
           <CutPayment :token-address="TOKEN" :recipient-address="RECIPIENT" />
         </q-card-section>
       </q-card>
