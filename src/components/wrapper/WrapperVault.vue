@@ -8,12 +8,15 @@ import { ParsedAccountData } from '@solana/web3.js';
 import WrapperVaultDonut from 'components/wrapper/WrapperVaultDonut.vue';
 import WrapperTransferVaultOut from 'components/wrapper/WrapperTransferVaultOut.vue';
 import { findVaultAddress } from 'src/solana/wrapper/WrapperInterface';
-import { useTokenListStore } from '../../solana/tokens/TokenListStore';
+import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
+import WrapperTransferVaultIn from 'components/wrapper/WrapperTransferVaultIn.vue';
 
 const $q = useQuasar();
-
+const tab = ref('in');
 const accountInfo = ref<ParsedAccountData | null>(null);
 const vaultExists = ref(false);
+useTokenListStore();
+
 loadAccountInfo();
 
 watch(
@@ -29,8 +32,8 @@ async function loadAccountInfo() {
   accountInfo.value = (
     await useRPCStore().connection.getParsedAccountInfo(
       findVaultAddress(
-        useWrapperStore().wrapperSelected.publicKey,
-        useWrapperStore().wrapperSelected.account.mintUnwrapped,
+        useWrapperStore().wrapperSelected?.publicKey,
+        useWrapperStore().wrapperSelected?.account.mintUnwrapped,
       ),
     )
   ).value?.data as ParsedAccountData;
@@ -87,7 +90,27 @@ async function loadAccountInfo() {
 
     <q-card-section class="q-gutter-y-md">
       <WrapperCreateVault v-if="!vaultExists" class="full-width" />
-      <WrapperTransferVaultOut />
+
+      <q-card flat bordered>
+        <q-tabs
+          v-model="tab"
+          class="text-grey"
+          active-color="primary"
+          indicator-color="primary"
+          align="justify"
+          inline-label
+        >
+          <q-tab icon="login" name="in" label="Deposit" />
+          <q-tab icon="logout" name="out" label="Withdraw" />
+        </q-tabs>
+        <q-separator />
+        <q-tab-panels v-model="tab" animated>
+          <q-tab-panel name="out">
+            <WrapperTransferVaultOut />
+          </q-tab-panel>
+          <q-tab-panel name="in"> <WrapperTransferVaultIn /> </q-tab-panel>
+        </q-tab-panels>
+      </q-card>
     </q-card-section>
   </q-card>
 </template>

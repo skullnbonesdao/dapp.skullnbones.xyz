@@ -198,7 +198,7 @@ const rowsPerPageOptions = computed(() => {
                     active-color="primary"
                     indicator-color="primary"
                     align="justify"
-                    narrow-indicator
+                    inline-label
                   >
                     <q-tab name="wrap" label="Wrap" />
                     <q-tab name="unwrap" label="Unwrap" />
