@@ -35,16 +35,19 @@ onMounted(async () => {
       />
     </div>
 
-    <div v-if="useRaffleStore().raffles.length == 0" class="row">
-      <q-space />
-      <q-spinner-cube class="row" color="primary" size="10rem" />
-      <q-space />
-    </div>
-    <div v-if="useRaffleStore().raffles.length > 0" class="">
+    <div class="">
+      <div
+        v-if="tab_selected === 'raffle' && useRaffleStore().raffles.length == 0"
+        class="row"
+      >
+        <q-space />
+        <q-spinner-cube class="row" color="primary" size="10rem" />
+        <q-space />
+      </div>
       <RaffleGrid
         :raffles="useRaffleStore().getRunningRaffles"
         :is_admin="false"
-        v-if="tab_selected === 'raffle'"
+        v-if="tab_selected === 'raffle' && useRaffleStore().raffles.length > 0"
       />
       <div class="row justify-center" v-if="tab_selected === 'create'">
         <RaffleCreateRaffle class="q-mt-xl" />

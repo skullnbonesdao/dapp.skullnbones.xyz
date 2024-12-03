@@ -160,7 +160,7 @@ stringOptions.value.forEach((o) => {
           fill-input
           input-debounce="0"
           behavior="menu"
-          :option-label="(opt) => opt.account.name"
+          :option-label="(opt) => opt.account?.name"
           label="Whitelist selcted"
           :options="useWhitelistStore().whitelists"
           style="width: 250px"
