@@ -56,12 +56,15 @@ export function findMintWrappedAddress(wrapper: PublicKey, seed: BN) {
   return mintWrapped[0];
 }
 
-export function findVaultAddress(wrapper: PublicKey, mintUnwrapped: PublicKey) {
+export function findVaultAddress(
+  wrapper: PublicKey | undefined,
+  mintUnwrapped: PublicKey | undefined,
+) {
   const [vault, bump] = PublicKey.findProgramAddressSync(
     [
       anchor.utils.bytes.utf8.encode('wrapper_vault'),
-      wrapper.toBytes(),
-      mintUnwrapped.toBytes(),
+      wrapper!.toBytes(),
+      mintUnwrapped!.toBytes(),
     ],
     ID,
   );
