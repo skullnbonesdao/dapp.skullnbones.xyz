@@ -27,7 +27,10 @@ export const useRaffleStore = defineStore('raffleStore', {
       if (useWorkspaceAdapter())
         try {
           const pg_raffle = useWorkspaceAdapter()!.pg_raffle.value;
-          this.raffles = (await pg_raffle?.account.raffle.all()) as any;
+          this.raffles = (
+            (await pg_raffle?.account.raffle.all()) as unknown as RaffleAccount[]
+          ).filter((raffle) => raffle.account.name);
+
           console.log('[Updated] RaffleStore');
         } catch (err) {
           console.error(err);
