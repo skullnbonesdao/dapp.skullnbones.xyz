@@ -13,9 +13,9 @@ const icon = computed(() =>
 </script>
 
 <template>
-  <div class="row items-center q-gutter-x-xs">
+  <div class="row q-gutter-x-xs">
     <div class="col text-caption text-weight-light">Wallet-Balance:</div>
-
+    <q-avatar size="xs"><img :src="icon" /> </q-avatar>
     <FormatNumber
       :class="
         useAccountStore().getAccountByMintPublicKey(mint)?.uiAmount == 0
@@ -26,8 +26,6 @@ const icon = computed(() =>
       :decimals="4"
       :pad-start="10"
     />
-
-    <q-avatar size="xs"><img :src="icon" /> </q-avatar>
   </div>
 </template>
 
