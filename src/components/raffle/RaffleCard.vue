@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import RafflePrepare from 'components/raffle/RafflePrepare.vue';
 import RaffleBuyTicket from 'components/raffle/RaffleBuyTicket.vue';
 import RaffleRevealWinnert from 'components/raffle/RaffleRevealWinner.vue';
@@ -19,6 +19,8 @@ import RaffleToggleMode from 'components/raffle/RaffleToggleMode.vue';
 import { format_address } from '../../functions/format_address';
 import { retryFunction } from 'src/solana/retryFunction';
 import { useTokenListStore } from '../../solana/tokens/TokenListStore';
+import RaffleEdit from 'components/raffle/RaffleEdit.vue';
+import { copyToClipboard } from 'src/functions/copyToClipboard';
 
 const props = defineProps(['raffle', 'is_admin']);
 const ticketsAccount = ref();
@@ -112,11 +114,17 @@ function getRaffleImage() {
 function dummy() {
   format_address('none');
 }
+
+const raffleImage = computed(() =>
+  props.raffle.account.url.length > 0
+    ? props.raffle.account.url.toString()
+    : 'unknown.svg',
+);
 </script>
 
 <template>
   <q-card square flat>
-    <q-img height="200px" :src="getRaffleImage()" />
+    <q-img height="200px" :src="raffleImage" />
 
     <q-card-section>
       <RaffleStateBadge :raffle="raffle" :tickets="ticketsAccount" />
@@ -174,7 +182,7 @@ function dummy() {
           </q-item-section>
 
           <q-item-section class="q-gutter-y-md">
-            <div>
+            <div @click="copyToClipboard(raffle.account.prizeMint.toString())">
               <q-item-label class="q-pt-md text-overline">
                 {{
                   useTokenListStore().tokenList.find(
@@ -187,7 +195,7 @@ function dummy() {
               >
             </div>
 
-            <div>
+            <div @click="copyToClipboard(raffle.account.ticketMint.toString())">
               <q-item-label class="text-overline">
                 {{
                   useTokenListStore().tokenList.find(
@@ -222,7 +230,12 @@ function dummy() {
       </q-list>
     </q-card-section>
     <q-separator />
-    <q-expansion-item icon="info" label="Details">
+    <q-expansion-item v-if="is_admin" icon="info" label="Edit">
+      <RaffleEdit :raffle="raffle" />
+    </q-expansion-item>
+    <q-separator v-if="is_admin" />
+
+    <q-expansion-item v-if="!is_admin" icon="info" label="Details">
       <q-card flat>
         <q-separator />
         <q-card-section>
