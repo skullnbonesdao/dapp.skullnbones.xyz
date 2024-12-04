@@ -14,12 +14,14 @@ export const useRaffleStore = defineStore('raffleStore', {
   }),
   getters: {
     getRunningRaffles(state) {
-      return state.raffles.filter(
-        (raffle) =>
-          Object.keys(raffle.account.state)[0] == 'running' ||
-          Object.keys(raffle.account.state)[0] == 'full' ||
-          Object.keys(raffle.account.state)[0] == 'claimprize',
-      );
+      return state.raffles
+        .filter(
+          (raffle) =>
+            Object.keys(raffle.account.state)[0] == 'running' ||
+            Object.keys(raffle.account.state)[0] == 'full' ||
+            Object.keys(raffle.account.state)[0] == 'claimprize',
+        )
+        .sort((a, b) => a.account.name.localeCompare(b.account.name));
     },
   },
   actions: {
@@ -29,7 +31,7 @@ export const useRaffleStore = defineStore('raffleStore', {
           const pg_raffle = useWorkspaceAdapter()!.pg_raffle.value;
           this.raffles = (
             (await pg_raffle?.account.raffle.all()) as unknown as RaffleAccount[]
-          ).filter((raffle) => raffle.account.name);
+          ).sort((a, b) => a.account.name.localeCompare(b.account.name));
 
           console.log('[Updated] RaffleStore');
         } catch (err) {
