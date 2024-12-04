@@ -17,9 +17,9 @@ import { useRPCStore } from 'stores/rpcStore';
 import RaffleToggleMode from 'components/raffle/RaffleToggleMode.vue';
 import RaffleEdit from 'components/raffle/RaffleEdit.vue';
 import { copyToClipboard } from 'src/functions/copyToClipboard';
-import { useTokenListStore } from '../../solana/tokens/TokenListStore';
-import { format_address } from '../../functions/format_address';
 import { retryFunction } from 'src/solana/retryFunction';
+import { format_address } from '../../functions/format_address';
+import { useTokenListStore } from '../../solana/tokens/TokenListStore';
 
 const props = defineProps(['raffle', 'is_admin']);
 const ticketsAccount = ref();
@@ -62,6 +62,9 @@ const raffleImage = computed(() =>
     ? props.raffle.account.url.toString()
     : 'unknown.svg',
 );
+
+format_address('');
+useTokenListStore();
 </script>
 
 <template>
@@ -177,6 +180,13 @@ const raffleImage = computed(() =>
     </q-expansion-item>
     <q-separator v-if="is_admin" />
 
+    <q-card-actions
+      v-if="Object.keys(raffle.account.state)[0] == 'running' && !is_admin"
+    >
+      <RaffleBuyTicket :raffle="raffle" :tickets="ticketsAccount" />
+    </q-card-actions>
+    <q-separator />
+
     <q-expansion-item v-if="!is_admin" icon="info" label="Details">
       <q-card flat>
         <q-separator />
@@ -193,19 +203,14 @@ const raffleImage = computed(() =>
         </q-card-section>
       </q-card>
     </q-expansion-item>
-    <q-separator />
+    <q-separator v-if="!is_admin" />
+
     <q-card-section v-if="is_admin">
       <RafflePrepare
         v-if="Object.keys(raffle.account.state)[0] == 'created'"
         :raffle="raffle"
       />
     </q-card-section>
-
-    <q-card-actions
-      v-if="Object.keys(raffle.account.state)[0] == 'running' && !is_admin"
-    >
-      <RaffleBuyTicket :raffle="raffle" :tickets="ticketsAccount" />
-    </q-card-actions>
 
     <q-card-section class="col" v-if="is_admin">
       <p class="text-overline">Actions</p>

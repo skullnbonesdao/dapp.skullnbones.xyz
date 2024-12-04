@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import { useAccountStore } from 'src/solana/accounts/AccountStore';
 import FormatNumber from 'components/text/FormatNumber.vue';
+import { computed } from 'vue';
 
 const props = defineProps(['mint']);
+
+const icon = computed(() =>
+  useAccountStore().getAccountByMintPublicKey(props.mint)
+    ? useAccountStore().getAccountByMintPublicKey(props.mint)?.info.logoURI
+    : 'unknown.svg',
+);
 </script>
 
 <template>
-  <div class="row">
+  <div class="row q-gutter-x-xs">
     <div class="col text-caption text-weight-light">Wallet-Balance:</div>
+    <q-avatar size="xs"><img :src="icon" /> </q-avatar>
     <FormatNumber
       :class="
         useAccountStore().getAccountByMintPublicKey(mint)?.uiAmount == 0
