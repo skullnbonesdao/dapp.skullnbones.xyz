@@ -397,6 +397,73 @@ export type Raffle = {
       "args": []
     },
     {
+      "name": "edit",
+      "discriminator": [
+        15,
+        183,
+        33,
+        86,
+        87,
+        28,
+        151,
+        145
+      ],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "raffle",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  102,
+                  102,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "raffle.name",
+                "account": "raffle"
+              },
+              {
+                "kind": "account",
+                "path": "raffle.seed",
+                "account": "raffle"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "url",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "enable",
       "discriminator": [
         159,
@@ -696,7 +763,7 @@ export type Raffle = {
           "type": "u64"
         },
         {
-          "name": "imageUrl",
+          "name": "url",
           "type": "string"
         }
       ]
@@ -780,6 +847,47 @@ export type Raffle = {
         192,
         234,
         62
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "eventBuyTicket",
+      "discriminator": [
+        28,
+        55,
+        128,
+        125,
+        63,
+        1,
+        97,
+        202
+      ]
+    },
+    {
+      "name": "eventEnable",
+      "discriminator": [
+        212,
+        141,
+        123,
+        0,
+        71,
+        109,
+        134,
+        133
+      ]
+    },
+    {
+      "name": "eventWinner",
+      "discriminator": [
+        131,
+        37,
+        67,
+        234,
+        53,
+        172,
+        160,
+        241
       ]
     }
   ],
@@ -911,6 +1019,98 @@ export type Raffle = {
     }
   ],
   "types": [
+    {
+      "name": "eventBuyTicket",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "prizeMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "ticketMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u32"
+          },
+          {
+            "name": "sold",
+            "type": "u32"
+          },
+          {
+            "name": "total",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "eventEnable",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "prizeMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "ticketMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "pricePerTicket",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "eventWinner",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "prizeMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "ticketMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "winner",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
     {
       "name": "raffle",
       "type": {

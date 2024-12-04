@@ -290,6 +290,57 @@
       "args": []
     },
     {
+      "name": "edit",
+      "discriminator": [15, 183, 33, 86, 87, 28, 151, 145],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "raffle",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [114, 97, 102, 102, 108, 101]
+              },
+              {
+                "kind": "account",
+                "path": "raffle.name",
+                "account": "Raffle"
+              },
+              {
+                "kind": "account",
+                "path": "raffle.seed",
+                "account": "Raffle"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "url",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "enable",
       "discriminator": [159, 34, 127, 41, 193, 53, 124, 27],
       "accounts": [
@@ -511,7 +562,7 @@
           "type": "u64"
         },
         {
-          "name": "image_url",
+          "name": "url",
           "type": "string"
         }
       ]
@@ -551,6 +602,20 @@
     {
       "name": "WhitelistEntry",
       "discriminator": [51, 70, 173, 81, 219, 192, 234, 62]
+    }
+  ],
+  "events": [
+    {
+      "name": "EventBuyTicket",
+      "discriminator": [28, 55, 128, 125, 63, 1, 97, 202]
+    },
+    {
+      "name": "EventEnable",
+      "discriminator": [212, 141, 123, 0, 71, 109, 134, 133]
+    },
+    {
+      "name": "EventWinner",
+      "discriminator": [131, 37, 67, 234, 53, 172, 160, 241]
     }
   ],
   "errors": [
@@ -681,6 +746,98 @@
     }
   ],
   "types": [
+    {
+      "name": "EventBuyTicket",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "prize_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "ticket_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u32"
+          },
+          {
+            "name": "sold",
+            "type": "u32"
+          },
+          {
+            "name": "total",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventEnable",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "prize_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "ticket_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "price_per_ticket",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventWinner",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "prize_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "ticket_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "winner",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
     {
       "name": "Raffle",
       "type": {

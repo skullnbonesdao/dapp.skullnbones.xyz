@@ -120,10 +120,11 @@ async function buildTX() {
 }
 
 const disabled = computed(() => {
-  return (
-    !props.wrapper.account.allowWrap ||
-    props.wrapper.account.limitAmountUnwrapped.toNumber() == 0
-  );
+  return !props.wrapper.account.allowWrap || props.wrapper.account.useLimit
+    ? props.wrapper.account.limitAmountUnwrapped.toNumber() == 0
+      ? true
+      : false
+    : false;
 });
 </script>
 
