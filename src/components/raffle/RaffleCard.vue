@@ -17,7 +17,6 @@ import RaffleLinks from 'components/raffle/RaffleLinks.vue';
 import { useRPCStore } from 'stores/rpcStore';
 import RaffleToggleMode from 'components/raffle/RaffleToggleMode.vue';
 import { format_address } from '../../functions/format_address';
-import { retryFunction } from 'src/solana/retryFunction';
 import { useTokenListStore } from '../../solana/tokens/TokenListStore';
 import RaffleEdit from 'components/raffle/RaffleEdit.vue';
 import { copyToClipboard } from 'src/functions/copyToClipboard';
@@ -93,27 +92,8 @@ function getEntrant(entrantsData: Uint8Array[], index: number): PublicKey {
 onMounted(async () => {
   await loadTicketsAccounts();
   await loadTokenAccounts;
-  await retryFunction(loadTickets);
+  await loadTickets;
 });
-
-function getRaffleImage() {
-  if (props.raffle.account.url) return props.raffle.account.url;
-  else
-    console.log(
-      useTokenListStore().tokenList.find(
-        (token) => token.address === props.raffle.account.prizeMint.toString(),
-      ),
-    );
-  return (
-    useTokenListStore().tokenList.find(
-      (token) => token.address === props.raffle.account.prizeMint.toString(),
-    )?.logoURI ?? 'snb_icon.svg'
-  );
-}
-
-function dummy() {
-  format_address('none');
-}
 
 const raffleImage = computed(() =>
   props.raffle.account.url.length > 0
