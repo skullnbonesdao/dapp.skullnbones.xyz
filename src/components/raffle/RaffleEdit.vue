@@ -27,11 +27,11 @@ async function editRaffle() {
   try {
     tx.add(
       await pg_raffle?.methods
-        .edit({
-          name: raffleName.value,
-          description: raffleDescription.value,
-          url: raffleURL.value,
-        } as any)
+        .edit(
+          raffleName.value as never,
+          raffleDescription.value as never,
+          raffleURL.value as never,
+        )
         .accountsPartial({
           creator: getSigner(),
           raffle: props.raffle.publicKey,
