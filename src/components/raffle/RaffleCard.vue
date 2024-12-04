@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import RafflePrepare from 'components/raffle/RafflePrepare.vue';
 import RaffleBuyTicket from 'components/raffle/RaffleBuyTicket.vue';
 import RaffleRevealWinnert from 'components/raffle/RaffleRevealWinner.vue';
@@ -48,6 +48,14 @@ onMounted(async () => {
   await retryFunction(loadTicketsAccounts);
   await retryFunction(loadTokenAccounts);
 });
+
+watch(
+  () => props.raffle,
+  async () => {
+    await retryFunction(loadTicketsAccounts);
+    await retryFunction(loadTokenAccounts);
+  },
+);
 
 const raffleImage = computed(() =>
   props.raffle.account.url.length > 0
