@@ -11,15 +11,15 @@ import RaffleClaimTickets from 'components/raffle/RaffleClaimTickets.vue';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import AccountsTable from 'components/tables/AccountsTable.vue';
 import IconFromSeed from 'components/icons/IconFromSeed.vue';
-import { PublicKey } from '@solana/web3.js';
 import TicketsTable from 'components/tables/TicketsTable.vue';
 import RaffleLinks from 'components/raffle/RaffleLinks.vue';
 import { useRPCStore } from 'stores/rpcStore';
 import RaffleToggleMode from 'components/raffle/RaffleToggleMode.vue';
-import { format_address } from '../../functions/format_address';
-import { useTokenListStore } from '../../solana/tokens/TokenListStore';
 import RaffleEdit from 'components/raffle/RaffleEdit.vue';
 import { copyToClipboard } from 'src/functions/copyToClipboard';
+import { useTokenListStore } from '../../solana/tokens/TokenListStore';
+import { format_address } from '../../functions/format_address';
+import { retryFunction } from 'src/solana/retryFunction';
 
 const props = defineProps(['raffle', 'is_admin']);
 const ticketsAccount = ref();
@@ -32,8 +32,6 @@ async function loadTicketsAccounts() {
   ticketsAccount.value = (await pg_raffle.value.account.tickets.fetch(
     props.raffle.account.tickets,
   )) as any;
-
-  console.log(ticketsAccount.value);
 }
 
 async function loadTokenAccounts() {
@@ -46,53 +44,9 @@ async function loadTokenAccounts() {
     )) as never;
 }
 
-async function loadTickets() {
-  const { pg_raffle } = useWorkspaceAdapter();
-
-  const accountInfo = await pg_raffle.value.account.tickets.getAccountInfo(
-    props.raffle.account.tickets,
-  );
-
-  let wallets: PublicKey[] = [];
-
-  for (let i = 0; i < ticketsAccount.value.total; i++) {
-    let bytes = getEntrant(accountInfo.data, i);
-    wallets.push(bytes);
-  }
-
-  const walllet_strings = wallets.map((w) => w.toString());
-
-  const array = walllet_strings.reduce((accumulator, value) => {
-    return {
-      ...accumulator,
-      [value]: (accumulator[value] || 0) + 1,
-    };
-  }, {});
-
-  tickets.value = Object.entries(array).flatMap((e) => {
-    return {
-      address: e[0],
-      amount: e[1],
-    };
-  });
-}
-
-function getEntrant(entrantsData: Uint8Array[], index: number): PublicKey {
-  const startIndex: number = 8 + 4 + 4 + 32 * index;
-  const endIndex: number = startIndex + 32;
-
-  // Assuming entrantsData is a Uint8Array, create a slice from start to end index
-  const slice = entrantsData.slice(startIndex, endIndex);
-
-  // Call the Pubkey.new method with the slice
-
-  return new PublicKey(slice);
-}
-
 onMounted(async () => {
-  await loadTicketsAccounts();
-  await loadTokenAccounts;
-  await loadTickets;
+  await retryFunction(loadTicketsAccounts);
+  await retryFunction(loadTokenAccounts);
 });
 
 const raffleImage = computed(() =>
@@ -223,7 +177,7 @@ const raffleImage = computed(() =>
         </q-card-section>
         <q-separator />
         <q-card-section>
-          <TicketsTable :entrants="tickets" />
+          <TicketsTable :raffle="raffle" :tickets-account="ticketsAccount" />
         </q-card-section>
         <q-separator />
         <q-card-section>
