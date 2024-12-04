@@ -74,7 +74,7 @@ async function buy_raffle_ticket() {
 
 <template>
   <div v-if="!disabled" class="col q-pa-sm q-gutter-y-sm">
-    <p class="text-overline">Buy Ticket(s)</p>
+    <p class="text-h6">Buy Tickets</p>
     <div class="row">
       <q-input
         square
