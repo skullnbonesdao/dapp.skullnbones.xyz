@@ -32,18 +32,31 @@
       :width="230"
       :breakpoint="300"
     >
-      <div class="col q-mt-md">
+      <q-card
+        flat
+        square
+        bordered
+        class="col q-ma-sm"
+        style="background-color: #2d2d2d"
+      >
         <div class="row">
           <q-space />
           <WalletMultiButton dark />
           <q-space />
         </div>
+        <q-separator />
         <div v-if="useSquadsStore().multisigPDA.length" class="row">
           <q-space />
           <SquadsButton />
           <q-space />
         </div>
-      </div>
+        <q-separator />
+        <div v-if="useSquadsStore().multisigPDA.length" class="row">
+          <q-space />
+          <WhitelistInicator />
+          <q-space />
+        </div>
+      </q-card>
       <q-scroll-area style="height: calc(100% - 150px); margin-top: 0px">
         <q-list padding class="">
           <q-item
@@ -101,6 +114,7 @@ import { useRPCStore } from 'stores/rpcStore';
 import { useQuasar } from 'quasar';
 import SquadsButton from 'components/squads/SquadsButton.vue';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
+import WhitelistInicator from 'components/whitelist/WhitelistInicator.vue';
 
 const leftDrawerOpen = ref(false);
 const search = ref('');
