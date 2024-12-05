@@ -1,6 +1,6 @@
 {
   "name": "dapp-web",
-  "version": "0.5.24",
+  "version": "0.5.25",
   "description": "S&B dApp",
   "productName": "dApp",
   "author": "snb",
@@ -30,7 +30,7 @@
     "@solana-suite/core": "^0.6.8",
     "@solana/spl-token": "^0.3.8",
     "@solana/wallet-adapter-wallets": "^0.19.23",
-    "@solana/web3.js": "^1.87.3",
+    "@solana/web3.js": "1.95.8",
     "@sqds/multisig": "2.0.0",
     "@staratlas/factory": "^0.6.0",
     "@staratlas/player-profile": "^0.11.0",

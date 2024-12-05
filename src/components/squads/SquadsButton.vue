@@ -4,7 +4,7 @@ import { format_address } from 'src/functions/format_address';
 </script>
 
 <template>
-  <q-card square flat class="squads-buttons">
+  <q-card square flat class="bg-transparent">
     <q-toggle
       :label="
         'Squad: ' + format_address(useSquadsStore().getVaultPDA?.toString(), 3)
@@ -16,8 +16,4 @@ import { format_address } from 'src/functions/format_address';
   </q-card>
 </template>
 
-<style scoped lang="sass">
-.squads-buttons
-  background-color: #2d2d2d
-  padding: 8px
-</style>
+<style scoped lang="sass"></style>
