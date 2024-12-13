@@ -31,11 +31,17 @@ import {
   RegisteredStake,
   StakingAccount,
 } from 'src/solana/staratlas/locker/atlas/types/types_atlas_locker';
+import { useWallet } from 'solana-wallets-vue';
+import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 
 const NAME = 'AtlasLocker';
 
 export const useAtlasLockerStore = defineStore('atlasLockerStore', {
   state: () => ({
+    balanceWallet: '0',
+    balanceSquads: '0',
+    balanceLocker: '0',
+
     registeredStakeAtlasAddress: {} as PublicKey,
     registeredStakeAtlasAddressInfo: {} as RegisteredStake | undefined,
 
@@ -230,6 +236,42 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
             ATLAS_LOCKER,
           )) as unknown as StakingAccount;
         } catch (err) {}
+
+        try {
+          this.balanceWallet =
+            (
+              await useRPCStore().connection.getTokenAccountBalance(
+                findATA(useWallet().publicKey.value!, ATLAS),
+              )
+            ).value.uiAmountString ?? '0';
+        } catch (error) {
+          this.balanceWallet = '-';
+        }
+
+        try {
+          this.balanceSquads =
+            (
+              await useRPCStore().connection.getTokenAccountBalance(
+                findATA(
+                  new PublicKey(useSquadsStore().vaultPDA.toString()),
+                  ATLAS,
+                ),
+              )
+            ).value.uiAmountString ?? '0';
+        } catch (error) {
+          this.balanceSquads = '-';
+        }
+
+        try {
+          this.balanceLocker =
+            (
+              await useRPCStore().connection.getTokenAccountBalance(
+                findATA(this.stakingAccountAtlasAddress, ATLAS),
+              )
+            ).value.uiAmountString ?? '0';
+        } catch (error) {
+          this.balanceLocker = '-';
+        }
 
         console.log(`[${NAME}] updated!`);
       }

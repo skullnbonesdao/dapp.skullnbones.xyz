@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Transaction } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 
 import { useWorkspaceAdapter } from 'src/solana/connector';
 
@@ -14,15 +14,13 @@ import {
   instruction_proxyLock,
   Proxy,
 } from 'src/solana/staratlas/locker/polis/ProxyRewarderInterface';
-import { handleTransaction } from 'src/solana/handleTransaction';
-import { Notify, useQuasar } from 'quasar';
+import { Notify } from 'quasar';
 import {
   findEscrow,
   findEscrowATA,
   instruction_newEscrow,
 } from 'src/solana/staratlas/locker/polis/LockedVoterInterface';
-import * as splToken from '@solana/spl-token';
-import { POLIS } from 'stores/globalStarAtlasLockerStore';
+
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import {
   duration_2_ERAs,
@@ -34,11 +32,21 @@ import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import { POLIS_DECIMALS } from 'src/solana/staratlas/locker/polis/consts';
 import { ProxyEscrow } from 'src/solana/staratlas/locker/polis/types/types_proxy_rewarder';
 import { Escrow } from 'src/solana/staratlas/locker/polis/types/types_locked_voter';
+import { useRPCStore } from 'stores/rpcStore';
+import { findATA } from 'src/solana/staratlas/locker/atlas/AtlasLockerInterface';
+import { useWallet } from 'solana-wallets-vue';
+import { useSquadsStore } from 'src/solana/squads/SquadsStore';
+import { POLIS } from 'src/solana/staratlas/locker/atlas/consts';
+import { createAssociatedTokenAccountInstruction } from '@solana/spl-token';
 
 const NAME = 'PolisLocker';
 
 export const usePolisLockerStore = defineStore('polisLockerStore', {
   state: () => ({
+    balanceWallet: '0',
+    balanceSquads: '0',
+    balanceLocker: '0',
+
     proxy: {} as Proxy | undefined,
     proxyEscrow: {} as ProxyEscrow | undefined,
     escrow: {} as Escrow | undefined,
@@ -52,7 +60,7 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
 
         // (4) Associated Token Program Instruction
         tx.add(
-          splToken.createAssociatedTokenAccountInstruction(
+          createAssociatedTokenAccountInstruction(
             getSigner(),
             findProxyATA()[0],
             findProxy()[0],
@@ -62,7 +70,7 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
 
         // (5) Associated Token Program Instruction
         tx.add(
-          splToken.createAssociatedTokenAccountInstruction(
+          createAssociatedTokenAccountInstruction(
             getSigner(),
             findEscrowATA()[0],
             findEscrow()[0],
@@ -302,6 +310,33 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
         } catch (err) {
           this.escrow = undefined;
         }
+
+        try {
+          this.balanceWallet =
+            (
+              await useRPCStore().connection.getTokenAccountBalance(
+                findATA(useWallet().publicKey.value!, POLIS),
+              )
+            ).value.uiAmountString ?? '0';
+        } catch (error) {
+          this.balanceWallet = '-';
+        }
+
+        try {
+          this.balanceSquads =
+            (
+              await useRPCStore().connection.getTokenAccountBalance(
+                findATA(
+                  new PublicKey(useSquadsStore().vaultPDA.toString()),
+                  POLIS,
+                ),
+              )
+            ).value.uiAmountString ?? '0';
+        } catch (error) {
+          this.balanceSquads = '-';
+        }
+
+        this.balanceLocker = '-';
 
         console.log(`[${NAME}] updated!`);
       }

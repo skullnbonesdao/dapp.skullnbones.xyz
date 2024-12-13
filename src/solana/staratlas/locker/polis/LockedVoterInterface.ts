@@ -1,20 +1,17 @@
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
+import { web3 } from '@coral-xyz/anchor';
 import lockedVoterIDL from './locked_voter.0.30.1.json';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { getSigner } from 'src/solana/squads/SignerFinder';
-import { web3 } from '@coral-xyz/anchor';
-import {
-  findProxy,
-  findProxyEscrow,
-  PROXY_REWARDER_ID,
-} from 'src/solana/staratlas/locker/polis/ProxyRewarderInterface';
+import { findProxy } from 'src/solana/staratlas/locker/polis/ProxyRewarderInterface';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { POLIS } from 'stores/globalStarAtlasLockerStore';
+
 import {
   LOCKER,
   SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
 } from 'src/solana/staratlas/locker/polis/consts';
+import { POLIS } from 'src/solana/staratlas/locker/atlas/consts';
 
 export const LOCKED_VOTER_ID = new PublicKey(lockedVoterIDL.address);
 

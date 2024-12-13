@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import TokenLockerBalances from 'components/locker/TokenLockerBalances.vue';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
-import AtlasLockerView from 'components/locker/AtlasLockerView.vue';
 
 import PolisInstructionBuilderView from 'components/locker/polis/PolisInstructionBuilderView.vue';
 

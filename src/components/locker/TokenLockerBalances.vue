@@ -1,22 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
-import { useStarAtlasLockerStore } from 'stores/globalStarAtlasLockerStore';
+
 import FormatNumber from 'components/text/FormatNumber.vue';
 import AmountCurrencyDisplay from 'components/text/AmountCurrencyDisplay.vue';
+import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
+import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
 
 const props = defineProps(['tab']);
-onMounted(async () => {
-  if (useWallet().publicKey.value)
-    await useStarAtlasLockerStore().setAccounts();
-});
-
-watch(
-  () => useWallet().publicKey.value,
-  async () => {
-    await useStarAtlasLockerStore().setAccounts();
-  },
-);
 
 const decimals = ref(2);
 const padStart = ref(8);
@@ -30,9 +21,7 @@ const padStart = ref(8);
         <div v-if="tab == 'atlas'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
-              :number="
-                useStarAtlasLockerStore().atlas_balance_wallet.toString()
-              "
+              :number="useAtlasLockerStore().balanceWallet.toString()"
               :decimals="decimals"
               :padStart="padStart"
               currency-name="ATLAS"
@@ -42,9 +31,7 @@ const padStart = ref(8);
         <div v-if="tab == 'polis'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
-              :number="
-                useStarAtlasLockerStore().polis_balance_wallet.toString()
-              "
+              :number="usePolisLockerStore().balanceWallet.toString()"
               :decimals="decimals"
               :padStart="padStart"
               currency-name="POLIS"
@@ -58,9 +45,7 @@ const padStart = ref(8);
         <div v-if="tab == 'atlas'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
-              :number="
-                useStarAtlasLockerStore().atlas_balance_squads.toString()
-              "
+              :number="useAtlasLockerStore().balanceSquads.toString()"
               :decimals="decimals"
               :padStart="padStart"
               currency-name="ATLAS"
@@ -70,9 +55,7 @@ const padStart = ref(8);
         <div v-if="tab == 'polis'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
-              :number="
-                useStarAtlasLockerStore().polis_balance_squads.toString()
-              "
+              :number="usePolisLockerStore().balanceSquads.toString()"
               :decimals="decimals"
               :padStart="padStart"
               currency-name="POLIS"
@@ -86,9 +69,7 @@ const padStart = ref(8);
         <div v-if="tab == 'atlas'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
-              :number="
-                useStarAtlasLockerStore().atlas_balance_locker.toString()
-              "
+              :number="useAtlasLockerStore().balanceLocker.toString()"
               :decimals="decimals"
               :padStart="padStart"
               currency-name="ATLAS"
@@ -98,9 +79,7 @@ const padStart = ref(8);
         <div v-if="tab == 'polis'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
-              :number="
-                useStarAtlasLockerStore().polis_balance_locker.toString()
-              "
+              :number="usePolisLockerStore().balanceLocker.toString()"
               :decimals="decimals"
               :padStart="padStart"
               currency-name="POLIS"
