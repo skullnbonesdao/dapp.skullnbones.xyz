@@ -55,7 +55,7 @@ watch(
           <q-separator />
           <q-card-section class="q-gutter-y-sm">
             <div class="row q-gutter-x-sm items-center">
-              <div class="col">
+              <div class="col-2">
                 <q-select
                   dense
                   filled
@@ -63,27 +63,30 @@ watch(
                   v-model="useSquadsStore().storeSelected"
                 />
               </div>
-              <div class="col row items-center text-weight-light">
-                <SquadsBadge />
-                <div class="q-mx-md text-weight-light">
-                  {{ format_address(useSquadsStore().multisigPDA) }}
+              <div class="col items-center">
+                <div class="col">
+                  <div class="row q-gutter-x-md">
+                    <div class="col text-right text-weight-light">
+                      Multisig Account
+                    </div>
+                    <div class="col-3">
+                      {{ useSquadsStore().multisigPDA }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="row q-gutter-x-md">
+                    <div class="col text-right text-weight-light">
+                      Squads Account
+                    </div>
+                    <div class="col-3">
+                      {{ useSquadsStore().getVaultPDA }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="row q-gutter-x-sm items-center">
-              <div class="col">
-                <q-input
-                  disable
-                  dense
-                  standout
-                  v-model="useSquadsStore().getVaultPDA"
-                  label="Squads Vault"
-                />
-              </div>
-              <div class="col text-weight-light">
-                Your Squads Account (computed)
-              </div>
-            </div>
+
             <div class="row">
               <div class="col"></div>
               <q-btn
@@ -116,9 +119,7 @@ watch(
                   label="Label"
                 />
               </div>
-              <div class="col text-weight-light">
-                Label the squad for easy filtering
-              </div>
+              <div class="col text-weight-light"></div>
             </div>
             <div class="row q-gutter-x-sm items-center">
               <div class="col">

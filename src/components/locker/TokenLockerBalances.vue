@@ -78,12 +78,13 @@ const padStart = ref(8);
         </div>
         <div v-if="tab == 'polis'" class="col-2">
           <div class="row q-gutter-x-xs no-wrap justify-end">
-            <AmountCurrencyDisplay
+            <!--            <AmountCurrencyDisplay
               :number="usePolisLockerStore().balanceLocker.toString()"
               :decimals="decimals"
               :padStart="padStart"
               currency-name="POLIS"
-            />
+            />-->
+            -
           </div>
         </div>
       </div>

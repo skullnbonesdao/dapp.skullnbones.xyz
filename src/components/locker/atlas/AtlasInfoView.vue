@@ -26,8 +26,10 @@ watch(
       </div>
 
       <div>
-        <div class="text-h6">ATLAS Locker</div>
-        <div class="text-subtitle2">View and check your locker info...</div>
+        <div class="text-h4">ATLAS Locker</div>
+        <div class="text-subtitle1 text-weight-light">
+          View and check your locker info...
+        </div>
       </div>
     </q-card-section>
 

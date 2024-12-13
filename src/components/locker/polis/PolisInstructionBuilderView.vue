@@ -108,8 +108,10 @@ async function buildTX() {
 <template>
   <q-card flat bordered square>
     <q-card-section>
-      <div class="text-h6">Instructions</div>
-      <div class="text-subtitle2">Build and invoke instructions...</div>
+      <div class="text-h5">Instructions</div>
+      <div class="text-subtitle2 text-weight-light">
+        Build and invoke instructions...
+      </div>
     </q-card-section>
 
     <q-separator />
