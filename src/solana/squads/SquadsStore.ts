@@ -13,7 +13,10 @@ import { Multisig } from '@sqds/multisig/lib/generated';
 
 export const useSquadsStore = defineStore('squadsStore', {
   state: () => ({
+    store: useLocalStorage('store', []),
+
     useSquads: useLocalStorage('useSquads', false),
+
     multisigPDA: useLocalStorage('multisigPDA', ''),
     vaultPDA: useLocalStorage('vaultPDA', ''),
     multisigInfo: {} as Multisig,
@@ -46,6 +49,19 @@ export const useSquadsStore = defineStore('squadsStore', {
     },
   },
   actions: {
+    addMultisigPDA(label: string, address: string) {
+      try {
+        if (this.store.find((m: any) => m.address.includes(address))) return;
+        else {
+          if (address)
+            this.store.push({ label: label, address: address } as never);
+          return;
+        }
+      } catch (error) {
+        this.store = [];
+        this.store.push({ label: label, address: address } as never);
+      }
+    },
     async loadMultisigInfo() {
       this.multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
         useRPCStore().connection as Connection,
