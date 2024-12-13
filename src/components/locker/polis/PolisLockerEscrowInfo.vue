@@ -23,7 +23,11 @@ const remaing_time = computed(() => {
       <q-item-section avatar>
         <AccountBadge
           :account-exists="
-            Object.keys(usePolisLockerStore().escrow).length ? true : false
+            usePolisLockerStore().escrow
+              ? Object.keys(usePolisLockerStore().escrow).length
+                ? true
+                : false
+              : false
           "
         />
       </q-item-section>
@@ -39,7 +43,7 @@ const remaing_time = computed(() => {
     </template>
 
     <q-card>
-      <q-card-section>
+      <q-card-section v-if="usePolisLockerStore().escrow">
         <div
           class="row"
           v-for="info in Object.keys(usePolisLockerStore().escrow)"
