@@ -18,7 +18,7 @@ const padStart = ref(8);
     <q-card-section>
       <div class="row">
         <div class="col text-right">Wallet</div>
-        <div v-if="tab == 'atlas'" class="col-1">
+        <div v-if="tab == 'atlas'" class="col-2">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
               :number="useAtlasLockerStore().balanceWallet.toString()"
@@ -28,7 +28,7 @@ const padStart = ref(8);
             />
           </div>
         </div>
-        <div v-if="tab == 'polis'" class="col-1">
+        <div v-if="tab == 'polis'" class="col-2">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
               :number="usePolisLockerStore().balanceWallet.toString()"
@@ -42,7 +42,7 @@ const padStart = ref(8);
 
       <div class="row">
         <div class="col text-right">Squads</div>
-        <div v-if="tab == 'atlas'" class="col-1">
+        <div v-if="tab == 'atlas'" class="col-2">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
               :number="useAtlasLockerStore().balanceSquads.toString()"
@@ -52,7 +52,7 @@ const padStart = ref(8);
             />
           </div>
         </div>
-        <div v-if="tab == 'polis'" class="col-1">
+        <div v-if="tab == 'polis'" class="col-2">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
               :number="usePolisLockerStore().balanceSquads.toString()"
@@ -66,7 +66,7 @@ const padStart = ref(8);
 
       <div class="row">
         <div class="col text-right">Locker</div>
-        <div v-if="tab == 'atlas'" class="col-1">
+        <div v-if="tab == 'atlas'" class="col-2">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
               :number="useAtlasLockerStore().balanceLocker.toString()"
@@ -76,7 +76,7 @@ const padStart = ref(8);
             />
           </div>
         </div>
-        <div v-if="tab == 'polis'" class="col-1">
+        <div v-if="tab == 'polis'" class="col-2">
           <div class="row q-gutter-x-xs no-wrap justify-end">
             <AmountCurrencyDisplay
               :number="usePolisLockerStore().balanceLocker.toString()"
