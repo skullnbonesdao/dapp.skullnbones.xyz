@@ -13,6 +13,11 @@ const idls = [
     name: 'locked_voter',
     path: 'staratlas/locker/polis/types',
   },
+  {
+    idl: require('./staratlas/locker/atlas/atlas-locker.0.30.1.json'),
+    name: 'atlas_locker',
+    path: 'staratlas/locker/atlas/types',
+  },
 ]; // Load your JSON IDL file
 
 console.log('> Started...');

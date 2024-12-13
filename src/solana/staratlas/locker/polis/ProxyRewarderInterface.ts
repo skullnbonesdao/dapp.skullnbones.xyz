@@ -138,3 +138,23 @@ export async function instruction_claimRewards(era: number) {
     })
     .transaction();
 }
+
+export async function instruction_proxyExit() {
+  const pg_proxyRewarder = useWorkspaceAdapter()?.pg_proxyRewarder.value;
+
+  return pg_proxyRewarder?.methods
+    .proxyExit()
+    .accountsPartial({
+      locker: LOCKER,
+      escrow: findEscrow()[0],
+      proxy: findProxy()[0],
+      escrowTokenAccount: findEscrowATA()[0],
+      proxyTokenAccount: findProxyATA()[0],
+      userTokenAccount: findATA(getSigner().toString(), POLIS.toString()),
+      payer: getSigner(),
+      lockedVoterProgram: LOCKED_VOTER_ID,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      registeredLocker: REGISTERED_LOCKER,
+    })
+    .transaction();
+}

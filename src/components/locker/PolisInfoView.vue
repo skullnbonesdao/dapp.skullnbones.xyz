@@ -25,9 +25,17 @@ watch(
 
 <template>
   <q-card flat bordered square>
-    <q-card-section class="text-center text-h5">
-      Polis Locker info
+    <q-card-section class="row items-center q-gutter-x-md">
+      <div>
+        <q-img width="100px" src="/currencies/POLIS.webp" />
+      </div>
+
+      <div>
+        <div class="text-h6">Polis Locker</div>
+        <div class="text-subtitle2">View and check your locker info...</div>
+      </div>
     </q-card-section>
+
     <q-separator />
     <q-card-section class="q-gutter-md">
       <q-list class="rounded-borders">

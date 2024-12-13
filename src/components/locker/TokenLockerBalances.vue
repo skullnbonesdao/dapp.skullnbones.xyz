@@ -3,7 +3,9 @@ import { onMounted, ref, watch } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
 import { useStarAtlasLockerStore } from 'stores/globalStarAtlasLockerStore';
 import FormatNumber from 'components/text/FormatNumber.vue';
+import AmountCurrencyDisplay from 'components/text/AmountCurrencyDisplay.vue';
 
+const props = defineProps(['tab']);
 onMounted(async () => {
   if (useWallet().publicKey.value)
     await useStarAtlasLockerStore().setAccounts();
@@ -24,90 +26,85 @@ const padStart = ref(8);
   <q-card class="" flat>
     <q-card-section>
       <div class="row">
-        <div class="col-3">Wallet</div>
-        <div class="col">
+        <div class="col text-right">Wallet</div>
+        <div v-if="tab == 'atlas'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
-            <FormatNumber
-              :decimals="decimals"
-              :pad-start="padStart"
+            <AmountCurrencyDisplay
               :number="
-                parseFloat(useStarAtlasLockerStore().atlas_balance_wallet)
+                useStarAtlasLockerStore().atlas_balance_wallet.toString()
               "
+              :decimals="decimals"
+              :padStart="padStart"
+              currency-name="ATLAS"
             />
-            <div>Atlas</div>
           </div>
         </div>
-        <div class="col">
+        <div v-if="tab == 'polis'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
-            <FormatNumber
-              :decimals="decimals"
-              :pad-start="padStart"
+            <AmountCurrencyDisplay
               :number="
-                parseFloat(useStarAtlasLockerStore().polis_balance_wallet)
+                useStarAtlasLockerStore().polis_balance_wallet.toString()
               "
-            />
-
-            <div>Polis</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-3">Squads</div>
-        <div class="col">
-          <div class="row q-gutter-x-xs no-wrap justify-end">
-            <FormatNumber
               :decimals="decimals"
-              :pad-start="padStart"
-              :number="
-                parseFloat(useStarAtlasLockerStore().atlas_balance_squads)
-              "
+              :padStart="padStart"
+              currency-name="POLIS"
             />
-
-            <div>Atlas</div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="row q-gutter-x-xs no-wrap justify-end">
-            <FormatNumber
-              :decimals="decimals"
-              :pad-start="padStart"
-              :number="
-                parseFloat(useStarAtlasLockerStore().polis_balance_squads)
-              "
-            />
-
-            <div>Polis</div>
           </div>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-3">Locker</div>
-        <div class="col">
+        <div class="col text-right">Squads</div>
+        <div v-if="tab == 'atlas'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
-            <FormatNumber
-              :decimals="decimals"
-              :pad-start="padStart"
+            <AmountCurrencyDisplay
               :number="
-                parseFloat(useStarAtlasLockerStore().atlas_balance_locker)
+                useStarAtlasLockerStore().atlas_balance_squads.toString()
               "
+              :decimals="decimals"
+              :padStart="padStart"
+              currency-name="ATLAS"
             />
-
-            <div>Atlas</div>
           </div>
         </div>
-        <div class="col">
+        <div v-if="tab == 'polis'" class="col-1">
           <div class="row q-gutter-x-xs no-wrap justify-end">
-            <FormatNumber
-              :decimals="decimals"
-              :pad-start="padStart"
+            <AmountCurrencyDisplay
               :number="
-                parseFloat(useStarAtlasLockerStore().polis_balance_locker)
+                useStarAtlasLockerStore().polis_balance_squads.toString()
               "
+              :decimals="decimals"
+              :padStart="padStart"
+              currency-name="POLIS"
             />
+          </div>
+        </div>
+      </div>
 
-            <div>Polis</div>
+      <div class="row">
+        <div class="col text-right">Locker</div>
+        <div v-if="tab == 'atlas'" class="col-1">
+          <div class="row q-gutter-x-xs no-wrap justify-end">
+            <AmountCurrencyDisplay
+              :number="
+                useStarAtlasLockerStore().atlas_balance_locker.toString()
+              "
+              :decimals="decimals"
+              :padStart="padStart"
+              currency-name="ATLAS"
+            />
+          </div>
+        </div>
+        <div v-if="tab == 'polis'" class="col-1">
+          <div class="row q-gutter-x-xs no-wrap justify-end">
+            <AmountCurrencyDisplay
+              :number="
+                useStarAtlasLockerStore().polis_balance_locker.toString()
+              "
+              :decimals="decimals"
+              :padStart="padStart"
+              currency-name="POLIS"
+            />
           </div>
         </div>
       </div>

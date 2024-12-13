@@ -10,6 +10,7 @@ import {
   instruction_claimRewards,
   instruction_newProxy,
   instruction_newProxyEscrow,
+  instruction_proxyExit,
   instruction_proxyLock,
   Proxy,
 } from 'src/solana/staratlas/locker/polis/ProxyRewarderInterface';
@@ -227,6 +228,41 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
         }
 
         console.log(`[${NAME}] claim form locker!`);
+        return tx;
+      } catch (err: any) {
+        console.error(err);
+        Notify.create({
+          message: err.message,
+          type: 'negative',
+          position: 'bottom-right',
+        });
+      }
+    },
+
+    async withdrawLocker() {
+      try {
+        const duration_sec =
+          parseInt(this.escrow!.escrowEndsAt.toString()) -
+          parseInt(this.escrow!.escrowStartedAt.toString());
+
+        console.log(duration_sec);
+        const tx = new Transaction();
+        let instruction = undefined;
+
+        // CLAIM
+        for (const era of duration_2_ERAs(duration_sec)) {
+          instruction = await instruction_claimRewards(era);
+          if (instruction) {
+            tx.add(instruction);
+          }
+        }
+
+        // CLOSE
+        instruction = await instruction_proxyExit();
+        if (instruction) {
+          tx.add(instruction);
+        }
+        console.log(`[${NAME}] close Locker!`);
         return tx;
       } catch (err: any) {
         console.error(err);

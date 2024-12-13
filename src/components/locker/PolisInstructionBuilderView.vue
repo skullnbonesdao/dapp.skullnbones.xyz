@@ -12,6 +12,7 @@ const options = ref([
   'Sync locker',
   'Add tokens to locker',
   'Claim tokens form locker',
+  'Withdraw tokens form locker',
 ]);
 
 const tx = ref<Transaction | undefined>();
@@ -91,9 +92,11 @@ async function buildTX() {
         expand_locker.value,
       );
       break;
-
     case 'Claim tokens form locker':
       tx.value = await usePolisLockerStore().claimLocker();
+      break;
+    case 'Withdraw tokens form locker':
+      tx.value = await usePolisLockerStore().withdrawLocker();
       break;
   }
 
@@ -104,9 +107,11 @@ async function buildTX() {
 
 <template>
   <q-card flat bordered square>
-    <q-card-section class="text-center text-h5"
-      >Create Instructions</q-card-section
-    >
+    <q-card-section>
+      <div class="text-h6">Instructions</div>
+      <div class="text-subtitle2">Build and invoke instructions...</div>
+    </q-card-section>
+
     <q-separator />
     <q-card-section>
       <q-select

@@ -28,7 +28,7 @@
     "@quasar/app": "^3.3.3",
     "@quasar/extras": "^1.16.4",
     "@solana-suite/core": "^0.6.8",
-    "@solana/spl-token": "^0.3.8",
+    "@solana/spl-token": "0.4.9",
     "@solana/wallet-adapter-wallets": "^0.19.23",
     "@solana/web3.js": "1.95.8",
     "@sqds/multisig": "2.0.0",
