@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
-import { format_address } from 'src/functions/format_address';
+import SquadsBadge from 'components/squads/SquadsBadge.vue';
 </script>
 
 <template>
-  <q-card square flat class="bg-transparent">
+  <div class="row">
     <q-toggle
-      :label="
-        'Squad: ' + format_address(useSquadsStore().getVaultPDA?.toString(), 3)
-      "
+      dense
+      label=""
       v-model="useSquadsStore().useSquads"
       checked-icon="check"
       unchecked-icon="clear"
     />
-  </q-card>
+    <div class="col items-center">
+      <div class="col text-center">Sign As:</div>
+      <SquadsBadge />
+    </div>
+  </div>
 </template>
 
 <style scoped lang="sass"></style>

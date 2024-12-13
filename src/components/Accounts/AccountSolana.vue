@@ -30,7 +30,7 @@ const tree_elemenets = ref([
     header: 'root',
     children: [
       {
-        label: 'Staking (Atlas/Polis)',
+        label: 'Staking (Atlas/polis)',
         icon: 'restaurant_menu',
         header: 'generic',
         children: [
