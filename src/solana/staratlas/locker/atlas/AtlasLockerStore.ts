@@ -6,9 +6,13 @@ import { Notify } from 'quasar';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import {
+  cancelUnstakeInstruction,
   createStakingAccountInstruction,
   getStakingAccountInfo,
+  harvestRewardsInstruction,
   stakeTokensInstruction,
+  unstakeTokensInstruction,
+  withdrawTokensInstruction,
 } from '@staratlas/factory';
 import { useRPCStore } from 'stores/rpcStore';
 import {
@@ -20,6 +24,7 @@ import {
   ATLAS,
   ATLAS_DECIMALS,
   ATLAS_LOCKER,
+  POLIS,
 } from 'src/solana/staratlas/locker/atlas/consts';
 import { StakingAccount } from 'src/solana/staratlas/locker/atlas/types/types_atlas_locker';
 
@@ -27,10 +32,10 @@ const NAME = 'AtlasLocker';
 
 export const useAtlasLockerStore = defineStore('atlasLockerStore', {
   state: () => ({
-    registeredStakeAtlas: {} as PublicKey,
-    registeredStakePolis: {} as PublicKey,
-    stakingAccountAtlas: {} as PublicKey,
-    registeredStakeAtlasInfo: {} as StakingAccount | undefined,
+    registeredStakeAtlasAddress: {} as PublicKey,
+
+    stakingAccountAtlasAddress: {} as PublicKey,
+    stakingAccountAtlasInfo: {} as StakingAccount | undefined,
   }),
 
   getters: {},
@@ -68,7 +73,7 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
             user: getSigner(),
             stakeMint: ATLAS,
             tokenSource: findATA(getSigner(), ATLAS),
-            stakingAccount: this.stakingAccountAtlas,
+            stakingAccount: this.stakingAccountAtlasAddress,
             stakeQuantity: calcAmountToTransfer(amount_ui, ATLAS_DECIMALS),
             registeredStake: (await findRegisteredStakeAtlas())[0],
             programId: ATLAS_LOCKER,
@@ -88,17 +93,128 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
       }
     },
 
+    async claimTokens() {
+      try {
+        const tx = new Transaction();
+        (
+          await harvestRewardsInstruction({
+            connection: useRPCStore().connection,
+            user: getSigner(),
+            rewardMint: POLIS,
+            registeredStake: (await findRegisteredStakeAtlas())[0],
+            stakingAccount: this.stakingAccountAtlasAddress,
+            programId: ATLAS_LOCKER,
+          })
+        ).instructions.forEach((t) => tx.add(t));
+
+        console.log(`[${NAME}] claimTokens!`);
+
+        return tx;
+      } catch (err: any) {
+        console.error(err);
+        Notify.create({
+          message: err.message,
+          type: 'negative',
+          position: 'bottom-right',
+        });
+      }
+    },
+
+    async unstakeTokens() {
+      try {
+        const tx = new Transaction();
+        (
+          await unstakeTokensInstruction({
+            connection: useRPCStore().connection,
+            user: getSigner(),
+            registeredStake: (await findRegisteredStakeAtlas())[0],
+            stakingAccount: this.stakingAccountAtlasAddress,
+            programId: ATLAS_LOCKER,
+          })
+        ).instructions.forEach((t) => tx.add(t));
+
+        console.log(`[${NAME}] claimTokens!`);
+
+        return tx;
+      } catch (err: any) {
+        console.error(err);
+        Notify.create({
+          message: err.message,
+          type: 'negative',
+          position: 'bottom-right',
+        });
+      }
+    },
+
+    async cancelUnstake() {
+      try {
+        const tx = new Transaction();
+        (
+          await cancelUnstakeInstruction({
+            connection: useRPCStore().connection,
+            user: getSigner(),
+            registeredStake: (await findRegisteredStakeAtlas())[0],
+            programId: ATLAS_LOCKER,
+          })
+        ).instructions.forEach((t) => tx.add(t));
+
+        console.log(`[${NAME}] cancelUnstake!`);
+
+        return tx;
+      } catch (err: any) {
+        console.error(err);
+        Notify.create({
+          message: err.message,
+          type: 'negative',
+          position: 'bottom-right',
+        });
+      }
+    },
+
+    async withdrawTokens() {
+      try {
+        const tx = new Transaction();
+        (
+          await withdrawTokensInstruction({
+            connection: useRPCStore().connection,
+            user: getSigner(),
+            authority: getSigner(),
+            stakeMint: ATLAS,
+            registeredStake: (await findRegisteredStakeAtlas())[0],
+            stakingAccount: this.stakingAccountAtlasAddress,
+            programId: ATLAS_LOCKER,
+          })
+        ).instructions.forEach((t) => tx.add(t));
+
+        console.log(`[${NAME}] withdrawTokens!`);
+
+        return tx;
+      } catch (err: any) {
+        console.error(err);
+        Notify.create({
+          message: err.message,
+          type: 'negative',
+          position: 'bottom-right',
+        });
+      }
+    },
+
     async updateStore() {
       if (useWorkspaceAdapter()) {
-        this.registeredStakeAtlasInfo = undefined;
+        this.stakingAccountAtlasInfo = undefined;
 
         try {
-          this.registeredStakeAtlas = (await findRegisteredStakeAtlas())[0];
-          this.stakingAccountAtlas = (await findStakingAccount('ATLAS'))[0];
+          this.registeredStakeAtlasAddress = (
+            await findRegisteredStakeAtlas()
+          )[0];
 
-          this.registeredStakeAtlasInfo = (await getStakingAccountInfo(
+          this.stakingAccountAtlasAddress = (
+            await findStakingAccount('ATLAS')
+          )[0];
+
+          this.stakingAccountAtlasInfo = (await getStakingAccountInfo(
             useRPCStore().connection as Connection,
-            this.stakingAccountAtlas,
+            this.stakingAccountAtlasAddress,
             ATLAS_LOCKER,
           )) as unknown as StakingAccount;
         } catch (err) {}

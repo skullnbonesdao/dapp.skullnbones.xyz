@@ -17,7 +17,7 @@ import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
       <q-item-section avatar>
         <AccountBadge
           :account-exists="
-            useAtlasLockerStore().stakingAccountAtlas ? true : false
+            useAtlasLockerStore().stakingAccountAtlasInfo ? true : false
           "
       /></q-item-section>
 
@@ -25,18 +25,20 @@ import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
 
       <q-item-section side>
         <div class="row items-center q-gutter-md">
-          <div>{{ useAtlasLockerStore().stakingAccountAtlas }}</div>
-          <SolscanLink :address="useAtlasLockerStore().stakingAccountAtlas" />
+          <div>{{ useAtlasLockerStore().stakingAccountAtlasAddress }}</div>
+          <SolscanLink
+            :address="useAtlasLockerStore().stakingAccountAtlasAddress"
+          />
         </div>
       </q-item-section>
     </template>
 
     <q-card>
-      <q-card-section v-if="useAtlasLockerStore().registeredStakeAtlasInfo">
+      <q-card-section v-if="useAtlasLockerStore().stakingAccountAtlasInfo">
         <div
           class="row"
           v-for="info in Object.keys(
-            useAtlasLockerStore().registeredStakeAtlasInfo,
+            useAtlasLockerStore().stakingAccountAtlasInfo,
           )"
           :key="info"
         >
@@ -56,7 +58,7 @@ import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
             <AmountCurrencyDisplay
               currency-name="ATLAS"
               :number="
-                useAtlasLockerStore().registeredStakeAtlasInfo[info] *
+                useAtlasLockerStore().stakingAccountAtlasInfo[info] *
                 Math.pow(10, -ATLAS_DECIMALS)
               "
             />
@@ -72,21 +74,21 @@ import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
             class="row"
           >
             <div
-              v-if="useAtlasLockerStore().registeredStakeAtlasInfo[info] == 0"
+              v-if="useAtlasLockerStore().stakingAccountAtlasInfo[info] == 0"
             >
               -
             </div>
             <div v-else>
               {{
                 new Date(
-                  useAtlasLockerStore().registeredStakeAtlasInfo[info] * 1000,
+                  useAtlasLockerStore().stakingAccountAtlasInfo[info] * 1000,
                 ).toUTCString()
               }}
             </div>
           </div>
 
           <div v-else>
-            {{ useAtlasLockerStore().registeredStakeAtlasInfo[info] }}
+            {{ useAtlasLockerStore().stakingAccountAtlasInfo[info] }}
           </div>
         </div>
       </q-card-section>

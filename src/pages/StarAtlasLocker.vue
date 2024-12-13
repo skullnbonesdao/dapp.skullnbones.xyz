@@ -4,10 +4,10 @@ import TokenLockerBalances from 'components/locker/TokenLockerBalances.vue';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import AtlasLockerView from 'components/locker/AtlasLockerView.vue';
 
-import PolisInstructionBuilderView from 'components/locker/PolisInstructionBuilderView.vue';
+import PolisInstructionBuilderView from 'components/locker/polis/PolisInstructionBuilderView.vue';
 
 import AtlasInfoView from 'components/locker/atlas/AtlasInfoView.vue';
-import PolisInfoView from 'components/locker/PolisInfoView.vue';
+import PolisInfoView from 'components/locker/polis/PolisInfoView.vue';
 import AtlasInstructionBuilderView from 'components/locker/atlas/AtlasInstructionBuilderView.vue';
 
 const lockerTabs = ref('atlas');
@@ -54,8 +54,6 @@ const lockerTabs = ref('atlas');
         <q-tab-panel name="atlas">
           <AtlasInfoView />
           <AtlasInstructionBuilderView />
-
-          <AtlasLockerView />
         </q-tab-panel>
         <q-tab-panel name="polis">
           <PolisInfoView />

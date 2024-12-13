@@ -9,7 +9,7 @@ import { onMounted, watch } from 'vue';
 import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
 
 import { getSigner } from 'src/solana/squads/SignerFinder';
-import { findEscrowHistory } from '../../solana/staratlas/locker/polis/SnapshotsInterface';
+import { findEscrowHistory } from '../../../solana/staratlas/locker/polis/SnapshotsInterface';
 
 onMounted(async () => {
   await usePolisLockerStore().updateStore();

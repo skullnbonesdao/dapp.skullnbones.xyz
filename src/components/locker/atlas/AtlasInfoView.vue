@@ -1,18 +1,10 @@
 <script setup lang="ts">
-import { findEscrowATA } from 'src/solana/staratlas/locker/polis/LockedVoterInterface';
-import { findProxyATA } from 'src/solana/staratlas/locker/polis/ProxyRewarderInterface';
-import PolisLockerEscrowInfo from 'components/locker/polis/PolisLockerEscrowInfo.vue';
-import PolisLockerProxyInfo from 'components/locker/polis/PolisLockerProxyInfo.vue';
-import PolisLockerProxyEscrowInfo from 'components/locker/polis/PolisLockerProxyEscrowInfo.vue';
-import PolisLockerATAInfo from 'components/locker/polis/PolisLockerATAInfo.vue';
 import { onMounted, watch } from 'vue';
-import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
-
 import { getSigner } from 'src/solana/squads/SignerFinder';
-import { findEscrowHistory } from '../../../solana/staratlas/locker/polis/SnapshotsInterface';
-import AtlasLockerInfo from 'components/locker/atlas/AtlasLockerInfo.vue';
+import AtlasLockerInfo from 'components/locker/atlas/AtlasLockerStakingAccountInfo.vue';
 import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
 import RegisteredStakeInfo from 'components/locker/atlas/RegisteredStakeInfo.vue';
+import AtlasLockerStakingAccountInfo from 'components/locker/atlas/AtlasLockerStakingAccountInfo.vue';
 
 onMounted(async () => {
   await useAtlasLockerStore().updateStore();
@@ -44,13 +36,10 @@ watch(
       <q-list class="rounded-borders">
         <RegisteredStakeInfo
           name="ATLAS"
-          :address="useAtlasLockerStore().registeredStakeAtlas"
+          :address="useAtlasLockerStore().registeredStakeAtlasAddress"
         />
-        <RegisteredStakeInfo
-          name="Polis"
-          :address="useAtlasLockerStore().registeredStakePolis"
-        />
-        <AtlasLockerInfo />
+
+        <AtlasLockerStakingAccountInfo />
       </q-list>
     </q-card-section>
   </q-card>

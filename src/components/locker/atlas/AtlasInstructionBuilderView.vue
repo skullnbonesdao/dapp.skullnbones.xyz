@@ -6,7 +6,14 @@ import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLock
 import { findEscrow } from 'src/solana/staratlas/locker/polis/LockedVoterInterface';
 import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
 
-const options = ref(['Create staking account', 'Add tokens to locker']);
+const options = ref([
+  'Create staking account',
+  'Add tokens to locker',
+  'Claim tokens from locker',
+  'Unstake tokens from locker',
+  'Cancel unstake tokens from locker',
+  'Withdraw tokens from locker',
+]);
 const selected = ref(options.value[0]);
 
 const tx = ref<Transaction | undefined>();
@@ -19,9 +26,20 @@ async function buildTX() {
     case 'Create staking account':
       tx.value = await useAtlasLockerStore().createStakingAccount();
       break;
-
     case 'Add tokens to locker':
       tx.value = await useAtlasLockerStore().stakeTokens(amount_ui.value);
+      break;
+    case 'Claim tokens from locker':
+      tx.value = await useAtlasLockerStore().claimTokens();
+      break;
+    case 'Unstake tokens from locker':
+      tx.value = await useAtlasLockerStore().unstakeTokens();
+      break;
+    case 'Cancel unstake tokens from locker':
+      tx.value = await useAtlasLockerStore().cancelUnstake();
+      break;
+    case 'Withdraw tokens from locker':
+      tx.value = await useAtlasLockerStore().withdrawTokens();
       break;
   }
 

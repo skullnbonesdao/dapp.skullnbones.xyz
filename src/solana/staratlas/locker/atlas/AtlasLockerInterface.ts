@@ -1,8 +1,8 @@
 import { getRegisteredStake, getStakingAccount } from '@staratlas/factory';
 import {
+  ATLAS,
   ATLAS_LOCKER,
   ATLAS_LOCKER_PROGRAM_AUTH,
-  ATLAS,
   POLIS,
 } from 'src/solana/staratlas/locker/atlas/consts';
 import { getSigner } from 'src/solana/squads/SignerFinder';
