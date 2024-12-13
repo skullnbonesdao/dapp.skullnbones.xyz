@@ -6,6 +6,9 @@ import { findProxy } from 'src/solana/staratlas/locker/polis/ProxyRewarderInterf
 import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
 import { computed } from 'vue';
 import { formatTimespan } from '../../../functions/formatTimespan';
+import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
+import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
+import AmountCurrencyDisplay from 'components/text/AmountCurrencyDisplay.vue';
 
 const remaing_time = computed(() => {
   if (usePolisLockerStore().escrow)
@@ -18,7 +21,7 @@ const remaing_time = computed(() => {
 </script>
 
 <template>
-  <q-expansion-item expand-separator>
+  <q-expansion-item expand-separator default-opened>
     <template v-slot:header>
       <q-item-section avatar>
         <AccountBadge
@@ -52,7 +55,27 @@ const remaing_time = computed(() => {
           <div class="col text-uppercase">
             {{ info }}
           </div>
-          <div>
+          <div v-if="info.includes('amount')" class="row">
+            <AmountCurrencyDisplay
+              currency-name="ATLAS"
+              :decimals="8"
+              :number="
+                usePolisLockerStore().escrow[info] *
+                Math.pow(10, -ATLAS_DECIMALS)
+              "
+            />
+          </div>
+          <div
+            v-else-if="
+              info.includes('escrowStartedAt') || info.includes('escrowEndsAt')
+            "
+            class="row"
+          >
+            {{
+              new Date(usePolisLockerStore().escrow[info] * 1000).toUTCString()
+            }}
+          </div>
+          <div v-else>
             {{ usePolisLockerStore().escrow[info] }}
           </div>
         </div>
@@ -62,30 +85,6 @@ const remaing_time = computed(() => {
           </div>
           <div>
             {{ formatTimespan(remaing_time) }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col row q-gutter-x-sm">
-            <div class="text-uppercase">Start Date</div>
-          </div>
-          <div>
-            {{
-              new Date(
-                usePolisLockerStore().escrow.escrowStartedAt * 1000,
-              ).toUTCString()
-            }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col row q-gutter-x-sm">
-            <div class="text-uppercase">End Date</div>
-          </div>
-          <div>
-            {{
-              new Date(
-                usePolisLockerStore().escrow.escrowEndsAt * 1000,
-              ).toUTCString()
-            }}
           </div>
         </div>
       </q-card-section>

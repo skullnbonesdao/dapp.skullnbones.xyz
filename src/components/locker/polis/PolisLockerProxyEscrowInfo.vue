@@ -7,6 +7,9 @@ import {
   findProxyEscrow,
 } from 'src/solana/staratlas/locker/polis/ProxyRewarderInterface';
 import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
+import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
+import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
+import AmountCurrencyDisplay from 'components/text/AmountCurrencyDisplay.vue';
 </script>
 
 <template>
@@ -44,7 +47,37 @@ import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLock
           <div class="col text-uppercase">
             {{ info }}
           </div>
-          <div>
+          <div
+            v-if="info.includes('amountClaimed') || info.includes('amount')"
+            class="row"
+          >
+            <AmountCurrencyDisplay
+              currency-name="ATLAS"
+              :decimals="8"
+              :number="
+                usePolisLockerStore().proxyEscrow[info] *
+                Math.pow(10, -ATLAS_DECIMALS)
+              "
+            />
+          </div>
+          <div
+            v-else-if="
+              info.includes('escrowStartedAt') ||
+              info.includes('escrowEndsAt') ||
+              info.includes('rewardsLastClaimedAt')
+            "
+            class="row"
+          >
+            <div v-if="usePolisLockerStore().proxyEscrow[info] == 0">-</div>
+            <div v-else>
+              {{
+                new Date(
+                  usePolisLockerStore().proxyEscrow[info] * 1000,
+                ).toUTCString()
+              }}
+            </div>
+          </div>
+          <div v-else>
             {{ usePolisLockerStore().proxyEscrow[info] }}
           </div>
         </div>
