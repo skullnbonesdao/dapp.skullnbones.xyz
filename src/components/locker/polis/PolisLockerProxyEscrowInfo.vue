@@ -15,7 +15,11 @@ import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLock
       <q-item-section avatar>
         <AccountBadge
           :account-exists="
-            Object.keys(usePolisLockerStore().proxyEscrow).length ? true : false
+            usePolisLockerStore().proxyEscrow
+              ? Object.keys(usePolisLockerStore().proxyEscrow).length
+                ? true
+                : false
+              : false
           "
         />
       </q-item-section>
@@ -31,7 +35,7 @@ import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLock
     </template>
 
     <q-card>
-      <q-card-section>
+      <q-card-section v-if="usePolisLockerStore().proxyEscrow">
         <div
           class="row"
           v-for="info in Object.keys(usePolisLockerStore().proxyEscrow)"

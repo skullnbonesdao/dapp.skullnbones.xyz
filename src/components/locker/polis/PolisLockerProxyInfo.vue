@@ -12,7 +12,11 @@ import { usePolisLockerStore } from '../../../solana/staratlas/locker/polis/Poli
       <q-item-section avatar>
         <AccountBadge
           :account-exists="
-            Object.keys(usePolisLockerStore().proxy).length ? true : false
+            usePolisLockerStore().proxy
+              ? Object.keys(usePolisLockerStore().proxy).length
+                ? true
+                : false
+              : false
           "
         />
       </q-item-section>
