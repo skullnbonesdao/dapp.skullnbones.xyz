@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import SquadsBadge from 'components/squads/SquadsBadge.vue';
+import { format_address } from '../functions/format_address';
 
 const newMultisigLabel = ref('');
 const newMultisigPDA = ref();
+
+watch(
+  () => useSquadsStore().storeSelected,
+  () => {
+    useSquadsStore().multisigPDA = useSquadsStore().storeSelected.value;
+  },
+);
 </script>
 
 <template>
@@ -32,7 +41,10 @@ const newMultisigPDA = ref();
         </div>
       </q-card-section>
 
-      <q-card-section class="q-gutter-y-sm">
+      <q-card-section
+        class="q-gutter-y-sm"
+        v-if="useSquadsStore().store.length"
+      >
         <q-card flat bordered>
           <q-card-section>
             <div class="text-h6">Select Squad</div>
@@ -47,20 +59,15 @@ const newMultisigPDA = ref();
                 <q-select
                   dense
                   filled
-                  option-label="label"
-                  option-value="address"
                   :options="useSquadsStore().store"
-                  v-model="useSquadsStore().multisigPDA"
+                  v-model="useSquadsStore().storeSelected"
                 />
               </div>
-              <div class="col text-weight-light">
-                <q-badge>
-                  {{
-                    useSquadsStore().store.find(
-                      (s: any) => s.address === useSquadsStore().multisigPDA,
-                    ).label
-                  }}</q-badge
-                >
+              <div class="col row items-center text-weight-light">
+                <SquadsBadge />
+                <div class="q-mx-md text-weight-light">
+                  {{ format_address(useSquadsStore().multisigPDA) }}
+                </div>
               </div>
             </div>
             <div class="row q-gutter-x-sm items-center">
@@ -76,6 +83,14 @@ const newMultisigPDA = ref();
               <div class="col text-weight-light">
                 Your Squads Account (computed)
               </div>
+            </div>
+            <div class="row">
+              <div class="col"></div>
+              <q-btn
+                @click="useSquadsStore().removeFromStore()"
+                label="Remove"
+                color="primary"
+              />
             </div>
           </q-card-section>
         </q-card>
@@ -124,10 +139,7 @@ const newMultisigPDA = ref();
               <div class="col"></div>
               <q-btn
                 @click="
-                  useSquadsStore().addMultisigPDA(
-                    newMultisigLabel,
-                    newMultisigPDA,
-                  )
+                  useSquadsStore().addToStore(newMultisigLabel, newMultisigPDA)
                 "
                 label="Add"
                 color="primary"

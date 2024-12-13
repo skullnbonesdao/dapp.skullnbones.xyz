@@ -1,21 +1,21 @@
 import { defineStore } from 'pinia';
 import { useLocalStorage } from '@vueuse/core';
 import * as multisig from '@sqds/multisig';
-import {
-  Connection,
-  PublicKey,
-  Transaction,
-  TransactionMessage,
-} from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
-import { useWallet } from 'solana-wallets-vue';
 import { Multisig } from '@sqds/multisig/lib/generated';
+
+export type SquadsStore = {
+  label: string;
+  value: string;
+};
 
 export const useSquadsStore = defineStore('squadsStore', {
   state: () => ({
-    store: useLocalStorage('store', []),
-
     useSquads: useLocalStorage('useSquads', false),
+
+    store: useLocalStorage('store', [] as SquadsStore[]),
+    storeSelected: useLocalStorage('storeSelected', {} as SquadsStore),
 
     multisigPDA: useLocalStorage('multisigPDA', ''),
     vaultPDA: useLocalStorage('vaultPDA', ''),
@@ -49,18 +49,30 @@ export const useSquadsStore = defineStore('squadsStore', {
     },
   },
   actions: {
-    addMultisigPDA(label: string, address: string) {
+    addToStore(label: string, address: string) {
       try {
-        if (this.store.find((m: any) => m.address.includes(address))) return;
+        if (this.store.find((m: any) => m.value.includes(address))) return;
         else {
           if (address)
-            this.store.push({ label: label, address: address } as never);
+            this.store.push({ label: label, value: address } as never);
           return;
         }
       } catch (error) {
         this.store = [];
-        this.store.push({ label: label, address: address } as never);
+        this.store.push({ label: label, value: address } as never);
       }
+    },
+
+    removeFromStore() {
+      try {
+        this.store = this.store.filter(
+          (s) =>
+            !(
+              s.label == this.storeSelected?.label &&
+              s.value == this.storeSelected?.value
+            ),
+        );
+      } catch (error) {}
     },
     async loadMultisigInfo() {
       this.multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
@@ -71,6 +83,7 @@ export const useSquadsStore = defineStore('squadsStore', {
   },
 });
 
+/*
 export async function convert2squadsTransaction(
   instructions: Transaction,
   memo: string,
@@ -96,3 +109,4 @@ export async function convert2squadsTransaction(
 
   return tx;
 }
+*/
