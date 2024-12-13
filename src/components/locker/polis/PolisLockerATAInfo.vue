@@ -62,7 +62,7 @@ async function fetchAccountInfo() {
     <q-card>
       <q-card-section>
         <div class="row">
-          <div class="col">Balance</div>
+          <div class="col text-uppercase">Balance</div>
           <FormatNumber
             pad-start="15"
             decimals="4"

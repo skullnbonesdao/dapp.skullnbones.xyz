@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
-import { findEscrow } from 'src/solana/staratlas/locker/polis/LockedVoterInterface';
-import { findProxy } from 'src/solana/staratlas/locker/polis/ProxyRewarderInterface';
-import { formatTimespan } from 'src/functions/formatTimespan';
 import SolscanLink from 'components/buttons/SolscanLink.vue';
 import AccountBadge from 'components/locker/AccountBadge.vue';
 import { useAtlasLockerStore } from '../../../solana/staratlas/locker/atlas/AtlasLockerStore';
-import { findRegisteredStakeAtlas } from '../../../solana/staratlas/locker/atlas/AtlasLockerInterface';
 import AmountCurrencyDisplay from 'components/text/AmountCurrencyDisplay.vue';
 import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
 </script>
