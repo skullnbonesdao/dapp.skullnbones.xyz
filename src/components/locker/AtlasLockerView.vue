@@ -4,6 +4,8 @@ import {
   LOCKER_TOKEN_DECIMALS,
   useStarAtlasLockerStore,
 } from 'stores/globalStarAtlasLockerStore';
+import FormatNumber from 'components/text/FormatNumber.vue';
+import { getRelativeTime } from '../../functions/getRelativeTime';
 
 const amount_to_stake = ref<number>(0);
 
@@ -19,7 +21,7 @@ onMounted(async () => {
         <div class="col-1">
           <q-img src="/currencies/ATLAS.webp" />
         </div>
-        <q-separator class="q-mx-sm" vertical />
+
         <div class="col">
           <div class="row q-pr-md items-center">
             <div class="col text-right text-subtitle2 text-weight-light">
@@ -54,9 +56,93 @@ onMounted(async () => {
         </div>
       </div>
     </q-card-section>
-
+    <q-separator class="q-my-sm" />
     <q-card-section>
-      <div class="row items-center q-mx-md">
+      <div class="row items-center">
+        <div class="col-1 text-h5">Locker Info</div>
+
+        <div
+          class="col"
+          v-if="useStarAtlasLockerStore().stakingAccountAtlasInfo"
+        >
+          <div
+            class="row q-pr-md items-center"
+            v-for="(key, idx) in Object.keys(
+              useStarAtlasLockerStore().stakingAccountAtlasInfo,
+            )"
+            :key="idx"
+          >
+            <div class="col text-right text-subtitle2 text-weight-light">
+              <div>{{ key.toUpperCase() }}</div>
+            </div>
+            <div class="col text-right text-subtitle1">
+              <div
+                class="row items-center q-gutter-x-sm"
+                v-if="
+                  [
+                    'totalStake',
+                    'activeStake',
+                    'paidRewards',
+                    'pendingRewards',
+                  ].includes(key)
+                "
+              >
+                <div class="col"></div>
+                <q-avatar size="xs">
+                  <img src="currencies/ATLAS.webp" />
+                </q-avatar>
+                <FormatNumber
+                  class="text-right"
+                  :number="
+                    parseInt(
+                      useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
+                    ) * Math.pow(10, -LOCKER_TOKEN_DECIMALS)
+                  "
+                  decimals="6"
+                  pad-start="15"
+                />
+              </div>
+              <div
+                v-else-if="
+                  [
+                    'stakedAtTs',
+                    'lastPendingRewardCalcTs',
+                    'lastHarvestTs',
+                    'unstakedTs',
+                  ].includes(key)
+                "
+              >
+                <div
+                  v-if="
+                    parseInt(
+                      useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
+                    ) == 0
+                  "
+                >
+                  -
+                </div>
+                <div v-else>
+                  {{
+                    getRelativeTime(
+                      parseInt(
+                        useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
+                      ) * 1000,
+                    )
+                  }}
+                </div>
+              </div>
+              <div v-else>
+                {{ useStarAtlasLockerStore().stakingAccountAtlasInfo[key] }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else class="text-subtitle2 text-center">No Locker found!</div>
+      </div>
+    </q-card-section>
+    <q-separator class="q-my-sm" />
+    <q-card-section>
+      <div class="row items-center q-mx-md q-mb-md">
         <div class="col">
           <div class="text-h4">Instruction</div>
         </div>
@@ -64,7 +150,7 @@ onMounted(async () => {
           <div class="text-h4 text-center">Action</div>
         </div>
       </div>
-      <q-separator class="q-my-sm" />
+
       <div class="row items-center q-mx-md">
         <div class="col">
           <div class="text-h6">Create Staking Account</div>
@@ -182,82 +268,6 @@ onMounted(async () => {
             @click="useStarAtlasLockerStore().build_withdrawTokens()"
           ></q-btn>
         </div>
-      </div>
-    </q-card-section>
-
-    <q-card-section>
-      <q-separator class="q-my-sm" />
-
-      <div class="row items-center">
-        <div class="col-1 text-h5">Locker Info</div>
-        <q-separator class="q-mx-sm" vertical />
-        <div
-          class="col"
-          v-if="useStarAtlasLockerStore().stakingAccountAtlasInfo"
-        >
-          <div
-            class="row q-pr-md items-center"
-            v-for="(key, idx) in Object.keys(
-              useStarAtlasLockerStore().stakingAccountAtlasInfo,
-            )"
-            :key="idx"
-          >
-            <div class="col text-right text-subtitle2 text-weight-light">
-              <div>{{ key }}</div>
-            </div>
-            <div class="col text-right text-subtitle1">
-              <div
-                v-if="
-                  [
-                    'totalStake',
-                    'activeStake',
-                    'paidRewards',
-                    'pendingRewards',
-                  ].includes(key)
-                "
-              >
-                {{
-                  parseInt(
-                    useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
-                  ) * Math.pow(10, -LOCKER_TOKEN_DECIMALS)
-                }}
-              </div>
-              <div
-                v-else-if="
-                  [
-                    'stakedAtTs',
-                    'lastPendingRewardCalcTs',
-                    'lastHarvestTs',
-                    'unstakedTs',
-                  ].includes(key)
-                "
-              >
-                <div
-                  v-if="
-                    parseInt(
-                      useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
-                    ) == 0
-                  "
-                >
-                  -
-                </div>
-                <div v-else>
-                  {{
-                    new Date(
-                      parseInt(
-                        useStarAtlasLockerStore().stakingAccountAtlasInfo[key],
-                      ) * 1000,
-                    ).toLocaleString()
-                  }}
-                </div>
-              </div>
-              <div v-else>
-                {{ useStarAtlasLockerStore().stakingAccountAtlasInfo[key] }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else class="text-subtitle2 text-center">No Locker found!</div>
       </div>
     </q-card-section>
   </q-card>

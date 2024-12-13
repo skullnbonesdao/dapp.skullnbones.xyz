@@ -163,7 +163,7 @@ const links1 = computed(() => {
   data.push({ icon: 'inventory_2', text: 'Wrapper', to: '/wrapper' });
 
   data.push({
-    icon: 'lock_clock',
+    icon: 'person',
     text: 'Player Profile',
     to: '/playerprofile',
   });

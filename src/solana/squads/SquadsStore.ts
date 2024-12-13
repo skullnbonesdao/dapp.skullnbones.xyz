@@ -13,7 +13,7 @@ import { Multisig } from '@sqds/multisig/lib/generated';
 
 export const useSquadsStore = defineStore('squadsStore', {
   state: () => ({
-    useSquads: false,
+    useSquads: useLocalStorage('useSquads', false),
     multisigPDA: useLocalStorage('multisigPDA', ''),
     vaultPDA: useLocalStorage('vaultPDA', ''),
     multisigInfo: {} as Multisig,
