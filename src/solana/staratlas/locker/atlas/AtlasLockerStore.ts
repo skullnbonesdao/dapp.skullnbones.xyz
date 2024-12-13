@@ -8,6 +8,7 @@ import { calcAmountToTransfer } from 'src/solana/calcAmountToTransfer';
 import {
   cancelUnstakeInstruction,
   createStakingAccountInstruction,
+  getRegisteredStakeAccountInfo,
   getStakingAccountInfo,
   harvestRewardsInstruction,
   stakeTokensInstruction,
@@ -26,13 +27,17 @@ import {
   ATLAS_LOCKER,
   POLIS,
 } from 'src/solana/staratlas/locker/atlas/consts';
-import { StakingAccount } from 'src/solana/staratlas/locker/atlas/types/types_atlas_locker';
+import {
+  RegisteredStake,
+  StakingAccount,
+} from 'src/solana/staratlas/locker/atlas/types/types_atlas_locker';
 
 const NAME = 'AtlasLocker';
 
 export const useAtlasLockerStore = defineStore('atlasLockerStore', {
   state: () => ({
     registeredStakeAtlasAddress: {} as PublicKey,
+    registeredStakeAtlasAddressInfo: {} as RegisteredStake | undefined,
 
     stakingAccountAtlasAddress: {} as PublicKey,
     stakingAccountAtlasInfo: {} as StakingAccount | undefined,
@@ -211,6 +216,13 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
           this.stakingAccountAtlasAddress = (
             await findStakingAccount('ATLAS')
           )[0];
+
+          this.registeredStakeAtlasAddressInfo =
+            (await getRegisteredStakeAccountInfo(
+              useRPCStore().connection as Connection,
+              this.registeredStakeAtlasAddress,
+              ATLAS_LOCKER,
+            )) as unknown as RegisteredStake;
 
           this.stakingAccountAtlasInfo = (await getStakingAccountInfo(
             useRPCStore().connection as Connection,

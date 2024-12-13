@@ -12,7 +12,7 @@ import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
 </script>
 
 <template>
-  <q-expansion-item expand-separator>
+  <q-expansion-item expand-separator default-opened>
     <template v-slot:header>
       <q-item-section avatar>
         <AccountBadge
