@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { Transaction } from '@solana/web3.js';
 import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
-import { findEscrow } from 'src/solana/staratlas/locker/polis/LockedVoterInterface';
 
 const selected = ref('Create new locker');
 const options = ref([
