@@ -50,8 +50,8 @@
           <SquadsButton />
           <q-space />
         </div>
-        <q-separator />
-        <div v-if="useSquadsStore().multisigPDA.length" class="row">
+
+        <div class="row">
           <q-space />
           <WhitelistInicator />
           <q-space />
