@@ -18,6 +18,8 @@ import { useWhitelistStore } from 'src/solana/whitelist/WhitelistStore';
 import { useTokenListStore } from 'src/solana/tokens/TokenListStore';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 import { retryFunction } from 'src/solana/retryFunction';
+import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
+import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
 
 const init = ref(false);
 
@@ -27,6 +29,8 @@ useRPCStore();
 useWhitelistStore();
 useAccountStore();
 useWorkspaceAdapter();
+useAtlasLockerStore();
+usePolisLockerStore();
 
 useRPCStore().update_connection();
 
