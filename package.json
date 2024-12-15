@@ -1,6 +1,6 @@
 {
   "name": "dapp-web",
-  "version": "0.6.4",
+  "version": "0.6.6",
   "description": "S&B dApp",
   "productName": "dApp",
   "author": "snb",
@@ -22,8 +22,6 @@
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@metaplex-foundation/js": "^0.19.5",
     "@metaplex-foundation/mpl-token-metadata": "^3.1.0",
-    "@metaplex-foundation/umi": "^0.9.2",
-    "@metaplex-foundation/umi-bundle-defaults": "^0.9.2",
     "@nfteyez/sol-rayz": "^0.10.2",
     "@quasar/app": "^3.3.3",
     "@quasar/extras": "^1.16.4",
@@ -50,11 +48,9 @@
     "vue-konva": "^3.0.2",
     "vue-router": "^4.0.0",
     "vue3-apexcharts": "^1.7.0",
-    "vuedraggable": "^4.1.0",
-    "webhook-discord": "^3.7.8"
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@metaplex-foundation/kinobi": "^0.18.8-alpha.0",
     "@quasar/app-vite": "^1.6.2",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^5.10.0",

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from 'stores/globalStore';
-import { useQuasar } from 'quasar';
+import { Notify, useQuasar } from 'quasar';
 import {
   initWorkspaceAdapter,
   useWorkspaceAdapter,
@@ -33,10 +33,13 @@ useAtlasLockerStore();
 usePolisLockerStore();
 
 useRPCStore().update_connection();
-
 useQuasar().dark.set(true);
+
+const $q = useQuasar();
 onMounted(async () => {
   initWorkspaceAdapter();
+
+  await checkRPCConnection();
   await retryFunction(useAccountStore().updateStore);
   await useWhitelistStore().updateStore();
 
@@ -58,4 +61,23 @@ watch(
     }
   },
 );
+
+async function checkRPCConnection() {
+  try {
+    const data = await useRPCStore().connection.getBlockHeight();
+    if (data) return;
+    else
+      $q.notify({
+        message: 'Error connecting to rpc...',
+        type: 'negative',
+        position: 'bottom-right',
+      });
+  } catch (err: any) {
+    $q.notify({
+      message: err.message,
+      type: 'negative',
+      position: 'bottom-right',
+    });
+  }
+}
 </script>
