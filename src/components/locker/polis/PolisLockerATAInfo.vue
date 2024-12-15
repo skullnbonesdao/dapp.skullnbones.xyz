@@ -20,10 +20,10 @@ const props = defineProps({
   },
 });
 
-const accountInfo = ref();
+const accountInfo = ref(undefined);
 
 watch(
-  () => getSigner(),
+  () => props.address,
   async () => {
     await fetchAccountInfo();
   },
@@ -38,7 +38,9 @@ async function fetchAccountInfo() {
     accountInfo.value = (await useRPCStore().connection.getTokenAccountBalance(
       props.address,
     )) as any;
-  } catch (error) {}
+  } catch (error) {
+    accountInfo.value = undefined;
+  }
 }
 </script>
 

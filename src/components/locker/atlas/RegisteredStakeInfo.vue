@@ -9,10 +9,10 @@ import { ATLAS_DECIMALS } from 'src/solana/staratlas/locker/atlas/consts';
 import AmountCurrencyDisplay from 'components/text/AmountCurrencyDisplay.vue';
 
 const props = defineProps(['address', 'name']);
-const accountInfo = ref();
+const accountInfo = ref(undefined);
 
 watch(
-  () => getSigner(),
+  () => props.address,
   async () => {
     await fetchAccountInfo();
   },
@@ -27,7 +27,9 @@ async function fetchAccountInfo() {
     accountInfo.value = (await useRPCStore().connection.getTokenAccountBalance(
       props.address,
     )) as any;
-  } catch (error) {}
+  } catch (error) {
+    accountInfo.value = undefined;
+  }
 }
 </script>
 
