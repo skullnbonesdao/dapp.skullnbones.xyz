@@ -8,18 +8,34 @@ import FormatNumber from 'components/text/FormatNumber.vue';
 
 const props = defineProps(['wrapper']);
 
-const total = ref(0);
+const circ = ref(0);
 const vault = ref(0);
-const redeemable = ref(0);
+const percentage = ref(0);
 
 async function load() {
-  total.value = (await getTotalSupply()) ?? 0;
+  circ.value = (await getTotalSupply()) ?? 0;
   vault.value = (await getBalance()) ?? 0;
 
-  redeemable.value =
-    ((total.value * props.wrapper.account.ratio[1]) / total.value) *
-    props.wrapper.account.ratio[1] *
-    100;
+  if (circ.value == 0 && vault.value == 0) {
+    percentage.value = 0;
+    return;
+  }
+
+  if (
+    circ.value * props.wrapper.account.ratio[1] ==
+    vault.value * props.wrapper.account.ratio[0]
+  ) {
+    percentage.value = 100;
+    return;
+  }
+
+  percentage.value = parseInt(
+    (
+      (circ.value / props.wrapper.account.ratio[1] -
+        vault.value / props.wrapper.account.ratio[0]) /
+      (vault.value / props.wrapper.account.ratio[0])
+    ).toFixed(0),
+  );
 }
 
 async function getTotalSupply() {
@@ -50,35 +66,56 @@ watchDeep(
 );
 
 const data = computed(() => {
-  return [redeemable.value];
+  return [percentage.value];
 });
 
 const options = ref({
-  dataLabels: {
-    enabled: false,
-  },
-  legend: {
-    labels: {
-      colors: 'white',
+  plotOptions: {
+    radialBar: {
+      hollow: {
+        margin: 0,
+        size: '60%',
+        background: 'rgba(41,52,80,0)',
+      },
+      track: {
+        show: true,
+        opacity: 0.1,
+      },
+
+      dataLabels: {
+        name: {
+          offsetY: -10,
+          color: '#fff',
+          fontSize: '13px',
+        },
+        value: {
+          color: '#fff',
+          fontSize: '30px',
+          show: true,
+        },
+      },
     },
-    show: false,
-    position: 'left',
   },
   theme: {
     palette: 'palette4', // upto palette10
   },
-  labels: ['Redeemable' + ''],
+  stroke: {
+    lineCap: 'round',
+  },
+
+  labels: ['Redeemable'],
 });
 </script>
 
 <template>
+  {{ circ }}|{{ vault }}|{{ percentage }}
   <div class="row">
     <div class="col">Vault Balance</div>
     <FormatNumber class="" :number="vault" :decimals="4" :pad-start="10" />
   </div>
   <div class="row">
     <div class="col">Circ. Supply</div>
-    <FormatNumber :number="total" :decimals="4" :pad-start="10" />
+    <FormatNumber :number="circ" :decimals="4" :pad-start="10" />
   </div>
   <apexchart
     height="200px"

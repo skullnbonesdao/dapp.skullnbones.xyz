@@ -45,7 +45,7 @@
           <q-space />
         </div>
         <q-separator />
-        <div v-if="useSquadsStore().multisigPDA.length" class="row">
+        <div v-if="useSquadsStore().store.length" class="row">
           <q-space />
           <SquadsButton />
           <q-space />
