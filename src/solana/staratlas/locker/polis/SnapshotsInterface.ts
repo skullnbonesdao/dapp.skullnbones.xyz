@@ -5,17 +5,20 @@ import { getSigner } from 'src/solana/squads/SignerFinder';
 
 import { findEscrow } from 'src/solana/staratlas/locker/polis/LockedVoterInterface';
 import * as anchor from '@coral-xyz/anchor';
-import { BN, web3 } from '@coral-xyz/anchor';
+import { web3 } from '@coral-xyz/anchor';
 import { LOCKER } from 'src/solana/staratlas/locker/polis/consts';
 
 export const SNAPSHOTS_ID = new PublicKey(snapshotsIDL.address);
 
 export function findEscrowHistory(era: number) {
+  const eraBuffer = Buffer.alloc(2);
+  eraBuffer.writeUInt16LE(era);
+
   return web3.PublicKey.findProgramAddressSync(
     [
       anchor.utils.bytes.utf8.encode('EscrowHistory'),
       findEscrow()[0].toBuffer(),
-      new BN(era).toArrayLike(Buffer).reverse(),
+      eraBuffer,
     ],
     SNAPSHOTS_ID,
   );
