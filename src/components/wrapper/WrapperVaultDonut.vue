@@ -108,7 +108,6 @@ const options = ref({
 </script>
 
 <template>
-  {{ circ }}|{{ vault }}|{{ percentage }}
   <div class="row">
     <div class="col">Vault Balance</div>
     <FormatNumber class="" :number="vault" :decimals="4" :pad-start="10" />
