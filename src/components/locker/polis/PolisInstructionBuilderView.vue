@@ -91,10 +91,10 @@ async function buildTX() {
         expand_locker.value,
       );
       break;
-    case 'Claim tokens form locker':
+    case 'Claim tokens from locker':
       tx.value = await usePolisLockerStore().claimLocker();
       break;
-    case 'Withdraw tokens form locker':
+    case 'Withdraw tokens from locker':
       tx.value = await usePolisLockerStore().withdrawLocker();
       break;
   }
