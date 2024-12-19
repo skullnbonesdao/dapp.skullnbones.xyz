@@ -44,17 +44,34 @@ export async function instruction_sage_registerSagePlayerProfile(
   console.log(gameId.toString());
   console.log(gameState.toString());
 
-  return sage?.methods
-    .registerSagePlayerProfile()
-    .accountsStrict({
-      profile: profile,
-      funder: getSigner(),
-      sagePlayerProfile: findSagePlayerProfile(profile, gameId)[0],
-      gameAccounts: {
-        gameId: gameId,
-        gameState: gameState,
-      },
-      systemProgram: SystemProgram.programId,
-    })
-    .transaction();
+  return (
+    sage!.methods
+      .registerSagePlayerProfile()
+      .accounts([
+        profile,
+        getSigner(),
+        findSagePlayerProfile(profile, gameId)[0],
+        gameId,
+        gameState,
+        SystemProgram.programId,
+      ])
+      //.accountsStrict({
+      //  profile: profile,
+      //   funder: getSigner(),
+      //   sagePlayerProfile: findSagePlayerProfile(profile, gameId)[0],
+      //   gameAccounts: {
+      //     gameId: gameId,
+      //     gameState: gameState,
+      //    },
+      //    systemProgram: SystemProgram.programId,
+      //  })
+      .remainingAccounts([
+        {
+          pubkey: gameState,
+          isWritable: true,
+          isSigner: true,
+        },
+      ])
+      .transaction()
+  );
 }
