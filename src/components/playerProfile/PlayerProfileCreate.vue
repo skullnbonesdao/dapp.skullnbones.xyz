@@ -3,6 +3,7 @@ import { useWorkspaceAdapter } from 'src/solana/connector';
 import { Keypair, Transaction } from '@solana/web3.js';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { ref } from 'vue';
+import { usePlayerProfileStore } from 'src/solana/staratlas/profiles/player/PlayerProfileStore';
 
 const profileName = ref('somenamw');
 
@@ -58,7 +59,10 @@ async function buildTX() {
 </script>
 
 <template>
-  <q-btn label="Create Profile" @click="buildTX"></q-btn>
+  <q-btn
+    label="Create Profile"
+    @click="usePlayerProfileStore().createProfile()"
+  ></q-btn>
 </template>
 
 <style scoped lang="sass"></style>

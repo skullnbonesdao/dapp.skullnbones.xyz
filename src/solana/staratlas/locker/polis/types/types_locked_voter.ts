@@ -1,18 +1,19 @@
 import { PublicKey } from '@solana/web3.js';
+import { BN } from '@coral-xyz/anchor';
 
 export type LockerParams = {
   whitelistEnabled: boolean;
   maxStakeVoteMultiplier: number;
-  minStakeDuration: number;
-  maxStakeDuration: number;
-  proposalActivationMinVotes: number;
+  minStakeDuration: BN;
+  maxStakeDuration: BN;
+  proposalActivationMinVotes: BN;
 };
 
 export type Locker = {
   base: PublicKey;
   bump: number;
   tokenMint: PublicKey;
-  lockedSupply: number;
+  lockedSupply: BN;
   governor: PublicKey;
   params: any;
 };
@@ -29,9 +30,9 @@ export type Escrow = {
   owner: PublicKey;
   bump: number;
   tokens: PublicKey;
-  amount: number;
-  escrowStartedAt: number;
-  escrowEndsAt: number;
+  amount: BN;
+  escrowStartedAt: BN;
+  escrowEndsAt: BN;
   voteDelegate: PublicKey;
 };
 
@@ -39,34 +40,34 @@ export type ApproveLockPrivilegeEvent = {
   locker: PublicKey;
   programId: PublicKey;
   owner: PublicKey;
-  timestamp: number;
+  timestamp: BN;
 };
 
 export type ExitEscrowEvent = {
   escrowOwner: PublicKey;
   locker: PublicKey;
-  timestamp: number;
-  lockerSupply: number;
-  releasedAmount: number;
+  timestamp: BN;
+  lockerSupply: BN;
+  releasedAmount: BN;
 };
 
 export type LockEvent = {
   locker: PublicKey;
   escrowOwner: PublicKey;
   tokenMint: PublicKey;
-  amount: number;
-  lockerSupply: number;
-  duration: number;
-  prevEscrowEndsAt: number;
-  nextEscrowEndsAt: number;
-  nextEscrowStartedAt: number;
+  amount: BN;
+  lockerSupply: BN;
+  duration: BN;
+  prevEscrowEndsAt: BN;
+  nextEscrowEndsAt: BN;
+  nextEscrowStartedAt: BN;
 };
 
 export type NewEscrowEvent = {
   escrow: PublicKey;
   escrowOwner: PublicKey;
   locker: PublicKey;
-  timestamp: number;
+  timestamp: BN;
 };
 
 export type NewLockerEvent = {
@@ -79,7 +80,7 @@ export type NewLockerEvent = {
 export type RevokeLockPrivilegeEvent = {
   locker: PublicKey;
   programId: PublicKey;
-  timestamp: number;
+  timestamp: BN;
 };
 
 export type LockerSetParamsEvent = {

@@ -18,8 +18,16 @@ import raffleIDL from './raffle/raffle.0.30.1.json';
 import { Raffle } from './raffle/raffle';
 
 //PLAYER PROFILE
-import playerProfileIDL from './staratlas/player_profile/player_profile.0.30.1.json';
-import { PlayerProfile } from './staratlas/player_profile/player_profile';
+import playerProfileIDL from 'src/solana/staratlas/profiles/player/player_profile.0.30.1.json';
+import { PlayerProfile } from 'src/solana/staratlas/profiles/player/player_profile';
+
+//Faction PROFILE
+import factionProfileIDL from 'src/solana/staratlas/profiles/faction/faction_profile.0.30.1.json';
+import { ProfileFaction } from 'src/solana/staratlas/profiles/faction/faction_profile';
+
+//Sage
+import sageIDL from 'src/solana/staratlas/sage/sage.0.30.1.json';
+import { Sage } from 'src/solana/staratlas/sage/sage';
 
 //POLIS LOCKER
 import proxyRewarderIDl from './staratlas/locker/polis/proxy_rewarder.0.30.1.json';
@@ -40,6 +48,8 @@ interface Workspace {
   pg_raffle: ComputedRef<Program<Raffle>>;
   pg_whitelist: ComputedRef<Program<Whitelist>>;
   pg_playerProfile: ComputedRef<Program<PlayerProfile>>;
+  pg_factionProfile: ComputedRef<Program<ProfileFaction>>;
+  pg_sage: ComputedRef<Program<Sage>>;
   pg_proxyRewarder: ComputedRef<Program<ProxyRewarder>>;
   pg_lockedVoter: ComputedRef<Program<LockedVoter>>;
   pg_snapshots: ComputedRef<Program<Snapshots>>;
@@ -87,6 +97,20 @@ export const initWorkspaceAdapter = () => {
       ),
   );
 
+  //FACTION PROFILE
+  const pg_factionProfile = computed(
+    () =>
+      new Program<ProfileFaction>(
+        factionProfileIDL as ProfileFaction,
+        provider.value,
+      ),
+  );
+
+  //FACTION PROFILE
+  const pg_sage = computed(
+    () => new Program<Sage>(sageIDL as Sage, provider.value),
+  );
+
   //POLIS LOCKER
   const pg_proxyRewarder = computed(
     () =>
@@ -115,6 +139,8 @@ export const initWorkspaceAdapter = () => {
     pg_whitelist: pg_whitelist,
     pg_raffle: pg_raffle,
     pg_playerProfile: pg_playerProfile,
+    pg_factionProfile: pg_factionProfile,
+    pg_sage: pg_sage,
     pg_proxyRewarder: pg_proxyRewarder,
     pg_lockedVoter: pg_lockedVoter,
     pg_snapshots: pg_snapshots,

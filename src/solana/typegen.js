@@ -18,12 +18,28 @@ const idls = [
     name: 'atlas_locker',
     path: 'staratlas/locker/atlas/types',
   },
+  {
+    idl: require('./staratlas/profiles/player/player_profile.0.30.1.json'),
+    name: 'player_profile',
+    path: 'staratlas/profiles/player/types',
+  },
+  {
+    idl: require('./staratlas/profiles/faction/faction_profile.0.30.1.json'),
+    name: 'faction_profile',
+    path: 'staratlas/profiles/faction/types',
+  },
+  {
+    idl: require('./staratlas/sage/sage.0.30.1.json'),
+    name: 'sage',
+    path: 'staratlas/sage/types',
+  },
 ]; // Load your JSON IDL file
 
 console.log('> Started...');
 
 idls.forEach((idl) => {
-  let output = "import { PublicKey } from '@solana/web3.js';\n\n";
+  let output =
+    "import { PublicKey } from '@solana/web3.js';\nimport { BN } from '@coral-xyz/anchor';\n\n";
 
   output += generate(idl.idl);
 
@@ -49,6 +65,12 @@ function generate(idl) {
           )
           .join('\n  ');
         types.push(`export type ${name} = {\n  ${fields}\n};`);
+      } else if (typeDefinition.kind === 'enum') {
+        // Handle enum types
+        const variants = typeDefinition.variants
+          .map((variant) => `"${variant.name}"`)
+          .join(' , ');
+        types.push(`export enum ${name} { ${variants} };`);
       }
     });
   }
@@ -74,12 +96,15 @@ function mapPrimitive(primitive) {
     case 'u8':
     case 'u16':
     case 'u32':
-    case 'u64':
     case 'i8':
     case 'i16':
     case 'i32':
-    case 'i64':
       return 'number';
+    case 'u64':
+    case 'u128':
+    case 'i64':
+    case 'i128':
+      return 'BN';
     case 'bool':
       return 'boolean';
     case 'pubkey':

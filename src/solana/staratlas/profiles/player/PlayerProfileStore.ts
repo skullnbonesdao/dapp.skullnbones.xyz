@@ -1,10 +1,19 @@
 import { defineStore } from 'pinia';
-import { PublicKey } from '@solana/web3.js';
+import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
-import { PLAYERPROFILE_ID } from 'src/solana/staratlas/player_profile/PlayerProfileInterface';
+import {
+  instruction_playerProfile_create,
+  instruction_playerProfile_setName,
+  PLAYERPROFILE_ID,
+} from 'src/solana/staratlas/profiles/player/PlayerProfileInterface';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { SagePermissions } from '@staratlas/sage';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { instruction_factionProfile_chooseFaction } from 'src/solana/staratlas/profiles/faction/FactionProfileInterface';
+import { Faction } from 'src/solana/staratlas/profiles/faction/types/types_faction_profile';
+import { instruction_sage_registerSagePlayerProfile } from 'src/solana/staratlas/sage/SageInterface';
+import { useSageStore } from 'src/solana/staratlas/sage/SageStore';
 
 export interface ProfileAccount {
   pubkey: PublicKey;
@@ -24,6 +33,47 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
 
   getters: {},
   actions: {
+    async createProfile() {
+      const tx = new Transaction();
+
+      const profile = Keypair.generate().publicKey;
+      const name = Keypair.generate().publicKey;
+
+      let instruction = await instruction_playerProfile_create(profile);
+      if (instruction) {
+        tx.add(instruction);
+      }
+
+      instruction = await instruction_playerProfile_setName(
+        'test',
+        getSigner(),
+        profile,
+      );
+      if (instruction) {
+        tx.add(instruction);
+      }
+
+      instruction = await instruction_factionProfile_chooseFaction(
+        profile,
+        Faction.MUD,
+      );
+      if (instruction) {
+        tx.add(instruction);
+      }
+
+      instruction = await instruction_sage_registerSagePlayerProfile(
+        profile,
+        useSageStore().game!.publicKey,
+        useSageStore().game!.account,
+      );
+      if (instruction) {
+        tx.add(instruction);
+      }
+
+      await handleTransaction(tx, `[PlayerProfile] create profile`);
+
+      return;
+    },
     async updateStore() {
       this.profileKeys = [];
 

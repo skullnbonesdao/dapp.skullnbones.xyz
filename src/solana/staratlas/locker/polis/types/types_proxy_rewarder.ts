@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { BN } from '@coral-xyz/anchor';
 
 export type Proxy = {
   escrow: PublicKey;
@@ -11,11 +12,11 @@ export type Proxy = {
 export type ProxyEscrow = {
   escrowOwner: PublicKey;
   bump: number;
-  amount: number;
-  escrowStartedAt: number;
-  escrowEndsAt: number;
-  rewardsLastClaimedAt: number;
-  amountClaimed: number;
+  amount: BN;
+  escrowStartedAt: BN;
+  escrowEndsAt: BN;
+  rewardsLastClaimedAt: BN;
+  amountClaimed: BN;
 };
 
 export type RegisteredLocker = {
@@ -24,9 +25,9 @@ export type RegisteredLocker = {
   tokenMint: PublicKey;
   locker: PublicKey;
   padding: number[];
-  rewardAmountPaidPerPeriodEra0: number[];
-  rewardAmountPaidPerPeriodEra1: number[];
-  rewardAmountPaidPerPeriodEra2: number[];
+  rewardAmountPaidPerPeriodEra0: BN[];
+  rewardAmountPaidPerPeriodEra1: BN[];
+  rewardAmountPaidPerPeriodEra2: BN[];
 };
 
 export type TreasuryAuthority = {
@@ -38,15 +39,15 @@ export type ClaimRewardsEvent = {
   escrowOwner: PublicKey;
   locker: PublicKey;
   tokenMint: PublicKey;
-  amountClaimed: number;
-  prevRewardsLastClaimedAt: number;
-  rewardsLastClaimedAt: number;
+  amountClaimed: BN;
+  prevRewardsLastClaimedAt: BN;
+  rewardsLastClaimedAt: BN;
 };
 
 export type NewProxyEscrowEvent = {
   proxyEscrow: PublicKey;
   owner: PublicKey;
-  timestamp: number;
+  timestamp: BN;
 };
 
 export type NewProxyEvent = {
@@ -54,25 +55,25 @@ export type NewProxyEvent = {
   proxyOwner: PublicKey;
   proxyEscrow: PublicKey;
   tokenMint: PublicKey;
-  timestamp: number;
+  timestamp: BN;
 };
 
 export type ProxyExitEscrowEvent = {
   escrowOwner: PublicKey;
   locker: PublicKey;
-  timestamp: number;
-  lockerSupply: number;
-  releasedAmount: number;
+  timestamp: BN;
+  lockerSupply: BN;
+  releasedAmount: BN;
 };
 
 export type ProxyLockEvent = {
   locker: PublicKey;
   escrowOwner: PublicKey;
   tokenMint: PublicKey;
-  amount: number;
-  lockerSupply: number;
-  duration: number;
-  prevEscrowEndsAt: number;
-  nextEscrowEndsAt: number;
-  nextEscrowStartedAt: number;
+  amount: BN;
+  lockerSupply: BN;
+  duration: BN;
+  prevEscrowEndsAt: BN;
+  nextEscrowEndsAt: BN;
+  nextEscrowStartedAt: BN;
 };

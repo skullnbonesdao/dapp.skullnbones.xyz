@@ -1,12 +1,13 @@
 import { PublicKey } from '@solana/web3.js';
+import { BN } from '@coral-xyz/anchor';
 
 export type RegisteredStake = {
   authority: PublicKey;
   stakeMint: PublicKey;
   rewardMint: PublicKey;
   currentPeriod: number;
-  rewardMultiplier: number;
-  cooldownPeriod: number;
+  rewardMultiplier: BN;
+  cooldownPeriod: BN;
   bump: number;
 };
 
@@ -14,15 +15,15 @@ export type StakingAccount = {
   owner: PublicKey;
   registeredStake: PublicKey;
   stakeMint: PublicKey;
-  totalStake: number;
-  activeStake: number;
-  pendingRewards: number;
-  paidRewards: number;
+  totalStake: BN;
+  activeStake: BN;
+  pendingRewards: BN;
+  paidRewards: BN;
   currentPeriod: number;
-  stakedAtTs: number;
-  lastPendingRewardCalcTs: number;
-  lastHarvestTs: number;
-  unstakedTs: number;
+  stakedAtTs: BN;
+  lastPendingRewardCalcTs: BN;
+  lastHarvestTs: BN;
+  unstakedTs: BN;
   bump: number;
 };
 

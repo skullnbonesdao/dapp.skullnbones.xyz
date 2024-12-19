@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue';
-import { usePlayerProfileStore } from 'src/solana/staratlas/player_profile/PlayerProfileStore';
+import { usePlayerProfileStore } from 'src/solana/staratlas/profiles/player/PlayerProfileStore';
 import { getSigner } from '../solana/squads/SignerFinder';
 import PlayerProfilePermissions from 'components/playerProfile/PlayerProfilePermissions.vue';
 import PlayerProfileCreate from 'components/playerProfile/PlayerProfileCreate.vue';
+import { useSageStore } from 'src/solana/staratlas/sage/SageStore';
 
 onMounted(async () => {
+  await useSageStore().updateStore();
   await usePlayerProfileStore().updateStore();
 });
 
 watch(
   () => getSigner(),
   async () => {
+    await useSageStore().updateStore();
     await usePlayerProfileStore().updateStore();
   },
 );
@@ -26,6 +29,7 @@ watch(
       </q-card-section>
       <q-separator />
 
+      {{ useSageStore().game }}
       <q-card-section>
         <div class="text-subtitle1">Playerprofile</div>
         <div class="text-subtitle2 text-accent">
