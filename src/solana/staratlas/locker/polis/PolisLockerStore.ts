@@ -247,7 +247,7 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
       }
     },
 
-    async withdrawLocker() {
+    async closeLocker() {
       try {
         const duration_sec =
           parseInt(this.escrow!.escrowEndsAt.toString()) -
