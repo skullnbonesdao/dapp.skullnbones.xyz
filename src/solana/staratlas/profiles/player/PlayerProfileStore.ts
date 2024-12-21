@@ -1,19 +1,13 @@
 import { defineStore } from 'pinia';
-import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
+import { Keypair, PublicKey } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
-import {
-  instruction_playerProfile_create,
-  instruction_playerProfile_setName,
-  PLAYERPROFILE_ID,
-} from 'src/solana/staratlas/profiles/player/PlayerProfileInterface';
+import { PLAYERPROFILE_ID } from 'src/solana/staratlas/profiles/player/PlayerProfileInterface';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { SagePermissions } from '@staratlas/sage';
-import { handleTransaction } from 'src/solana/handleTransaction';
-import { instruction_factionProfile_chooseFaction } from 'src/solana/staratlas/profiles/faction/FactionProfileInterface';
-import { Faction } from 'src/solana/staratlas/profiles/faction/types/types_faction_profile';
-import { instruction_sage_registerSagePlayerProfile } from 'src/solana/staratlas/sage/SageInterface';
-import { useSageStore } from 'src/solana/staratlas/sage/SageStore';
+import { PlayerProfile, ProfilePermissions } from '@staratlas/player-profile';
+import { useWallet } from 'solana-wallets-vue';
+import { buildAndSignTransaction } from '@staratlas/data-source';
 
 export interface ProfileAccount {
   pubkey: PublicKey;
@@ -34,43 +28,47 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
   getters: {},
   actions: {
     async createProfile() {
-      const tx = new Transaction();
+      const program = useWorkspaceAdapter()?.pg_playerProfile.value;
 
       const profile = Keypair.generate().publicKey;
       const name = Keypair.generate().publicKey;
 
-      let instruction = await instruction_playerProfile_create(profile);
-      if (instruction) {
-        tx.add(instruction);
-      }
+      const funder = {
+        publicKey: () => useWallet().publicKey,
+        signTransaction: async (transaction) => {
+          try {
+            return await useWallet().signTransaction(transaction);
+          } catch (err) {
+            console.error('Transaction signing failed:', err);
+            throw err;
+          }
+        },
+      };
 
-      instruction = await instruction_playerProfile_setName(
-        'test',
+      const createPlayerProfile = PlayerProfile.createProfile(
+        program,
         getSigner(),
-        profile,
+        [
+          {
+            key: getSigner(),
+            expireTime: null,
+            scope: program?.programId,
+            permissions: ProfilePermissions.all(),
+          },
+        ],
+        1,
       );
-      if (instruction) {
-        tx.add(instruction);
-      }
 
-      instruction = await instruction_factionProfile_chooseFaction(
-        profile,
-        Faction.MUD,
+      const transaction = await buildAndSignTransaction(
+        createPlayerProfile,
+        funder,
+        {
+          connection: useRPCStore().connection,
+          commitment: 'confirmed',
+        },
       );
-      if (instruction) {
-        tx.add(instruction);
-      }
 
-      instruction = await instruction_sage_registerSagePlayerProfile(
-        profile,
-        useSageStore().game!.publicKey,
-        useSageStore().game!.account,
-      );
-      if (instruction) {
-        tx.add(instruction);
-      }
-
-      await handleTransaction(tx, `[PlayerProfile] create profile`);
+      console.log(await createPlayerProfile(funder));
 
       return;
     },
