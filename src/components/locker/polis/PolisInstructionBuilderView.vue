@@ -11,7 +11,7 @@ const options = ref([
   'Sync locker',
   'Add tokens to locker',
   'Claim tokens form locker',
-  'Withdraw tokens form locker',
+  'Close locker',
 ]);
 
 const tx = ref<Transaction | undefined>();
@@ -94,8 +94,8 @@ async function buildTX() {
     case 'Claim tokens from locker':
       tx.value = await usePolisLockerStore().claimLocker();
       break;
-    case 'Withdraw tokens from locker':
-      tx.value = await usePolisLockerStore().withdrawLocker();
+    case 'Close locker':
+      tx.value = await usePolisLockerStore().closeLocker();
       break;
   }
 
