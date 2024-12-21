@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePlayerProfileStore } from 'src/solana/staratlas/player_profile/PlayerProfileStore';
+import { usePlayerProfileStore } from 'src/solana/staratlas/profiles/player/PlayerProfileStore';
 </script>
 
 <template>
