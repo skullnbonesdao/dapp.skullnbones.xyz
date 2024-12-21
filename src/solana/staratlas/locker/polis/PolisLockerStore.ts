@@ -101,15 +101,24 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
         );
 
         // (1) Proxy Rewarder: New Proxy Escrow
-        instruction = await instruction_newProxyEscrow();
-        if (instruction) {
-          tx.add(instruction);
+        if (
+          !(await useRPCStore().connection.getAccountInfo(findProxyEscrow()[0]))
+            ?.data
+        ) {
+          instruction = await instruction_newProxyEscrow();
+          if (instruction) {
+            tx.add(instruction);
+          }
         }
 
         // (2) Proxy Rewarder: New Proxy
-        instruction = await instruction_newProxy();
-        if (instruction) {
-          tx.add(instruction);
+        if (
+          !(await useRPCStore().connection.getAccountInfo(findProxy()[0]))?.data
+        ) {
+          instruction = await instruction_newProxy();
+          if (instruction) {
+            tx.add(instruction);
+          }
         }
 
         // (3) Locked Voter: New Escrow
