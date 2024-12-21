@@ -258,12 +258,13 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
         let instruction = undefined;
 
         // CLAIM
-        for (const era of duration_2_ERAs(duration_sec)) {
-          instruction = await instruction_claimRewards(era);
-          if (instruction) {
-            tx.add(instruction);
-          }
-        }
+
+        //for (const era of duration_2_ERAs(duration_sec)) {
+        //  instruction = await instruction_claimRewards(era);
+        //  if (instruction) {
+        //    tx.add(instruction);
+        //  }
+        //}
 
         // CLOSE
         instruction = await instruction_proxyExit();
