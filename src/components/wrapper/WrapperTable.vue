@@ -32,8 +32,7 @@ function getItemsPerPage() {
 
 const filter = ref('');
 const pagination = ref({
-  page: 1,
-  rowsPerPage: getItemsPerPage(),
+  rowsPerPage: 0,
 });
 
 watch(
