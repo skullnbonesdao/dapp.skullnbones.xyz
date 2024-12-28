@@ -30,7 +30,6 @@ export function findRaffleAddress(name: string, seed: BN) {
   const raffle = anchor.web3.PublicKey.findProgramAddressSync(
     [
       anchor.utils.bytes.utf8.encode('raffle'),
-      anchor.utils.bytes.utf8.encode(name),
       seed.toArrayLike(Buffer).reverse(),
     ],
     ID,
