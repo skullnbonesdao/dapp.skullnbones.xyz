@@ -30,6 +30,7 @@ watch(
       <q-separator />
 
       {{ useSageStore().game }}
+      {{ usePlayerProfileStore().profileKeys }}
       <q-card-section>
         <div class="text-subtitle1">Playerprofile</div>
         <div class="text-subtitle2 text-accent">
@@ -42,10 +43,15 @@ watch(
           {{ getSigner().toString() ?? 'not-found' }}
         </div>
         <div class="row items-center">
-          <div class="col text-subtitle1">PlayerProfile</div>
+          <div class="col text-subtitle1">PlayerProfileID</div>
           {{
-            usePlayerProfileStore().profile?.pubkey?.toString() ?? 'not-found'
+            usePlayerProfileStore()?.profile.publicKey?.toString() ??
+            'not-found'
           }}
+        </div>
+        <div class="row items-center">
+          <div class="col text-subtitle1">PlayerProfile</div>
+          {{ usePlayerProfileStore().profile ?? 'not-found' }}
         </div>
 
         <PlayerProfilePermissions />
