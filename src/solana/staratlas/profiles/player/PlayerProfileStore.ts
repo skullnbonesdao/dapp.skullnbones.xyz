@@ -1,17 +1,26 @@
 import { defineStore } from 'pinia';
-import { Keypair, PublicKey } from '@solana/web3.js';
+import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
 import { PLAYERPROFILE_ID } from 'src/solana/staratlas/profiles/player/PlayerProfileInterface';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import { useWorkspaceAdapter } from 'src/solana/connector';
 import { SagePermissions } from '@staratlas/sage';
-import { PlayerProfile, ProfilePermissions } from '@staratlas/player-profile';
+import {
+  PlayerProfile,
+  PlayerProfileIDLProgram,
+  ProfilePermissions,
+} from '@staratlas/player-profile';
 import { useWallet } from 'solana-wallets-vue';
-import { buildAndSignTransaction } from '@staratlas/data-source';
+import { WalletStore } from 'solana-wallets-vue/dist/types';
+import { AsyncSigner } from '@staratlas/data-source/src/asyncSigner';
+import { handleTransaction } from 'src/solana/handleTransaction';
+import { readAllFromRPC } from '@staratlas/data-source';
+import { Profile } from 'src/solana/staratlas/profiles/player/types/types_player_profile';
 
 export interface ProfileAccount {
-  pubkey: PublicKey;
-  account: any;
+  publicKey: PublicKey;
+  account: Profile;
+  data: any;
 }
 
 export interface ProfileKey {
@@ -28,26 +37,18 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
   getters: {},
   actions: {
     async createProfile() {
-      const program = useWorkspaceAdapter()?.pg_playerProfile.value;
+      const program = useWorkspaceAdapter()?.pg_playerProfile
+        .value as unknown as PlayerProfileIDLProgram;
 
-      const profile = Keypair.generate().publicKey;
-      const name = Keypair.generate().publicKey;
+      const profileId = publicKeyToAsyncSigner(this.profile?.publicKey);
+      const funder = walletStoreToAsyncSigner(useWallet());
 
-      const funder = {
-        publicKey: () => useWallet().publicKey,
-        signTransaction: async (transaction) => {
-          try {
-            return await useWallet().signTransaction(transaction);
-          } catch (err) {
-            console.error('Transaction signing failed:', err);
-            throw err;
-          }
-        },
-      };
+      console.log('Profile publicKey:', this.profile.publicKey.toString());
+      const tx = new Transaction();
 
-      const createPlayerProfile = PlayerProfile.createProfile(
+      const createPlayerProfileInstruction = await PlayerProfile.createProfile(
         program,
-        getSigner(),
+        profileId as any, // Accessing the publicKey directly
         [
           {
             key: getSigner(),
@@ -57,26 +58,105 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
           },
         ],
         1,
+      )(funder);
+
+      if (Array.isArray(createPlayerProfileInstruction)) {
+        createPlayerProfileInstruction.forEach((instructionWithSigners) => {
+          if (instructionWithSigners?.instruction) {
+            tx.add(instructionWithSigners.instruction); // Add the instruction to the transaction
+          } else {
+            console.error('No instruction found in the array element');
+          }
+        });
+      } else if (createPlayerProfileInstruction?.instruction) {
+        tx.add(createPlayerProfileInstruction.instruction);
+      } else {
+        console.error('No instruction found');
+      }
+
+      //tx.add((await createPlayerProfileInstruction(funder))?.instruction);
+
+      const profile = new PlayerProfile(this.profile?.account);
+
+      const { instructions: setNameInstruction, name } = PlayerProfile.setName(
+        program as unknown as PlayerProfileIDLProgram,
+        {
+          profile: profileId.publicKey(),
+          key: funder,
+          playerProfileProgram: program,
+        },
+        'test',
       );
 
-      const transaction = await buildAndSignTransaction(
-        createPlayerProfile,
+      console.log(await setNameInstruction(funder));
+
+      /*const x = await buildAndSignTransaction(
+        [createPlayerProfileInstruction],
         funder,
         {
           connection: useRPCStore().connection,
           commitment: 'confirmed',
         },
+      );*/
+
+      await handleTransaction(tx, 'Create Player Profile');
+
+      //console.log(await createPlayerProfile(funder));
+
+      return;
+    },
+    async updateStore_new() {
+      const profile = await useRPCStore().connection.getProgramAccounts(
+        PLAYERPROFILE_ID,
+        {
+          filters: [
+            {
+              memcmp: {
+                offset: 30,
+                bytes: getSigner().toString(),
+              },
+            },
+          ],
+        },
       );
 
-      console.log(await createPlayerProfile(funder));
+      if (profile) {
+        console.log(profile);
 
+        this.profile.publicKey = profile[0].pubkey;
+
+        const program = useWorkspaceAdapter()?.pg_playerProfile.value as any;
+
+        const myProfiles = await readAllFromRPC(
+          useRPCStore().connection,
+          program,
+          PlayerProfile,
+          'processed',
+          [
+            {
+              memcmp: {
+                offset: PlayerProfile.MIN_DATA_SIZE + 2,
+                bytes: getSigner().toString(),
+              },
+            },
+          ],
+        );
+        console.log('MyProfiles');
+        console.log(myProfiles);
+
+        this.profile.account = program.coder.types.decode(
+          'profile',
+          profile[0].account.data.slice(0, 31),
+        );
+
+        console.log(this.profile);
+      } else this.profileId = Keypair.generate().publicKey;
       return;
     },
     async updateStore() {
       this.profileKeys = [];
 
       const pg_playerProfile = useWorkspaceAdapter()!.pg_playerProfile.value;
-
       const profile = await useRPCStore().connection.getProgramAccounts(
         PLAYERPROFILE_ID,
         {
@@ -91,13 +171,21 @@ export const usePlayerProfileStore = defineStore('playerProfileStore', {
         },
       );
       console.log(profile[0]);
-      this.profile = profile[0] as never;
+
+      let profileData = profile[0].account.data.subarray(30);
+      let iter = 0;
+
+      this.profile = {
+        publicKey: profile[0].pubkey,
+        account: await pg_playerProfile.account.profile.fetch(
+          profile[0].pubkey,
+        ),
+        data: profileData,
+      };
 
       const permissionedAccounts = [];
 
       // The first 30 bytes are general information about the Profile
-      let profileData = profile[0].account.data.subarray(30);
-      let iter = 0;
 
       // Each account which has been granted access to this Profile
       // is listed in 80 byte chunks
@@ -183,4 +271,32 @@ function decodePermissions(input: any) {
     permissions.push(sectionFlags);
   }
   return permissions;
+}
+
+function publicKeyToAsyncSigner(key: PublicKey) {
+  return {
+    publicKey: () => key,
+  };
+}
+
+export function walletStoreToAsyncSigner(
+  wallet: WalletStore,
+): AsyncSigner<WalletStore> {
+  return {
+    inner(): WalletStore {
+      return wallet;
+    },
+    publicKey(): PublicKey {
+      return wallet.publicKey.value!;
+    },
+    requiresAsync(): boolean {
+      return true;
+    },
+    sign<T extends Transaction>(tx: T): Promise<T> {
+      return wallet.signTransaction.value!(tx);
+    },
+    signAll<T extends Transaction>(txs: T[]): Promise<T[]> {
+      return wallet.signAllTransactions.value!(txs);
+    },
+  };
 }
