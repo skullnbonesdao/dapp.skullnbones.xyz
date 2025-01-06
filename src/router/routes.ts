@@ -29,29 +29,23 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/RafflePage.vue') }],
   },
   {
-    path: '/playerprofile',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/PlayerProfilePage.vue') },
-    ],
-  },
-  {
-    path: '/staratlaslocker',
+    path: '/locker',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/StarAtlasLocker.vue') },
     ],
   },
   {
+    path: '/token',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/TokenPage.vue') }],
+  },
+  {
     path: '/wrapper',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/WrapperPage.vue') }],
   },
-  {
-    path: '/escrow-service',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/EscrowPage.vue') }],
-  },
+
   {
     path: '/coinflip',
     component: () => import('layouts/MainLayout.vue'),

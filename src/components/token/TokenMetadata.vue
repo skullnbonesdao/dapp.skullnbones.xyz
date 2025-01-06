@@ -6,6 +6,7 @@ import { useWallet } from 'solana-wallets-vue';
 import { Metaplex } from '@metaplex-foundation/js';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { useRPCStore } from 'stores/rpcStore';
+import { useAccountStore } from 'src/solana/accounts/AccountStore';
 
 const token_selected = ref();
 const token_metadata = ref();
@@ -15,7 +16,7 @@ const token_metadata_symbol = ref('xxx');
 const token_metadata_uri = ref('');
 
 onMounted(async () => {
-  await useGlobalStore().update_wallet_accounts();
+  await useAccountStore().updateStore();
 });
 
 watch(

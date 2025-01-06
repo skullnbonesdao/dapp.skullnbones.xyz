@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import {
-  Connection,
   Keypair,
+  PublicKey,
   SystemProgram,
   Transaction,
 } from '@solana/web3.js';
 
-import { useAnchorWallet, useWallet } from 'solana-wallets-vue';
-import { useGlobalStore } from 'stores/globalStore';
-import { AnchorProvider, Wallet } from '@coral-xyz/anchor';
 import {
   createAssociatedTokenAccountInstruction,
   createInitializeMintInstruction,
@@ -21,128 +18,137 @@ import {
 import { Notify } from 'quasar';
 import { ref } from 'vue';
 import { useRPCStore } from 'stores/rpcStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
+import * as splToken from '@solana/spl-token';
+import { handleTransaction } from 'src/solana/handleTransaction';
 
-const token_mint = ref(Keypair.generate());
-const token_decimals = ref(0);
-const token_amount = ref(100);
+const inputTokenMint = ref(Keypair.generate().publicKey.toString());
+const inputTokenDecimals = ref(0);
+const inputTokenAmount = ref(1);
 
 async function create_new_token() {
-  const wallet = useAnchorWallet();
-  const connection = useRPCStore().connection as Connection;
-  const { publicKey, sendTransaction } = useWallet();
-  if (!publicKey.value) return;
+  try {
+    const tx = new Transaction();
 
-  const provider = new AnchorProvider(connection, wallet.value as Wallet, {
-    commitment: 'processed',
-  });
+    const tokenMint = new PublicKey(inputTokenMint.value);
+    const decimals = parseInt(inputTokenDecimals.value.toString(), 10);
+    const amount = inputTokenAmount.value;
 
-  // let mint = Keypair.generate();
-  let ata = await getAssociatedTokenAddress(
-    token_mint.value.publicKey,
-    publicKey.value,
-    false
-  );
+    if (isNaN(decimals) || decimals < 0 || decimals > 9) {
+      throw new Error('Invalid decimals value. It must be between 0 and 9.');
+    }
 
-  let transaction = new Transaction();
+    let ata = await getAssociatedTokenAddress(tokenMint, getSigner(), true);
 
-  // Create account
-  transaction.add(
-    SystemProgram.createAccount({
-      fromPubkey: publicKey.value,
-      newAccountPubkey: token_mint.value.publicKey,
-      space: MINT_SIZE,
-      lamports: await getMinimumBalanceForRentExemptMint(connection),
-      programId: TOKEN_PROGRAM_ID,
-    })
-  );
-  // Init Mint
-  transaction.add(
-    createInitializeMintInstruction(
-      token_mint.value.publicKey, // mint pubkey
-      token_decimals.value, // decimals
-      publicKey.value, // mint authority (an auth to mint token)
-      null // freeze authority (we use null first, the auth can let you freeze user's token account)
-    )
-  );
+    //Create Mint Account
+    tx.add(
+      SystemProgram.createAccount({
+        fromPubkey: getSigner(),
+        newAccountPubkey: tokenMint,
+        space: MINT_SIZE,
+        lamports: await getMinimumBalanceForRentExemptMint(
+          useRPCStore().connection,
+        ),
+        programId: TOKEN_PROGRAM_ID,
+      }),
+    );
 
-  // Create User token account
-  transaction.add(
-    createAssociatedTokenAccountInstruction(
-      publicKey.value, // payer
-      ata, // ata
-      publicKey.value, // owner
-      token_mint.value.publicKey // mint
-    )
-  );
+    //Create new Mint
+    tx.add(
+      createInitializeMintInstruction(
+        tokenMint,
+        decimals,
+        getSigner(),
+        getSigner(),
+        splToken.TOKEN_PROGRAM_ID,
+      ),
+    );
 
-  transaction.add(
-    createMintToCheckedInstruction(
-      token_mint.value.publicKey,
-      ata,
-      publicKey.value, // mint auth
-      token_amount.value, // amount
-      token_decimals.value // decimals
-    )
-  );
+    tx.add(
+      createAssociatedTokenAccountInstruction(
+        getSigner(), // payer
+        ata, // ata
+        getSigner(), // owner
+        tokenMint, // mint
+      ),
+    );
 
-  console.log('token_mint = ' + token_mint.value.publicKey);
-  console.log('ATA = ', ata.toString());
+    tx.add(
+      createMintToCheckedInstruction(
+        tokenMint,
+        ata,
+        getSigner(), // mint auth
+        amount, // amount
+        decimals, // decimals
+      ),
+    );
 
-  wallet.value?.signTransaction(transaction);
-  // let simulationResult = await provider.simulate(transaction);
-  let signature = await sendTransaction(transaction, connection, {
-    skipPreflight: true,
-    signers: [token_mint.value],
-  });
-  // console.log(simulationResult);
-  console.log(signature);
-
-  Notify.create({
-    message: 'TX-Signature: ' + signature,
-    timeout: 5000,
-  });
+    await handleTransaction(tx, '[Token] Create');
+  } catch (err) {
+    Notify.create({
+      position: 'bottom-right',
+      color: 'red',
+      message: `${err}`,
+      timeout: 5000,
+    });
+  }
 }
 </script>
 
 <template>
-  <div>
-    <p class="text-h6">Create a new Token</p>
-  </div>
-  <div class="col q-gutter-y-md">
-    <div class="row q-gutter-x-md">
-      <q-input
-        class="col"
-        dark
-        v-model="token_mint.publicKey"
-        type="text"
-        label="New Token Mint"
-        dense
-      />
-      <q-btn
-        color="primary"
-        icon="refresh"
-        @click="token_mint = Keypair.generate()"
-      ></q-btn>
-    </div>
+  <q-card flat bordered>
+    <q-card-section>
+      <p class="text-h6">Create a new Token</p>
+    </q-card-section>
+    <q-separator />
 
-    <q-input
-      dark
-      v-model="token_decimals"
-      type="number"
-      label="Decimals"
-      dense
-    />
-    <q-input
-      dark
-      v-model="token_amount"
-      type="number"
-      label="Initial amount"
-      dense
-    />
-    <q-btn color="primary" @click.prevent="create_new_token().then(() => {})"
-      >Create new Token
-    </q-btn>
-  </div>
+    <q-card-section>
+      <div class="col q-gutter-y-sm">
+        <div class="row q-gutter-x-sm">
+          <q-input
+            class="col"
+            filled
+            square
+            v-model="inputTokenMint"
+            type="text"
+            disable
+            label="New Token Mint"
+            dense
+          />
+          <q-btn
+            color="primary"
+            icon="refresh"
+            @click="inputTokenMint = Keypair.generate().publicKey.toString()"
+          ></q-btn>
+        </div>
+
+        <q-input
+          filled
+          square
+          v-model="inputTokenDecimals"
+          type="number"
+          label="Decimals"
+          dense
+        />
+        <q-input
+          square
+          filled
+          v-model="inputTokenAmount"
+          type="number"
+          label="Initial amount"
+          dense
+        />
+        <div class="row">
+          <div class="col"></div>
+          <q-btn
+            color="primary"
+            @click.prevent="create_new_token().then(() => {})"
+            >Create
+          </q-btn>
+        </div>
+      </div>
+    </q-card-section>
+  </q-card>
 </template>
 
 <style scoped lang="sass"></style>

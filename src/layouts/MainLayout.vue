@@ -160,18 +160,17 @@ const links1 = computed(() => {
     data.push({ icon: 'local_activity', text: 'Raffle', to: '/raffle' });
   }
 
+  data.push({ icon: 'generating_tokens', text: 'TokenFactory', to: '/token' });
+
+
   data.push({ icon: 'inventory_2', text: 'Wrapper', to: '/wrapper' });
 
-  data.push({
-    icon: 'person',
-    text: 'Player Profile',
-    to: '/playerprofile',
-  });
+
 
   data.push({
     icon: 'lock_clock',
     text: 'StarAtlasLocker',
-    to: '/staratlaslocker',
+    to: '/locker',
   });
 
   data.push({ icon: 'diversity_3', text: 'Squads.so', to: '/squads' });
