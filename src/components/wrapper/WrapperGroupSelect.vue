@@ -4,13 +4,11 @@ import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps(['asTabs']);
 
-const tab = ref();
+const tab = ref('DACBloon');
 
-onMounted(() => {
-  tab.value = useWrapperStore().groupSelected
-    ? useWrapperStore().groupSelected?.account?.name
-    : useWrapperStore().groups[0].account.name;
-});
+useWrapperStore().groupSelected = useWrapperStore().groups.find(
+  (g) => g.account.name == tab.value,
+);
 
 watch(
   () => tab.value,

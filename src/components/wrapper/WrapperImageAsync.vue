@@ -13,21 +13,21 @@ const imageURLUnwrapped = ref();
 const imageURLWrapped = ref();
 
 onMounted(async () => {
-  imageURLUnwrapped.value = await loadMetadata(
-    props.wrapper.account.mintUnwrapped,
-  );
-  imageURLWrapped.value = await loadMetadata(props.wrapper.account.mintWrapped);
+  //imageURLUnwrapped.value = await loadMetadata(
+  //  props.wrapper.account.mintUnwrapped,
+  //);
+  //imageURLWrapped.value = await loadMetadata(props.wrapper.account.mintWrapped);
 });
 
 watch(
   () => props.wrapper,
   async () => {
-    imageURLUnwrapped.value = await loadMetadata(
-      props.wrapper.account.mintUnwrapped,
-    );
-    imageURLWrapped.value = await loadMetadata(
-      props.wrapper.account.mintWrapped,
-    );
+    //imageURLUnwrapped.value = await loadMetadata(
+    //  props.wrapper.account.mintUnwrapped,
+    //);
+    //imageURLWrapped.value = await loadMetadata(
+    //  props.wrapper.account.mintWrapped,
+    //);
   },
 );
 
