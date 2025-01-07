@@ -15,16 +15,26 @@ import {
   MINT_SIZE,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
+
 import { Notify } from 'quasar';
 import { ref } from 'vue';
 import { useRPCStore } from 'stores/rpcStore';
 import { getSigner } from 'src/solana/squads/SignerFinder';
 import * as splToken from '@solana/spl-token';
 import { handleTransaction } from 'src/solana/handleTransaction';
+import { createCreateMetadataAccountV3Instruction } from '@metaplex-foundation/mpl-token-metadata';
 
 const inputTokenMint = ref(Keypair.generate().publicKey.toString());
 const inputTokenDecimals = ref(0);
 const inputTokenAmount = ref(1);
+
+const inputTokenName = ref('');
+const inputTokenSymbol = ref('');
+const inputTokenUri = ref('');
+
+const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+);
 
 async function create_new_token() {
   try {
@@ -39,6 +49,42 @@ async function create_new_token() {
     }
 
     let ata = await getAssociatedTokenAddress(tokenMint, getSigner(), true);
+
+    const metadataPDA = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from('metadata'),
+        TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+        tokenMint.toBuffer(),
+      ],
+      TOKEN_METADATA_PROGRAM_ID,
+    )[0];
+
+    if (!inputTokenName.value.length) {
+      throw new Error('Invalid token name');
+    }
+
+    if (
+      inputTokenSymbol.value.length == 0 ||
+      inputTokenSymbol.value.length > 4
+    ) {
+      throw new Error(
+        'Invalid token symbol. It should be between 0 to 4 chars',
+      );
+    }
+
+    if (!inputTokenUri.value.length) {
+      throw new Error('Invalid token uri');
+    }
+
+    const metadataData = {
+      name: inputTokenName.value,
+      symbol: inputTokenSymbol.value,
+      uri: inputTokenUri.value,
+      sellerFeeBasisPoints: 0,
+      creators: null,
+      collection: null,
+      uses: null,
+    };
 
     //Create Mint Account
     tx.add(
@@ -65,6 +111,26 @@ async function create_new_token() {
     );
 
     tx.add(
+      createCreateMetadataAccountV3Instruction(
+        {
+          metadata: metadataPDA,
+          mint: tokenMint,
+          mintAuthority: getSigner(),
+          payer: getSigner(),
+          updateAuthority: getSigner(),
+        },
+        {
+          createMetadataAccountArgsV3: {
+            collectionDetails: null,
+            data: metadataData,
+            isMutable: true,
+          },
+        },
+      ),
+    );
+
+    //Create ATA
+    tx.add(
       createAssociatedTokenAccountInstruction(
         getSigner(), // payer
         ata, // ata
@@ -73,6 +139,7 @@ async function create_new_token() {
       ),
     );
 
+    //Mint tokens
     tx.add(
       createMintToCheckedInstruction(
         tokenMint,
@@ -104,6 +171,7 @@ async function create_new_token() {
 
     <q-card-section>
       <div class="col q-gutter-y-sm">
+        <div class="text-subtitle1">General</div>
         <div class="row q-gutter-x-sm">
           <q-input
             class="col"
@@ -136,6 +204,39 @@ async function create_new_token() {
           v-model="inputTokenAmount"
           type="number"
           label="Initial amount"
+          dense
+        />
+      </div>
+    </q-card-section>
+    <q-card-section>
+      <div class="col q-gutter-y-sm">
+        <div class="text-subtitle1">Metadata</div>
+        <q-input
+          class="col"
+          filled
+          square
+          v-model="inputTokenName"
+          type="text"
+          label="Token Name"
+          dense
+        />
+
+        <q-input
+          class="col"
+          filled
+          square
+          v-model="inputTokenSymbol"
+          type="text"
+          label="Token Symbol"
+          dense
+        />
+        <q-input
+          class="col"
+          filled
+          square
+          v-model="inputTokenUri"
+          type="text"
+          label="Token URI"
           dense
         />
         <div class="row">
