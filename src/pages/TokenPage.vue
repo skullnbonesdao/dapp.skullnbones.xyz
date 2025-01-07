@@ -13,6 +13,8 @@ import { format_address } from '../functions/format_address';
         <div class="col text-h6">Token Factory</div>
       </q-card-section>
 
+      <q-separator />
+
       <q-card-section>
         <div class="text-subtitle1">
           This interface is used to mint and burn tokens
