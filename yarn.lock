@@ -2025,14 +2025,7 @@
     "@solana/spl-token" "^0.3.6"
     "@solana/web3.js" "^1.66.2"
 
-"@metaplex-foundation/mpl-token-metadata@3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@metaplex-foundation/mpl-token-metadata/-/mpl-token-metadata-3.2.1.tgz#d424e378a1ee441a6431d2641d66873118d6dc67"
-  integrity sha512-26W1NhQwDWmLOg/pBRYut7x/vEs/5kFS2sWVEY5/X0f2jJOLhnd4NaZQcq+5u+XZsXvm1jq2AtrRGPNK43oqWQ==
-  dependencies:
-    "@metaplex-foundation/mpl-toolbox" "^0.9.4"
-
-"@metaplex-foundation/mpl-token-metadata@^2.11.0", "@metaplex-foundation/mpl-token-metadata@^2.5.2", "@metaplex-foundation/mpl-token-metadata@^2.9.1":
+"@metaplex-foundation/mpl-token-metadata@2", "@metaplex-foundation/mpl-token-metadata@^2.11.0", "@metaplex-foundation/mpl-token-metadata@^2.5.2", "@metaplex-foundation/mpl-token-metadata@^2.9.1":
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/@metaplex-foundation/mpl-token-metadata/-/mpl-token-metadata-2.13.0.tgz#ea498190ad4ed1d4c0b8218a72d03bd17a883d11"
   integrity sha512-Fl/8I0L9rv4bKTV/RAl5YIbJe9SnQPInKvLz+xR1fEc4/VQkuCn3RPgypfUMEKWmCznzaw4sApDxy6CFS4qmJw==
@@ -2045,12 +2038,12 @@
     bn.js "^5.2.0"
     debug "^4.3.4"
 
-"@metaplex-foundation/mpl-token-metadata@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@metaplex-foundation/mpl-token-metadata/-/mpl-token-metadata-3.1.0.tgz#7cace7541eb3bef5d4314a416a478ad889e8acfa"
-  integrity sha512-DbXuijqqhpeXa2ml6A2j38BfK/fG4c8w7vkY/+fBuZP3pOtqhB0/7/CLwXpYF5kWpjtS8FhpGpU91jGt1uzsiQ==
+"@metaplex-foundation/mpl-token-metadata@3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@metaplex-foundation/mpl-token-metadata/-/mpl-token-metadata-3.2.1.tgz#d424e378a1ee441a6431d2641d66873118d6dc67"
+  integrity sha512-26W1NhQwDWmLOg/pBRYut7x/vEs/5kFS2sWVEY5/X0f2jJOLhnd4NaZQcq+5u+XZsXvm1jq2AtrRGPNK43oqWQ==
   dependencies:
-    "@metaplex-foundation/mpl-toolbox" "^0.9.0"
+    "@metaplex-foundation/mpl-toolbox" "^0.9.4"
 
 "@metaplex-foundation/mpl-token-metadata@^3.2.1":
   version "3.3.0"
