@@ -63,13 +63,8 @@ async function create_new_token() {
       throw new Error('Invalid token name');
     }
 
-    if (
-      inputTokenSymbol.value.length == 0 ||
-      inputTokenSymbol.value.length > 4
-    ) {
-      throw new Error(
-        'Invalid token symbol. It should be between 0 to 4 chars',
-      );
+    if (inputTokenSymbol.value.length == 0) {
+      throw new Error('Invalid token symbol');
     }
 
     if (!inputTokenUri.value.length) {
