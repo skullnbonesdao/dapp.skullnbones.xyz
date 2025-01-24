@@ -33,6 +33,7 @@ import {
 } from 'src/solana/staratlas/locker/atlas/types/types_atlas_locker';
 import { useWallet } from 'solana-wallets-vue';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
+import { createTransferInstruction } from '@solana/spl-token';
 
 const NAME = 'AtlasLocker';
 
@@ -104,8 +105,9 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
       }
     },
 
-    async claimTokens() {
+    async claimTokens(custom_recipient_address: string) {
       try {
+        const recipient = new PublicKey(custom_recipient_address);
         const tx = new Transaction();
         (
           await harvestRewardsInstruction({
@@ -117,6 +119,17 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
             programId: ATLAS_LOCKER,
           })
         ).instructions.forEach((t) => tx.add(t));
+
+        if (recipient.toString() != getSigner().toString()) {
+          tx.add(
+            createTransferInstruction(
+              findATA(getSigner(), POLIS),
+              findATA(recipient, POLIS),
+              getSigner(),
+              useAtlasLockerStore().stakingAccountAtlasInfo?.pendingRewards,
+            ),
+          );
+        }
 
         console.log(`[${NAME}] claimTokens!`);
 
