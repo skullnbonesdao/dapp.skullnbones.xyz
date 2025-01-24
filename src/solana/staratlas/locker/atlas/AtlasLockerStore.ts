@@ -33,6 +33,9 @@ import {
 } from 'src/solana/staratlas/locker/atlas/types/types_atlas_locker';
 import { useWallet } from 'solana-wallets-vue';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
+import { createTransferInstruction } from '@solana/spl-token';
+import { BN } from '@coral-xyz/anchor';
+import { POLIS_DECIMALS } from 'src/solana/staratlas/locker/polis/consts';
 
 const NAME = 'AtlasLocker';
 
@@ -104,7 +107,10 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
       }
     },
 
-    async claimTokens() {
+    async claimTokens(
+      custom_recipient_address: string,
+      custom_recipient_amount: number,
+    ) {
       try {
         const tx = new Transaction();
         (
@@ -117,6 +123,18 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
             programId: ATLAS_LOCKER,
           })
         ).instructions.forEach((t) => tx.add(t));
+
+        const recipient = new PublicKey(custom_recipient_address);
+        if (recipient.toString() != getSigner().toString()) {
+          tx.add(
+            createTransferInstruction(
+              findATA(getSigner(), POLIS),
+              findATA(recipient, POLIS),
+              getSigner(),
+              new BN(custom_recipient_amount * Math.pow(10, POLIS_DECIMALS)),
+            ),
+          );
+        }
 
         console.log(`[${NAME}] claimTokens!`);
 
@@ -182,7 +200,10 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
       }
     },
 
-    async withdrawTokens() {
+    async withdrawTokens(
+      custom_recipient_address: string,
+      custom_recipient_amount: number,
+    ) {
       try {
         const tx = new Transaction();
         (
@@ -196,6 +217,18 @@ export const useAtlasLockerStore = defineStore('atlasLockerStore', {
             programId: ATLAS_LOCKER,
           })
         ).instructions.forEach((t) => tx.add(t));
+
+        const recipient = new PublicKey(custom_recipient_address);
+        if (recipient.toString() != getSigner().toString()) {
+          tx.add(
+            createTransferInstruction(
+              findATA(getSigner(), ATLAS),
+              findATA(recipient, ATLAS),
+              getSigner(),
+              new BN(custom_recipient_amount * Math.pow(10, ATLAS_DECIMALS)),
+            ),
+          );
+        }
 
         console.log(`[${NAME}] withdrawTokens!`);
 

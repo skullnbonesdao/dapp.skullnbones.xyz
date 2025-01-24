@@ -5,6 +5,8 @@ import { Transaction } from '@solana/web3.js';
 import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
 import { findEscrow } from 'src/solana/staratlas/locker/polis/LockedVoterInterface';
 import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
+import { getSigner } from 'src/solana/squads/SignerFinder';
+import { POLIS_DECIMALS } from 'src/solana/staratlas/locker/polis/consts';
 
 const options = ref([
   'Create staking account',
@@ -18,6 +20,23 @@ const selected = ref(options.value[0]);
 
 const tx = ref<Transaction | undefined>();
 
+const custom_recipient_address = ref(getSigner().toString());
+const custom_recipient_amount_claim = ref(0);
+
+const custom_recipient_amount_close = ref(
+  useAtlasLockerStore().stakingAccountAtlasInfo?.pendingRewards *
+    Math.pow(10, -POLIS_DECIMALS),
+);
+
+watch(
+  () => useAtlasLockerStore().stakingAccountAtlasInfo?.pendingRewards,
+  () => {
+    custom_recipient_amount_claim.value =
+      useAtlasLockerStore().stakingAccountAtlasInfo?.pendingRewards *
+      Math.pow(10, -POLIS_DECIMALS);
+  },
+);
+
 const amount_ui = ref();
 const expand_locker = ref(false);
 
@@ -30,7 +49,10 @@ async function buildTX() {
       tx.value = await useAtlasLockerStore().stakeTokens(amount_ui.value);
       break;
     case 'Claim tokens from locker':
-      tx.value = await useAtlasLockerStore().claimTokens();
+      tx.value = await useAtlasLockerStore().claimTokens(
+        custom_recipient_address.value,
+        custom_recipient_amount_claim.value,
+      );
       break;
     case 'Unstake tokens from locker':
       tx.value = await useAtlasLockerStore().unstakeTokens();
@@ -39,7 +61,10 @@ async function buildTX() {
       tx.value = await useAtlasLockerStore().cancelUnstake();
       break;
     case 'Withdraw tokens from locker':
-      tx.value = await useAtlasLockerStore().withdrawTokens();
+      tx.value = await useAtlasLockerStore().withdrawTokens(
+        custom_recipient_address.value,
+        custom_recipient_amount_claim.value,
+      );
       break;
   }
 
@@ -58,7 +83,7 @@ async function buildTX() {
     </q-card-section>
 
     <q-separator />
-    <q-card-section>
+    <q-card-section class="">
       <q-select
         label="Action"
         square
@@ -90,6 +115,46 @@ async function buildTX() {
         />
 
         <q-input class="col" square filled label="Amount" v-model="amount_ui" />
+      </div>
+
+      <div v-if="selected == 'Claim tokens from locker'" class="row">
+        <q-input
+          class="col"
+          square
+          filled
+          :label="'$POLIS recipient'"
+          v-model="custom_recipient_address"
+        />
+        <q-input
+          v-if="custom_recipient_address != getSigner().toString()"
+          square
+          filled
+          type="number"
+          label="
+            Amount
+          "
+          v-model="custom_recipient_amount_claim"
+        />
+      </div>
+
+      <div v-if="selected == 'Withdraw tokens from locker'" class="row">
+        <q-input
+          class="col"
+          square
+          filled
+          :label="'$ATLAS recipient'"
+          v-model="custom_recipient_address"
+        />
+        <q-input
+          v-if="custom_recipient_address != getSigner().toString()"
+          square
+          filled
+          type="number"
+          label="
+            Amount
+          "
+          v-model="custom_recipient_amount_close"
+        />
       </div>
 
       <q-btn

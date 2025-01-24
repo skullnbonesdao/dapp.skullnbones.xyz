@@ -3,6 +3,9 @@ import { ref } from 'vue';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { Transaction } from '@solana/web3.js';
 import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
+import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
+import { POLIS_DECIMALS } from 'src/solana/staratlas/locker/polis/consts';
+import { getSigner } from 'src/solana/squads/SignerFinder';
 
 const selected = ref('Create new locker');
 const options = ref([
@@ -10,11 +13,14 @@ const options = ref([
   'Create new locker',
   'Sync locker',
   'Add tokens to locker',
-  'Claim tokens form locker',
+  'Claim tokens from locker',
   'Close locker',
 ]);
 
 const tx = ref<Transaction | undefined>();
+
+const custom_recipient_address = ref(getSigner().toString());
+const custom_recipient_amount = ref(0);
 
 const duration_options = ref([
   {
@@ -92,10 +98,16 @@ async function buildTX() {
       );
       break;
     case 'Claim tokens from locker':
-      tx.value = await usePolisLockerStore().claimLocker();
+      tx.value = await usePolisLockerStore().claimLocker(
+        custom_recipient_address.value,
+        custom_recipient_amount.value,
+      );
       break;
     case 'Close locker':
-      tx.value = await usePolisLockerStore().closeLocker();
+      tx.value = await usePolisLockerStore().closeLocker(
+        custom_recipient_address.value,
+        custom_recipient_amount.value,
+      );
       break;
   }
 
@@ -146,6 +158,29 @@ async function buildTX() {
         />
 
         <q-input class="col" square filled label="Amount" v-model="amount_ui" />
+      </div>
+
+      <div
+        v-if="['Claim tokens from locker', 'Close locker'].includes(selected)"
+        class="row"
+      >
+        <q-input
+          class="col"
+          square
+          filled
+          :label="'$POLIS recipient'"
+          v-model="custom_recipient_address"
+        />
+        <q-input
+          v-if="custom_recipient_address != getSigner().toString()"
+          square
+          filled
+          type="number"
+          label="
+            Amount
+          "
+          v-model="custom_recipient_amount"
+        />
       </div>
 
       <q-btn

@@ -3,9 +3,13 @@ import * as anchor from '@coral-xyz/anchor';
 import { BN } from '@coral-xyz/anchor';
 
 import wrapperIDL from './wrapper_factory.0.30.1.json';
-import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
+
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
+
+export const MPL_TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+);
 
 const ID = new PublicKey(wrapperIDL.address);
 
@@ -75,10 +79,10 @@ export function findMetadataAddress(mintWrapped: PublicKey) {
   const [metadataAddress, metadata_bump] = PublicKey.findProgramAddressSync(
     [
       Buffer.from('metadata'),
-      new PublicKey(MPL_TOKEN_METADATA_PROGRAM_ID.toString()).toBuffer(),
+      MPL_TOKEN_METADATA_PROGRAM_ID.toBuffer(),
       mintWrapped.toBytes(),
     ],
-    new PublicKey(MPL_TOKEN_METADATA_PROGRAM_ID.toString()),
+    MPL_TOKEN_METADATA_PROGRAM_ID,
   );
   return metadataAddress;
 }

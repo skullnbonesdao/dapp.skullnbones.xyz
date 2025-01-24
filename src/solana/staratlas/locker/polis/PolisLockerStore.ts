@@ -37,7 +37,10 @@ import { findATA } from 'src/solana/staratlas/locker/atlas/AtlasLockerInterface'
 import { useWallet } from 'solana-wallets-vue';
 import { useSquadsStore } from 'src/solana/squads/SquadsStore';
 import { POLIS } from 'src/solana/staratlas/locker/atlas/consts';
-import { createAssociatedTokenAccountInstruction } from '@solana/spl-token';
+import {
+  createAssociatedTokenAccountInstruction,
+  createTransferInstruction,
+} from '@solana/spl-token';
 
 const NAME = 'PolisLocker';
 
@@ -226,7 +229,10 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
       }
     },
 
-    async claimLocker() {
+    async claimLocker(
+      custom_recipient_address: string,
+      custom_recipient_amount: number,
+    ) {
       try {
         const duration_sec =
           parseInt(this.escrow!.escrowEndsAt.toString()) -
@@ -244,6 +250,19 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
           }
         }
 
+        const recipient = new PublicKey(custom_recipient_address);
+        if (recipient.toString() !== getSigner().toString()) {
+          console.log(`--differ`);
+          tx.add(
+            createTransferInstruction(
+              findATA(getSigner(), POLIS),
+              findATA(recipient, POLIS),
+              getSigner(),
+              new BN(custom_recipient_amount * Math.pow(10, POLIS_DECIMALS)),
+            ),
+          );
+        }
+
         console.log(`[${NAME}] claim form locker!`);
         return tx;
       } catch (err: any) {
@@ -256,7 +275,10 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
       }
     },
 
-    async closeLocker() {
+    async closeLocker(
+      custom_recipient_address: string,
+      custom_recipient_amount: number,
+    ) {
       try {
         const duration_sec =
           parseInt(this.escrow!.escrowEndsAt.toString()) -
@@ -280,6 +302,20 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
         if (instruction) {
           tx.add(instruction);
         }
+
+        const recipient = new PublicKey(custom_recipient_address);
+        if (recipient.toString() !== getSigner().toString()) {
+          console.log(`--differ`);
+          tx.add(
+            createTransferInstruction(
+              findATA(getSigner(), POLIS),
+              findATA(recipient, POLIS),
+              getSigner(),
+              new BN(custom_recipient_amount * Math.pow(10, POLIS_DECIMALS)),
+            ),
+          );
+        }
+
         console.log(`[${NAME}] close Locker!`);
         return tx;
       } catch (err: any) {
