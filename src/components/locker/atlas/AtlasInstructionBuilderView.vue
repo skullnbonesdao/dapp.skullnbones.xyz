@@ -21,6 +21,21 @@ const selected = ref(options.value[0]);
 const tx = ref<Transaction | undefined>();
 
 const custom_recipient_address = ref(getSigner().toString());
+const custom_recipient_amount_claim = ref(0);
+
+const custom_recipient_amount_close = ref(
+  useAtlasLockerStore().stakingAccountAtlasInfo?.pendingRewards *
+    Math.pow(10, -POLIS_DECIMALS),
+);
+
+watch(
+  () => useAtlasLockerStore().stakingAccountAtlasInfo?.pendingRewards,
+  () => {
+    custom_recipient_amount_claim.value =
+      useAtlasLockerStore().stakingAccountAtlasInfo?.pendingRewards *
+      Math.pow(10, -POLIS_DECIMALS);
+  },
+);
 
 const amount_ui = ref();
 const expand_locker = ref(false);
@@ -36,6 +51,7 @@ async function buildTX() {
     case 'Claim tokens from locker':
       tx.value = await useAtlasLockerStore().claimTokens(
         custom_recipient_address.value,
+        custom_recipient_amount_claim.value,
       );
       break;
     case 'Unstake tokens from locker':
@@ -45,7 +61,10 @@ async function buildTX() {
       tx.value = await useAtlasLockerStore().cancelUnstake();
       break;
     case 'Withdraw tokens from locker':
-      tx.value = await useAtlasLockerStore().withdrawTokens();
+      tx.value = await useAtlasLockerStore().withdrawTokens(
+        custom_recipient_address.value,
+        custom_recipient_amount_claim.value,
+      );
       break;
   }
 
@@ -64,7 +83,7 @@ async function buildTX() {
     </q-card-section>
 
     <q-separator />
-    <q-card-section class="q-gutter-y-sm">
+    <q-card-section class="">
       <q-select
         label="Action"
         square
@@ -103,13 +122,38 @@ async function buildTX() {
           class="col"
           square
           filled
-          :label="
-            'Receiving wallet (+' +
-            useAtlasLockerStore().stakingAccountAtlasInfo?.pendingRewards *
-              Math.pow(10, -POLIS_DECIMALS) +
-            ' POLIS)'
-          "
+          :label="'$POLIS recipient'"
           v-model="custom_recipient_address"
+        />
+        <q-input
+          v-if="custom_recipient_address != getSigner().toString()"
+          square
+          filled
+          type="number"
+          label="
+            Amount
+          "
+          v-model="custom_recipient_amount_claim"
+        />
+      </div>
+
+      <div v-if="selected == 'Withdraw tokens from locker'" class="row">
+        <q-input
+          class="col"
+          square
+          filled
+          :label="'$ATLAS recipient'"
+          v-model="custom_recipient_address"
+        />
+        <q-input
+          v-if="custom_recipient_address != getSigner().toString()"
+          square
+          filled
+          type="number"
+          label="
+            Amount
+          "
+          v-model="custom_recipient_amount_close"
         />
       </div>
 
