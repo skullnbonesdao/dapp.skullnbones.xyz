@@ -7,6 +7,7 @@ import WrapperMetadataUpdate from 'components/wrapper/WrapperMetadataUpdate.vue'
 import * as Metadata from '@metaplex-foundation/mpl-token-metadata';
 import WrapperMetadataCreate from 'components/wrapper/WrapperMetadataCreate.vue';
 import { findMetadataAddress } from 'src/solana/wrapper/WrapperInterface';
+import { getMetadataAccountDataSerializer } from '@metaplex-foundation/mpl-token-metadata/dist/src/generated/accounts/metadata';
 
 const $q = useQuasar();
 
@@ -33,7 +34,16 @@ async function loadAccountInfo() {
     findMetadataAddress(useWrapperStore().wrapperSelected.account.mintWrapped),
   );
 
-  metadata.value = Metadata.deserializeMetadata(accountInfo.value);
+  //let metadata: MplMetadataAccountData | null = null;
+
+  const serializer = getMetadataAccountDataSerializer();
+
+  try {
+    [metadata.value] = serializer.deserialize(accountInfo.value.data);
+    if (typeof metadata.value !== 'object') metadata.value = null;
+  } catch (e) {}
+
+  //  metadata.value = Metadata.deserializeMetadata(accountInfo.value);
 
   metadataName.value = metadata.value.name;
   metadataSymbol.value = metadata.value.symbol;
@@ -49,7 +59,11 @@ async function loadAccountInfo() {
       <div class="row items-center">
         <div class="col text-subtitle1 text-weight-thin">Address</div>
         <div class="text-subtitle2">
-          {{ findMetadataAddress(useWrapperStore().wrapperSelected.publicKey) }}
+          {{
+            findMetadataAddress(
+              useWrapperStore().wrapperSelected.account.mintWrapped,
+            )
+          }}
         </div>
       </div>
     </q-card-section>

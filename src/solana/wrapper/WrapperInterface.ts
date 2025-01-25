@@ -80,7 +80,7 @@ export function findMetadataAddress(mintWrapped: PublicKey) {
     [
       Buffer.from('metadata'),
       MPL_TOKEN_METADATA_PROGRAM_ID.toBuffer(),
-      mintWrapped.toBytes(),
+      mintWrapped.toBuffer(),
     ],
     MPL_TOKEN_METADATA_PROGRAM_ID,
   );
