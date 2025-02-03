@@ -39,6 +39,9 @@ export const useWrapperStore = defineStore('wrapperStore', {
         const { pg_wrapper } = useWorkspaceAdapter()!;
 
         this.groups = (await pg_wrapper.value.account.group.all()) as never;
+        this.groups.sort((a, b) =>
+          a.account.name.localeCompare(b.account.name),
+        );
         this.wrapper = (await pg_wrapper.value.account.wrapper.all()) as never;
 
         if (!this.groupSelected?.publicKey) this.groupSelected = this.groups[0];
