@@ -3,7 +3,7 @@ import CutPayment from 'components/cut/CutPayment.vue';
 import { format_address } from '../functions/format_address';
 import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 
-const RECIPIENT = '756pfnvP3HHRx1BPwBPQwe1xBMfMWef5N9oN61Ews7np';
+const RECIPIENT = 'GMtvP4jfaVXXAY1mAm1vTiXMWexqmbVmWKB55xFtWqTw';
 const TOKEN = 'ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx';
 </script>
 
