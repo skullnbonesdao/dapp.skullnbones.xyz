@@ -71,7 +71,8 @@ async function loadMetadata(mint: PublicKey) {
           :src="
             useTokenListStore().tokenList.find(
               (t) => t.address == wrapper.account?.mintWrapped.toString(),
-            )?.logoURI ?? UNKNOWN_IMAGE
+            )?.logoURI ??
+            'https://skullnbonesdao.github.io/tokens.skullnbones/images/Deed.webp'
           "
         />
       </q-avatar>

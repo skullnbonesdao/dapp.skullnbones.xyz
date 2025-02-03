@@ -32,7 +32,7 @@ function getItemsPerPage() {
 
 const filter = ref('');
 const pagination = ref({
-  rowsPerPage: 0,
+  rowsPerPage: 4,
 });
 
 watch(
@@ -55,14 +55,13 @@ const rowsPerPageOptions = computed(() => {
       v-if="useWrapperStore().groupSelected"
       grid
       hide-header
-      hide-bottom
       :rows="
         useWrapperStore().getWrapperByGroup(useWrapperStore().groupSelected)
       "
       row-key="name"
       :filter="filter"
       v-model:pagination="pagination"
-      :rows-per-page-options="[0]"
+      :rows-per-page-options="rowsPerPageOptions"
     >
       <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6 col-md-3">
