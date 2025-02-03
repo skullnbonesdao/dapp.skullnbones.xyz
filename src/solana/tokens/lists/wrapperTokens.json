@@ -1,0 +1,46 @@
+{
+  "name": "Wrapper Tokens",
+  "logoURI": "",
+  "keywords": [
+    "solana",
+    "spl",
+    "sa"
+  ],
+  "tags": {
+    "lp-token": {
+      "name": "lp-token",
+      "description": ""
+    }
+  },
+  "timestamp": "Thu, 14 Nov 2024 09:33:52 GMT",
+  "tokens": [
+    {
+      "chainId": 101,
+      "name": "DAOBloon",
+      "symbol": "DAOB",
+      "address": "C1FxQEMa7ZPmzpP8ak5PYg8iMdYaxZVNHF7pfaAcCx3D",
+      "decimals": 8,
+      "logoURI": "https://skullnbonesdao.github.io/tokens.skullnbones/images/DAOB.gif",
+      "tags": [],
+      "verified": true,
+      "holders": null,
+      "tree": [
+        "Token"
+      ]
+    },
+    {
+      "chainId": 101,
+      "name": "DACBloons",
+      "symbol": "DACB",
+      "address": "4WN4y9zxqRrYtUTFkB3svJsYFVg2zo24tLTouLErnq9q",
+      "decimals": 8,
+      "logoURI": "https://skullnbonesdao.github.io/tokens.skullnbones/images/DACB.gif",
+      "tags": [],
+      "verified": true,
+      "holders": null,
+      "tree": [
+        "Token"
+      ]
+    }
+  ]
+}
