@@ -232,6 +232,7 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
     async claimLocker(
       custom_recipient_address: string,
       custom_recipient_amount: number,
+      ERAs: number[],
     ) {
       try {
         const duration_sec =
@@ -243,7 +244,7 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
         let instruction = undefined;
 
         // CLAIM
-        for (const era of duration_2_ERAs(duration_sec)) {
+        for (const era of ERAs) {
           instruction = await instruction_claimRewards(era);
           if (instruction) {
             tx.add(instruction);
@@ -252,7 +253,6 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
 
         const recipient = new PublicKey(custom_recipient_address);
         if (recipient.toString() !== getSigner().toString()) {
-          console.log(`--differ`);
           tx.add(
             createTransferInstruction(
               findATA(getSigner(), POLIS),

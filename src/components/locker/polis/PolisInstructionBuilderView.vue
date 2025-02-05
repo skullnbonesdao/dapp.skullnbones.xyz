@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { handleTransaction } from 'src/solana/handleTransaction';
 import { Transaction } from '@solana/web3.js';
 import { usePolisLockerStore } from 'src/solana/staratlas/locker/polis/PolisLockerStore';
 import { useAtlasLockerStore } from 'src/solana/staratlas/locker/atlas/AtlasLockerStore';
 import { POLIS_DECIMALS } from 'src/solana/staratlas/locker/polis/consts';
 import { getSigner } from 'src/solana/squads/SignerFinder';
+import { duration_2_ERAs } from 'src/solana/staratlas/locker/polis/SnapshotsInterface';
 
 const selected = ref('Create new locker');
 const options = ref([
@@ -76,6 +77,25 @@ const duration_selected = ref(duration_options.value[0]);
 const amount_ui = ref();
 const expand_locker = ref(false);
 
+const ERAs = ref<number[]>([]);
+
+function removeERA(index: number) {
+  ERAs.value.splice(index, 1);
+}
+function addERA() {
+  ERAs.value.push(ERAs.value[ERAs.value.length - 1] + 1);
+}
+
+watch(
+  () => usePolisLockerStore().escrow,
+  () => {
+    ERAs.value = duration_2_ERAs(
+      parseInt(usePolisLockerStore().escrow!.escrowEndsAt.toString()) -
+        parseInt(usePolisLockerStore().escrow!.escrowStartedAt.toString()),
+    );
+  },
+);
+
 async function buildTX() {
   switch (selected.value) {
     case 'Create token accounts':
@@ -101,6 +121,7 @@ async function buildTX() {
       tx.value = await usePolisLockerStore().claimLocker(
         custom_recipient_address.value,
         custom_recipient_amount.value,
+        ERAs.value,
       );
       break;
     case 'Close locker':
@@ -162,8 +183,52 @@ async function buildTX() {
 
       <div
         v-if="['Claim tokens from locker', 'Close locker'].includes(selected)"
-        class="row"
+        class="col"
       >
+        <q-card
+          flat
+          bordered
+          square
+          class="q-my-sm"
+          v-if="['Claim tokens from locker'].includes(selected)"
+        >
+          <div class="text-subtitle1 text-center">ERAs</div>
+          <q-separator />
+          <q-card-section>
+            <q-list dense class="full-width">
+              <q-item
+                v-for="(item, index) in ERAs"
+                :key="index"
+                class="q-gutter-x-sm"
+              >
+                <q-input
+                  class="full-width"
+                  square
+                  dense
+                  filled
+                  v-model="ERAs[index]"
+                  type="number"
+                />
+                <q-btn
+                  dense
+                  color="primary"
+                  icon="delete"
+                  @click="removeERA(index)"
+                />
+              </q-item>
+            </q-list>
+            <q-item class="row">
+              <q-space />
+              <q-btn
+                dense
+                icon="add"
+                class=""
+                color="primary"
+                @click="addERA"
+              ></q-btn>
+            </q-item>
+          </q-card-section>
+        </q-card>
         <q-input
           class="col"
           square
