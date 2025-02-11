@@ -11,6 +11,7 @@ import { duration_2_ERAs } from 'src/solana/staratlas/locker/polis/SnapshotsInte
 const selected = ref('Create new locker');
 const options = ref([
   'Create token accounts',
+  'Prepare locker accounts',
   'Create new locker',
   'Sync locker',
   'Add tokens to locker',
@@ -100,6 +101,9 @@ async function buildTX() {
   switch (selected.value) {
     case 'Create token accounts':
       tx.value = await usePolisLockerStore().createTokenAccounts();
+      break;
+    case 'Prepare locker accounts':
+      tx.value = await usePolisLockerStore().prepareLocker();
       break;
     case 'Create new locker':
       tx.value = await usePolisLockerStore().createLocker(

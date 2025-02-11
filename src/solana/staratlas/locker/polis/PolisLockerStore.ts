@@ -93,6 +93,56 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
       }
     },
 
+    async prepareLocker() {
+      try {
+        const tx = new Transaction();
+        let instruction = undefined;
+
+        // (1) Proxy Rewarder: New Proxy Escrow
+        if (
+          !(await useRPCStore().connection.getAccountInfo(findProxyEscrow()[0]))
+            ?.data
+        ) {
+          instruction = await instruction_newProxyEscrow();
+          if (instruction) {
+            tx.add(instruction);
+          }
+        }
+
+        // (2) Proxy Rewarder: New Proxy
+        if (
+          !(await useRPCStore().connection.getAccountInfo(findProxy()[0]))?.data
+        ) {
+          instruction = await instruction_newProxy();
+          if (instruction) {
+            tx.add(instruction);
+          }
+        }
+
+        // (3) Locked Voter: New Escrow
+
+        if (
+          !(await useRPCStore().connection.getAccountInfo(findEscrow()[0]))
+            ?.data
+        ) {
+          instruction = await instruction_newEscrow();
+          if (instruction) {
+            tx.add(instruction);
+          }
+        }
+
+        console.log(`[${NAME}] prepare locker!`);
+        return tx;
+      } catch (err: any) {
+        console.error(err);
+        Notify.create({
+          message: err.message,
+          type: 'negative',
+          position: 'bottom-right',
+        });
+      }
+    },
+
     async createLocker(amount_ui: number, duration_sec: number) {
       try {
         const tx = new Transaction();
@@ -103,7 +153,7 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
           POLIS_DECIMALS,
         );
 
-        // (1) Proxy Rewarder: New Proxy Escrow
+        /*        // (1) Proxy Rewarder: New Proxy Escrow
         if (
           !(await useRPCStore().connection.getAccountInfo(findProxyEscrow()[0]))
             ?.data
@@ -128,7 +178,7 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
         instruction = await instruction_newEscrow();
         if (instruction) {
           tx.add(instruction);
-        }
+        }*/
 
         // (6) Snapshots: Create Escrow History
         for (const era of duration_2_ERAs(duration_sec)) {
@@ -158,6 +208,7 @@ export const usePolisLockerStore = defineStore('polisLockerStore', {
         });
       }
     },
+
     async syncLocker() {
       try {
         const tx = new Transaction();
