@@ -47,7 +47,7 @@ async function buildTX(label: string) {
       amountToUnwrap.value,
       useAccountStore().getAccountByMintPublicKey(
         wrapper?.account.mintUnwrapped,
-      )?.decimals,
+      )?.decimals ?? 0,
     );
 
     let whitelist = props.wrapper.account.useWhitelist
@@ -57,6 +57,17 @@ async function buildTX(label: string) {
       ? WHITELST.findWhitelistEntryAddress(whitelist)
       : null;
 
+    let signerUnwrapped = new PublicKey(
+      useAccountStore().accounts.find(
+        (acc) =>
+          acc.mint.toString() == wrapper.account.mintUnwrapped.toString(),
+      )?.pubkey ??
+        findATA(
+          useWallet().publicKey.value!.toString(),
+          props.wrapper.account.mintUnwrapped.toString(),
+        ),
+    );
+
     tx.add(
       await pg_wrapper.methods
         .unwrap(amount_to_transfer as any)
@@ -64,12 +75,7 @@ async function buildTX(label: string) {
           signer: getSigner(),
           wrapper: wrapper.publicKey,
           mintUnwrapped: wrapper.account.mintUnwrapped,
-          signerUnwrapped: new PublicKey(
-            useAccountStore().accounts.find(
-              (acc) =>
-                acc.mint.toString() == wrapper.account.mintUnwrapped.toString(),
-            )?.pubkey ?? '',
-          ),
+          signerUnwrapped: signerUnwrapped,
           signerWrapped: findATA(
             useWallet().publicKey.value!.toString(),
             props.wrapper.account.mintWrapped.toString(),
